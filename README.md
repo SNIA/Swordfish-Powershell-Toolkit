@@ -1,6 +1,10 @@
 # Windows PowerShell Toolkit for Swordfish
 The PowerShell Toolkit for Swordfish provides a basic framework for querying resources from the [SNIA API Emulator](https://github.com/SNIA/Swordfish-API-Emulator). 
 
+The SNIASwordFish PowerShell Module can be used with Microsoft Windows, Windows Server or Linux. Below is an example of a connected SwordFish target being used with Mac, PowerShell for Linux (v6.1). 
+
+![SNIASwordFish Example with PowerShell for Linux](https://github.com/SNIA/Swordfish-Powershell-Toolkit/blob/barkz-patch-1/SNIASwordFish_pwsh.png)
+
 ## Contributors
 * Chris Lionetti, HPE
 * Barkz, Pure Storage, Inc.

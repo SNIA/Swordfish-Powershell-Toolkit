@@ -3,7 +3,7 @@ The PowerShell Toolkit for Swordfish provides a basic framework for querying res
 
 The SNIASwordFish PowerShell Module can be used with Microsoft Windows, Windows Server, macOS or Linux. Below is an example of a connected SwordFish target being used with macOS and PowerShell for Linux (v6.1). 
 
-![SNIASwordFish Example with PowerShell for Linux](https://github.com/SNIA/Swordfish-Powershell-Toolkit/blob/barkz-patch-1/SNIASwordFish_pwsh.png)
+![SNIASwordFish Example with PowerShell for Linux](https://github.com/SNIA/Swordfish-Powershell-Toolkit/blob/master/SNIASwordFish_pwsh.png)
 
 ## Contributors
 * Chris Lionetti, HPE

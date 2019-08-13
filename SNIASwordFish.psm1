@@ -11,4 +11,10 @@
 
 Export-ModuleMember -Function Connect-SwordFishTarget, Get-SwordFishChassis, Get-SwordFishChassisThermal, Get-SwordFishChassisPower, 
     Get-SwordFishStorageService, Get-SwordFishEndpoint, Get-SwordFishStoragePool, Get-SwordFishStorageGroup, Get-SwordFishVolume,
-    Get-SwordFishDrive, Get-SwordFishClassOfService, Get-SwordFishClassOfServiceLineOfService
+    Get-SwordFishDrive, Get-SwordFishClassOfService, Get-SwordFishClassOfServiceLineOfService, 
+    Invoke-SwordFishDependancySeleniumCheck,
+    Invoke-SwordFishDependancyChromeCheck,
+    Connect-SwordFishMockup,
+    StripHTMLCode,
+    Disconnect-SwordFishMockup
+

@@ -21,6 +21,7 @@ function Get-SwordFishChassis{
         [string] $ChassisId
     )
     process{
+
         $LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
         write-verbose "Folder = $LocalUri"
         $LocalData = invoke-restmethod2 -uri $LocalUri
@@ -37,6 +38,7 @@ function Get-SwordFishChassis{
                             $LocalCol+=$LocalChassis
                         } 
                 }
+
             }
         return $LocalCol
     }
@@ -67,6 +69,7 @@ param(  [Parameter (Mandatory = $True)]
         [Parameter (Mandatory = $True)]
         [Validateset ("Temperatures","Fans","Redundancy")]
         [string] $MetricName
+
      )
 process{
     $LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
@@ -92,6 +95,7 @@ process{
                 } 
         }
     return $ReturnSet
+
     }
 }
 
@@ -122,6 +126,7 @@ param(  [Parameter (Mandatory = $True)]
         [Validateset ("PowerControl","Voltages","PowerSupplies")]
         [string] $MetricName
     )
+
 process{
     $LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
     write-verbose "Folder = $LocalUri"
@@ -146,5 +151,6 @@ process{
                 } 
         }
     return $ReturnSet
+
     }
 }

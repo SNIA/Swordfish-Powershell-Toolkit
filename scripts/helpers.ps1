@@ -144,6 +144,7 @@ function StripHTMLCode{
 }
 
 function invoke-restmethod2{
+
     [cmdletbinding()]
     param   (   [string] $Uri
             )
@@ -166,6 +167,7 @@ function Invoke-Mockup
     $ChromeOptions = New-Object OpenQA.Selenium.Chrome.ChromeOptions
     $ChromeOptions.addArguments('headless')
     $ChromeDriver = New-Object OpenQA.Selenium.Chrome.ChromeDriver($ChromeOptions)
+
     start-sleep -Seconds 1
     $ChromeDriver.Navigate().GoToURL($MockupURI)
     write-verbose "Navigating to $MockupURI"
@@ -174,8 +176,10 @@ function Invoke-Mockup
     write-verbose "Returning $ReturnData RAW"
     start-sleep -Seconds 1
     $ChromeDriver.Close()
+
     start-sleep -Seconds 1
     $ChromeDriver.quit()
+
     start-sleep -Seconds 1
     try     {   $ReturnObj = $ReturnData | ConvertFrom-JSON
                 $ODataTypeName = Get-SwordFishODataTypeName $ReturnObj
@@ -188,6 +192,7 @@ function Invoke-Mockup
 }
 
 function Get-SwordFishODataTypeName 
+
 {   [cmdletbinding()]
     param   ( $DataObject
             )
@@ -216,4 +221,5 @@ function Get-SwordfishURIFolderByFolder
         {   $FolderUri = $Base + (($GetRootLocation).$($Folder)).'@odata.id'
         } 
     return $FolderUri
+
 }

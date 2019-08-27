@@ -21,4 +21,3 @@ Export-ModuleMember -Function       Connect-SwordFishTarget,        Connect-Swor
     Invoke-SwordFishDependancySeleniumCheck,
     Invoke-SwordFishDependancyChromeCheck,
     StripHTMLCode
-    

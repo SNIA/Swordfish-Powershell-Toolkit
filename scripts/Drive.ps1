@@ -30,6 +30,7 @@ function Get-SwordFishDrive{
 
         [string] $DriveId
     )
+
     process
     {   $LocalUri = Get-SwordfishURIFolderByFolder "StorageServices"
         write-verbose "Folder = $LocalUri"
@@ -44,6 +45,7 @@ function Get-SwordFishDrive{
                 write-verbose "-+-+ Determining if the Storage Service is excluded by parameter"
                 if ( ( ($Data).id -like $StorageServiceId ) -or ( $StorageServiceId -eq '' ) )
                     {   # $SSsCol+=invoke-restmethod -uri $SSUri 
+
                         # D(s) = Drive(s)
                         $DDrives=($Data).Drives
                         write-verbose "Data Drives = $DDrives"
@@ -59,9 +61,11 @@ function Get-SwordFishDrive{
                             $DRawUri=$(($D).'@odata.id')
                             $DUri=$base+$DRawUri
                             write-verbose "-+-+ Determining if the Drive should be excluded by parameter $DUri"
+
                             try {   $DriveToAdd = invoke-RestMethod2 -uri $DUri
                                     if ( ( ($DriveToAdd).id -like $DriveId) -or ( $DriveId -eq '' ) )             
                                     {   $DsCol+=$DriveToAdd
+
                                     }
                                 }
                             catch{  write-verbose "-+-+ No Drives found on this system"
@@ -71,5 +75,6 @@ function Get-SwordFishDrive{
             }
         return $DsCol
     }
+
     
 }

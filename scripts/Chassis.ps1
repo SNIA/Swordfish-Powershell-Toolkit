@@ -21,17 +21,21 @@ function Get-SwordFishChassis{
         [string] $ChassisId
     )
     process{
-        $ReturnData = invoke-restmethod -uri "$BaseUri"  
-        $ChassisUri = $Base + ((($ReturnData).links).Chassis).'@odata.id'
+        $ReturnData = invoke-restmethod2 -uri "$BaseUri"  
+        if ( ((($ReturnData).links).Chassis).'@odata.id')
+            {    $ChassisUri = $Base + ((($ReturnData).links).Chassis).'@odata.id'
+            } else 
+            {   $ChassisUri = $Base + (($ReturnData).Chassis).'@odata.id'
+            } 
         write-verbose "ChassisURI = $ChassisUri"
-        $ChassisData = invoke-restmethod -uri $ChassisUri
+        $ChassisData = invoke-restmethod2 -uri $ChassisUri
         $ChassisLinks = (($ChassisData).Links).Members
         $ChassCol=@()  
         foreach($Chassis in $ChassisLinks)
             {   $SetChassisUri=($Chassis).'@odata.id'
                 $GetSetChassis=$base+$SetChassisUri
-                if ( ( (invoke-restmethod -uri $GetSetChassis).id -like $ChassisId ) -or ( $ChassisId -eq '' ) )
-                    {   $ChassCol+=invoke-restmethod -uri $GetSetChassis 
+                if ( ( (invoke-restmethod2 -uri $GetSetChassis).id -like $ChassisId ) -or ( $ChassisId -eq '' ) )
+                    {   $ChassCol+=invoke-restmethod2 -uri $GetSetChassis 
                     } 
             }
         return $Chasscol
@@ -66,24 +70,25 @@ function Get-SwordFishChassisThermal{
         [string] $MetricName
     )
     process{
-        $ReturnData = invoke-restmethod -uri "$BaseUri"  
-        $ChassisUri = $Base + ((($ReturnData).links).Chassis).'@odata.id'
+        $ChassisReturnData = invoke-restmethod2 -Uri $BaseUri 
+        $ChassisUri = $Base + (($ChassisReturnData).Chassis).'@odata.id'
+#        $ChassisUri = $Base + ((($ReturnData).links).Chassis).'@odata.id'
         write-verbose "ChassisURI = $ChassisUri"
-        $ChassisData = invoke-restmethod -uri $ChassisUri
+        $ChassisData = invoke-restmethod2 -uri $ChassisUri
         $ChassisLinks = (($ChassisData).Links).Members
         $ReturnSet=@()
         foreach($Chassis in $ChassisLinks)
             {   $SetChassisUri=($Chassis).'@odata.id'
                 $GetSetChassis=$base+$SetChassisUri
                 $GetSetChasThermals=$GetSetChassis+"/Thermal"
-                if ( ( (invoke-restmethod -uri $GetSetChassis).id -like $ChassisId ) )
+                if ( ( (invoke-restmethod2 -uri $GetSetChassis).id -like $ChassisId ) )
                     {   write-Verbose "Found Chassis"
                         switch ($MetricName)
-                        {   "Temperatures"  {   $ReturnSet=(invoke-restmethod -uri $GetSetChasThermals).Temperatures
+                        {   "Temperatures"  {   $ReturnSet=(invoke-restmethod2 -uri $GetSetChasThermals).Temperatures
                                             }
-                            "Fans"          {   $ReturnSet=(invoke-restmethod -uri $GetSetChasThermals).Fans
+                            "Fans"          {   $ReturnSet=(invoke-restmethod2 -uri $GetSetChasThermals).Fans
                                             }
-                            "Redundancy"    {   $ReturnSet=(invoke-restmethod -uri $GetSetChasThermals).Redundancy
+                            "Redundancy"    {   $ReturnSet=(invoke-restmethod2 -uri $GetSetChasThermals).Redundancy
                                             }
                         }
                     } 
@@ -120,29 +125,29 @@ function Get-SwordFishChassisPower{
         [string] $MetricName
     )
     process{
-        $ReturnData = invoke-restmethod -uri "$BaseUri"  
+        $ReturnData = invoke-restmethod2 -uri "$BaseUri"  
         $ChassisUri = $Base + ((($ReturnData).links).Chassis).'@odata.id'
         write-verbose "ChassisURI = $ChassisUri"
-        $ChassisData = invoke-restmethod -uri $ChassisUri
+        $ChassisData = invoke-restmethod2 -uri $ChassisUri
         $ChassisLinks = (($ChassisData).Links).Members
         $ReturnSet=@()
         foreach($Chassis in $ChassisLinks)
             {   $SetChassisUri=($Chassis).'@odata.id'
                 $GetSetChassis=$base+$SetChassisUri
                 $GetSetChasThermals=$GetSetChassis+"/Power"
-                if ( ( (invoke-restmethod -uri $GetSetChassis).id -like $ChassisId ) )
+                if ( ( (invoke-restmethod2 -uri $GetSetChassis).id -like $ChassisId ) )
                     {   write-Verbose "Found Chassis"
                         switch ($MetricName)
-                        {   "PowerControl"  {   $ReturnSet=(invoke-restmethod -uri $GetSetChasThermals).PowerControl
+                        {   "PowerControl"  {   $ReturnSet=(invoke-restmethod2 -uri $GetSetChasThermals).PowerControl
                                                 $ReturnSet.PSTypeNames.clear()
                                                 $ReturnSet.PSTypeNames.Add('Swordfish.ChassisPowerPowerControl')
                                                 $ReturnSet.PSObject.TypeNames.Insert(0,'Swordfish.ChassisPowerPowerControl.TypeName')
                                             }
-                            "Voltages"      {   $ReturnSet=(invoke-restmethod -uri $GetSetChasThermals).Voltages
+                            "Voltages"      {   $ReturnSet=(invoke-restmethod2 -uri $GetSetChasThermals).Voltages
                                                 $ReturnSet.psobject.TypeNames.Insert(0,'Swordfish.ChassisPowerVoltages')
                                                 $ReturnSet.pstypenames.Insert(0,'Swordfish.ChassisPowerVoltages')
                                             }
-                            "PowerSupplies" {   $ReturnSet=(invoke-restmethod -uri $GetSetChasThermals).PowerSupplies
+                            "PowerSupplies" {   $ReturnSet=(invoke-restmethod2 -uri $GetSetChasThermals).PowerSupplies
                                                 $ReturnSet.psobject.TypeNames.Insert(0,'Swordfish.ChassisPowerPowerSupplies')
                                                 $ReturnSet.pstypenames.Insert(0,'Swordfish.ChassisPowerPowerSupplies')
                                             }

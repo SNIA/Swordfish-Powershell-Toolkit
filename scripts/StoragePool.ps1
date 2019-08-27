@@ -27,44 +27,30 @@ function Get-SwordFishStoragePool{
     #>   
     [CmdletBinding()]
     param(
-        [string] $StorageServiceID,
+        [string] $StorageServiceID='',
 
         [string] $StoragePoolId
     )
     process{
-        # SS(s) = Storage Service(s)
-        $ReturnData = invoke-restmethod -uri "$BaseUri"  
-        $SSsUri = $Base + ((($ReturnData).links).StorageServices).'@odata.id'
-        $SSsData = invoke-restmethod -uri $SSsUri
-        $SSsLinks = ($SSsData).Members
-        $SSsCol=@()
         $SPsCol=@() 
-        foreach($SS in $SSsLinks)
-            {   $SSRawUri=$(($SS).'@odata.id')
-                $SSUri=$base+$SSRawUri
-                if ( ( (invoke-restmethod -uri $SSUri).id -like $StorageServiceId ) -or ( $StorageServiceId -eq '' ) )
-                    {   $Data = invoke-restmethod -uri $SSUri
-                        $SSsCol+=invoke-restmethod -uri $SSUri 
-                        # SP(s) = StoragePool(s)
-                        $SPRoot = (($Data).StoragePools).'@odata.id'
-                        $SPsUri=$base+$SPRoot
-                        try {   $SPsData = invoke-restmethod -uri $SPsUri
-                                $SPs = $($SPsData).Members
-                                foreach($SP in $SPs)
-                                {   $SPRawUri=$(($SP).'@odata.id')
-                                    $SPUri=$base+$SPRawUri
-                                    if ( ( (invoke-restmethod -uri $SPUri).Id -like $StoragePoolId) -or ( $StoragePoolId -eq '' ) )             
-                                    {   try     {   $SPsCol+=invoke-RestMethod -uri $SPUri 
-                                                }
-                                        catch   { Write-Error "The Storage System supports Pools but no pool exists"
-                                                }
-                                    }
-                                }
-                            }
-                        catch { Write-verbose "This Storage System doesnt have a pool"
-                              }    
-                    } 
-            }
+        foreach($link in (Get-SwordFishStorageService -StorageServiceID $StorageServiceID))
+            {   $SPsURI = $base + (($link).StoragePools).'@odata.id'
+                write-verbose "Opening URI SPsURI = $SPsURI"
+                $SPsData = invoke-restmethod2 -uri $SPsURI
+                if ( $SPsData.members )
+                    {   $SPs = $SPsData.members
+                    } else 
+                    {   $SPs = $SPsData   
+                    }
+                write-verbose "SPs = $SPs"
+                foreach ($SP in $SPs )
+                {   $SPuri = $Base+ ($SP.'@odata.id')
+                    write-verbose "Opening URI SPuri = $SPuri"
+                    $SPData = invoke-restmethod2 -uri $SPuri
+                    if  ( ( $SPData.id -like $StoragePoolId ) -or ( $StoragePoolId -eq '') ) 
+                        {   write-verbose "++++Adding $SPData"
+                            $SPsCol+=$SPData
+            }   }       }
         return $SPsCol
     }
 }

@@ -102,33 +102,6 @@ function Connect-SwordFishMockup {
         }
     }
 
-function Disconnect-SwordFishMockup {
-<#
-.SYNOPSIS
-    Disconnects and deallocated the SNIA Swordfish Mockup as if were a SwordFish Target.
-.DESCRIPTION
-    Disconnect-SwordMockup will remove any of the existing connections as well as deallocate any variables set.
-.EXAMPLE
-    Disconnect-SwordFishMockup
-.NOTES
-#>
-    [CmdletBinding()]
-    param   (   
-            )
-    Process {   $ChromeDriver.Close()
-                start-sleep -Seconds 1
-                write-verbose "Quit Chrome Driver"
-                $ChromeDriver.quit()
-                start-sleep -Seconds 1
-                remove-variable $Global:MOCK
-                remove-variable $Global:Base
-                remove-variable $Global:RedFishRoot
-                remove-variable $Global:BaseUri
-                remove-variable $ChromeOptions
-                remove-variable $Global:ChromeDriver
-            }
-}
-
 function Invoke-SwordFishDependancySeleniumCheck{   
     if ( get-module -name Selenium )
         {   write-verbose "Check: Selenium is installed and imported"
@@ -171,24 +144,30 @@ function StripHTMLCode{
 }
 
 function invoke-restmethod2{
+
+    [cmdletbinding()]
     param   (   [string] $Uri
             )
-    process {   if ( -not $MOCK)
-                    {   $ReturnObj = invoke-restmethod -Uri $Uri
-                    } else
-                    {   $ReturnObj = invoke-Mockup -MockupURI $Uri
+    process {   try {   if ( -not $MOCK)
+                        {   $ReturnObj = invoke-restmethod -Uri $Uri
+                            write-verbose "Getting rest2 $Uri"
+                        } else
+                        {   $ReturnObj = invoke-Mockup -MockupURI $Uri
+                        }
+                        return $ReturnObj
                     }
-                return $ReturnObj
+                catch { write-verbose "Invoke of $Uri failed"
+                    }
             }
 }
 function Invoke-Mockup
-{   param   ( [string] $MockupURI
+{   [cmdletbinding()]
+    param   ( [string] $MockupURI
             )
     $ChromeOptions = New-Object OpenQA.Selenium.Chrome.ChromeOptions
     $ChromeOptions.addArguments('headless')
-    write-verbose "Completed Setting Options"
     $ChromeDriver = New-Object OpenQA.Selenium.Chrome.ChromeDriver($ChromeOptions)
-    write-verbose "Opening Chrome Driver HEADLESS"
+
     start-sleep -Seconds 1
     $ChromeDriver.Navigate().GoToURL($MockupURI)
     write-verbose "Navigating to $MockupURI"
@@ -197,10 +176,10 @@ function Invoke-Mockup
     write-verbose "Returning $ReturnData RAW"
     start-sleep -Seconds 1
     $ChromeDriver.Close()
-    write-verbose "Closing Chrome"
+
     start-sleep -Seconds 1
     $ChromeDriver.quit()
-    write-verbose "Quit Chrome"
+
     start-sleep -Seconds 1
     try     {   $ReturnObj = $ReturnData | ConvertFrom-JSON
                 $ODataTypeName = Get-SwordFishODataTypeName $ReturnObj
@@ -213,7 +192,9 @@ function Invoke-Mockup
 }
 
 function Get-SwordFishODataTypeName 
-{   param   ( $DataObject
+
+{   [cmdletbinding()]
+    param   ( $DataObject
             )
     if ( $ReturnType = $DataObject.'@odata.type')
     {   # clip the first hash mark from the type name
@@ -226,4 +207,19 @@ function Get-SwordFishODataTypeName
         write-verbose "No Type was found"
         return
     }
+}
+
+function Get-SwordfishURIFolderByFolder
+{   [cmdletbinding()]
+    param ( $Folder
+          )
+
+    $GetRootLocation = invoke-restmethod2 -uri "$BaseUri"  
+    if ( ((($GetRootLocation).links).$($Folder)).'@odata.id')
+        {   $FolderUri = $Base + ((($GetRootLocation).links).$($Folder)).'@odata.id'
+        } else 
+        {   $FolderUri = $Base + (($GetRootLocation).$($Folder)).'@odata.id'
+        } 
+    return $FolderUri
+
 }

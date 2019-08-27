@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Configuration>
 <ViewDefinitions>
-        <View> <Name>SwordFish.ChassisPowerPowerControl</Name>
+        <View> <Name>SwordFish.ChassisPowerControl</Name>
             <ViewSelectedBy>
-                <TypeName>SwordFish.ChassisPowerPowerControl</TypeName>
+                <TypeName>SwordFish.ChassisPowerControl</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>

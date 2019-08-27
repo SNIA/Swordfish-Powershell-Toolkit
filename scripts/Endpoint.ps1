@@ -27,39 +27,26 @@ function Get-SwordFishEndpoint{
     #>   
     [CmdletBinding()]
     param(
-        [string] $StorageServiceID,
+        [string] $StorageServiceID='',
 
-        [Validateset('Initiator','Target')]
-        [string] $EndPointRole
+        [Validateset('Initiator','Target','')]
+        [string] $EndPointRole=''
     )
     process{
-        # SS(s) = Storage Service(s)
-        $ReturnData = invoke-restmethod -uri "$BaseUri"  
-        $SSsUri = $Base + ((($ReturnData).links).StorageServices).'@odata.id'
-        $SSsData = invoke-restmethod -uri $SSsUri
-        $SSsLinks = ($SSsData).Members
-        $SSsCol=@()
         $EPsCol=@() 
-        foreach($SS in $SSsLinks)
-            {   $SSRawUri=$(($SS).'@odata.id')
-                $SSUri=$base+$SSRawUri
-                if ( ( (invoke-restmethod -uri $SSUri).id -like $StorageServiceId ) -or ( $StorageServiceId -eq '' ) )
-                    {   $Data = invoke-restmethod -uri $SSUri
-                        $SSsCol+=invoke-restmethod -uri $SSUri 
-                        # EP(s) = Endpoint(s)
-                        $EPRoot = (($Data).Endpoints).'@odata.id'
-                        $EPsUri=$base+$EPRoot
-                        $EPsData=Invoke-RestMethod -uri $EPsUri
-                        $EPs = $($EPsData).Members
-                        foreach($EP in $EPs)
-                        {   $EPRawUri=$(($EP).'@odata.id')
-                            $EPUri=$base+$EPRawUri
-                            if ( ( (invoke-restmethod -uri $EPUri).EndpointRole -like $EndpointRole) -or ( $EndpointRole -eq '' ) )             
-                                {   $EPsCol+=invoke-RestMethod -uri $EPUri 
-                                }
-                        }    
-                    } 
-            }
+        foreach($link in (Get-SwordFishStorageService -StorageServiceID $StorageServiceID))
+            {   $EPsURI = $base + (($link).Endpoints).'@odata.id'
+                write-verbose "Opening URI EPsURI = $EPsURI"
+                $EPsData = invoke-restmethod2 -uri $EPsURI
+                $EPs = $EPsData.members
+                foreach ($EP in $EPs )
+                {   $EPuri = $Base+ ($EP.'@odata.id')
+                    write-verbose "Opening URI EPuri = $EPuri"
+                    $EPData = invoke-restmethod2 -uri $EPuri
+                    if  ( ( $EPData.EndpointRole -like $EndPointRole ) -or ( $EndPointRole -eq '') ) 
+                            {   $EPsCol+=$EPData
+                            }
+            }   }   
         return $EPsCol
     }
 }

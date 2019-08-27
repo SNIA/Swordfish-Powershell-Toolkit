@@ -64,6 +64,7 @@ An example of this would be the Power or Thermal metrics gathered by the Chassis
 The current list of supported cmdlets are:
 ```powershell
 Connect-SwordFishTarget
+Connect-SwordFishMockup
 Get-SwordFishChassis
 Get-SwordFishChassisPower
 Get-SwordFishChassisThermal
@@ -76,4 +77,32 @@ Get-SwordFishStoragePool
 Get-SwordFishStorageService
 Get-SwordFishVolume
 ```
-  
+### Alternate SwordFish Targets
+
+The Swordfish PowerShell toolkit is designed to be used primarily against an actual Swordfish Implementation, however it works equally well against the SNIA SwordFish Emulator located at the following location https://github.com/SNIA/Swordfish-API-Emulator. To use the SwordFish PowerShell toolkit module, configure the API Emulator according to the instructions on the Github site.
+To connect the SwordFish PowerShell Toolkit to either a Swordfish Implementation or the API Emulator use the command Connect-SwordFishTarget to the IP address that represents that target. See 
+```powershell 
+Get-Help Connect-SwordFishTarget
+```
+
+Since not all features may not be implemented against a specific vendors SwordFish Target, or even against the Swordfish API Emulator, an additional method of connection and test has been offered. A command called Connect-SwordfishMockup has been created that will connect directly to the swordfish mockup site http://swordfishmockups.com/redfish/v1. Once this connection command has been issued, all remaining commands such as Get-SwordFishChassis will be executed against the Mockup website. See 
+```powershell 
+Get-Help Connect-SwordFishMockup
+```
+
+I should note that there exists three cavaets with the use of the SwordFishMockup option; 
+1. Two dependancies that must be met to use the Connect-SwordFishMockup command, These are that you need the PowerShell Module Selenium from the PSGallery to allow automation of a Chrome envrionment since the Mockup website requires Javascript compatibility. THe second dependancy is the requirement that the Chrome Browser be installed on the node running these commands to process the Javascript.
+2. The commands output a significant amount of debug type information to the PowerShell windows that I have not been able to suppress yet. This debug information can render the returned data hard to read. The recommendation here is to always cast the returned object(s) from a command to a Variable and then view that variable which will be free of all the debug information. 
+ i.e.  
+ ```powershell
+ PS:> $MyVar = Get-SwordfishChassis
+ PS:> $MyVar | format-table id,name,chassistype,serialnumber
+
+ Id     Name                    ChassisType SerialNumber
+ --     ----                    ----------- ------------
+ 1      Computer System Chassis RackMount   2M220100SL
+ 1URack Computer System Chassis RackMount   556ST22255E
+ 1      Storage System Chassis  RackMount   XXXYYY
+```
+3. When using the SwordfishMockup site, the launching and rendering of the javascript to produce the final Swordfish code takes considerably more time that running directly against either a native SwordFish target or the Emulator
+

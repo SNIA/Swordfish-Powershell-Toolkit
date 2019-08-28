@@ -140,23 +140,29 @@ function StripHTMLCode{
     $EndCurly=$RawCode.LastIndexOf('}')
     $EndLength=$EndCurly-$StartCurly+1
     $RawCode = $RawCode.Substring($StartCurly,$EndLength)
-    return $RawCode       
+    return $RawCode
+   
 }
 
 function invoke-restmethod2{
-
     [cmdletbinding()]
     param   (   [string] $Uri
             )
-    process {   try {   if ( -not $MOCK)
-                        {   $ReturnObj = invoke-restmethod -Uri $Uri
-                            write-verbose "Getting rest2 $Uri"
-                        } else
-                        {   $ReturnObj = invoke-Mockup -MockupURI $Uri
-                        }
-                        return $ReturnObj
-                    }
-                catch { write-verbose "Invoke of $Uri failed"
+    process {   if ($uri -eq $base)
+                    {   write-verbose "Invalid URI sent in"  
+                        return 
+                    } else 
+                    {   try {   if ( -not $MOCK)
+                                {   $ReturnObj = invoke-restmethod -Uri $Uri
+                                    write-verbose "Getting rest2 $Uri"
+                                } else
+                                {   $ReturnObj = invoke-Mockup -MockupURI $Uri
+                                }
+                                return $ReturnObj
+                            }
+                        catch 
+                            { write-verbose "Invoke of $Uri failed"
+                            }
                     }
             }
 }
@@ -167,7 +173,6 @@ function Invoke-Mockup
     $ChromeOptions = New-Object OpenQA.Selenium.Chrome.ChromeOptions
     $ChromeOptions.addArguments('headless')
     $ChromeDriver = New-Object OpenQA.Selenium.Chrome.ChromeDriver($ChromeOptions)
-
     start-sleep -Seconds 1
     $ChromeDriver.Navigate().GoToURL($MockupURI)
     write-verbose "Navigating to $MockupURI"
@@ -176,10 +181,8 @@ function Invoke-Mockup
     write-verbose "Returning $ReturnData RAW"
     start-sleep -Seconds 1
     $ChromeDriver.Close()
-
     start-sleep -Seconds 1
     $ChromeDriver.quit()
-
     start-sleep -Seconds 1
     try     {   $ReturnObj = $ReturnData | ConvertFrom-JSON
                 $ODataTypeName = Get-SwordFishODataTypeName $ReturnObj
@@ -192,7 +195,6 @@ function Invoke-Mockup
 }
 
 function Get-SwordFishODataTypeName 
-
 {   [cmdletbinding()]
     param   ( $DataObject
             )
@@ -221,5 +223,4 @@ function Get-SwordfishURIFolderByFolder
         {   $FolderUri = $Base + (($GetRootLocation).$($Folder)).'@odata.id'
         } 
     return $FolderUri
-
 }

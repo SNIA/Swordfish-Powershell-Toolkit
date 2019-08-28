@@ -2,6 +2,7 @@
 . $PSScriptRoot\scripts\Chassis.ps1
 . $PSScriptRoot\scripts\StorageService.ps1
 . $PSScriptRoot\scripts\Endpoint.ps1
+. $PSScriptRoot\scripts\EndpointGroup.ps1
 . $PSScriptRoot\scripts\StoragePool.ps1
 . $PSScriptRoot\scripts\StorageGroup.ps1
 . $PSScriptRoot\scripts\Volume.ps1
@@ -12,7 +13,7 @@
 Export-ModuleMember -Function       Connect-SwordFishTarget,        Connect-SwordFishMockup,
     Get-SwordFishChassis,           Get-SwordFishChassisThermal,    Get-SwordFishChassisPower, 
     Get-SwordFishStorageService, 
-    Get-SwordFishEndpoint, 
+    Get-SwordFishEndpoint,          Get-SwordFishEndpointGroup,
     Get-SwordFishStoragePool, 
     Get-SwordFishStorageGroup, 
     Get-SwordFishVolume,
@@ -20,4 +21,6 @@ Export-ModuleMember -Function       Connect-SwordFishTarget,        Connect-Swor
     Get-SwordFishClassOfService,    Get-SwordFishClassOfServiceLineOfService, 
     Invoke-SwordFishDependancySeleniumCheck,
     Invoke-SwordFishDependancyChromeCheck,
+ 
     StripHTMLCode
+    

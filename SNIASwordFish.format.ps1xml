@@ -40,45 +40,6 @@
                  </TableRowEntries>
             </TableControl>
         </View>
-        <View> <Name>SwordFish.StorageServices</Name>
-            <ViewSelectedBy>
-                <TypeName>SwordFish.StorageServices</TypeName>
-            </ViewSelectedBy>
-            <TableControl>
-                <TableHeaders>
-                     <TableColumnHeader>
-                        <Width>12</Width>
-                    </TableColumnHeader>
-                    <TableColumnHeader>
-                        <Width>15</Width>
-                    </TableColumnHeader>
-                    <TableColumnHeader>
-                        <Width>35</Width>
-                    </TableColumnHeader>
-                    <TableColumnHeader>
-                        <Width>24</Width>
-                    </TableColumnHeader>
-                </TableHeaders>
-                <TableRowEntries>
-                    <TableRowEntry>
-                        <TableColumnItems>
-                            <TableColumnItem>
-                                <PropertyName>Name</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>PowerConsumedWatts</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>PowerCapacityWatts</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>.Status.Health</PropertyName>
-                            </TableColumnItem>
-                        </TableColumnItems>
-                    </TableRowEntry>
-                 </TableRowEntries>
-            </TableControl>
-        </View>
                 <View> <Name>SwordFish.Drive</Name>
             <ViewSelectedBy>
                 <TypeName>SwordFish.Drive</TypeName>

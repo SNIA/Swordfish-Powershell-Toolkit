@@ -32,7 +32,16 @@ function Get-SwordFishStorageGroup{
     )
     process{
         $SGsCol=@() 
-        foreach($link in Get-SwordfishStorageService -StorageServiceID $StorageServiceID)
+        $StorageClasses=@("StorageSystems","StorageServices")
+        # This allows me to do a search first for the Non-Class of Service Swordfish, then do the search for Class-of-Service type swordfish.
+        # StorageSystems is service/less, thusly doesnt require class-of-service as specified in Swordfish 1.1.0+
+        foreach ($StorageClass in $StorageClasses)
+        {   if ($StorageClass -like "StorageSystems")
+                {   $Links = Get-SwordFishStorageService -StorageServiceID $StorageServiceID
+                } else 
+                {   $Links = Get-SwordFishStorageSystem -SystemID $StorageSystemId
+                }
+            foreach($link in $Links)
             {   $SGsUri = $base + (($link).StorageGroups).'@odata.id'
                 write-host "SGSURI = $SGsUri"
                 $SGsData = invoke-restmethod2 -uri $SGsUri
@@ -45,7 +54,8 @@ function Get-SwordFishStorageGroup{
                         {   $SGsCol+=$SGData
                         }
                 }    
-            } 
+            }
+        }
         return $SGsCol
     }
 }

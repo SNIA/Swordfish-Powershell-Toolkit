@@ -1,6 +1,7 @@
 . $PSScriptRoot\scripts\helpers.ps1
 . $PSScriptRoot\scripts\Chassis.ps1
 . $PSScriptRoot\scripts\StorageService.ps1
+. $PSScriptRoot\scripts\StorageSystem.ps1
 . $PSScriptRoot\scripts\Endpoint.ps1
 . $PSScriptRoot\scripts\StoragePool.ps1
 . $PSScriptRoot\scripts\StorageGroup.ps1
@@ -20,4 +21,5 @@ Export-ModuleMember -Function       Connect-SwordFishTarget,        Connect-Swor
     Get-SwordFishClassOfService,    Get-SwordFishClassOfServiceLineOfService, 
     Invoke-SwordFishDependancySeleniumCheck,
     Invoke-SwordFishDependancyChromeCheck,
+    Get-SwordFishStorageSystem,
     StripHTMLCode

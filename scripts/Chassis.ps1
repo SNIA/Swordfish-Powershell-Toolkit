@@ -1,28 +1,25 @@
 function Get-SwordFishChassis{
-    <#
-    .SYNOPSIS
-        Retrieve The list of valid Chassis' from the SwordFish Target.
-    .DESCRIPTION
-        This command will either return the a complete collection of 
-        Chassis objects that exist or if a single Chassis ID is selected, 
-        it will return only the single Chassis ID.
-    .PARAMETER ChassisId
-        The Chassis ID name for a specific Chassis, otherwise the command
-        will return all Chassis.
-    .EXAMPLE
-         Get-SwordFishChassis
-    .EXAMPLE
-         Get-SwordFishCHassis -ChassisId Chassis-13
-    .LINK
-        https://redfish.dmtf.org/schemas/Chassis.v1_9_0.json
-    #>   
-    [CmdletBinding()]
-    param(
-        [string] $ChassisId
-    )
-    process{
-
-        $LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
+<#
+.SYNOPSIS
+    Retrieve The list of valid Chassis' from the SwordFish Target.
+.DESCRIPTION
+    This command will either return the a complete collection of 
+    Chassis objects that exist or if a single Chassis ID is selected, 
+    it will return only the single Chassis ID.
+.PARAMETER ChassisId
+    The Chassis ID name for a specific Chassis, otherwise the command
+    will return all Chassis.
+.EXAMPLE
+    Get-SwordFishChassis
+.EXAMPLE
+    Get-SwordFishCHassis -ChassisId Chassis-13
+.LINK
+    https://redfish.dmtf.org/schemas/Chassis.v1_9_0.json
+#>   
+[CmdletBinding()]
+param   (  [string] $ChassisId
+        )
+process{$LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
         write-verbose "Folder = $LocalUri"
         $LocalData = invoke-restmethod2 -uri $LocalUri
         # Now must find if this contains links or directly goes to members. Only one of these will exist, whichever one will be the one that survives this assignment.
@@ -35,17 +32,12 @@ function Get-SwordFishChassis{
                     $LocalChassis=invoke-restmethod2 -uri $Singleton
                     if ( ( ($LocalChassis).id -like $ChassisId ) -or ( $ChassisId -eq '' ) )
                         {   write-verbose "Adding singleton to collection"
-                            $LocalCol+=$LocalChassis
-                        } 
-                }
-
-            }
+                            $LocalCol+=$LocalChassis 
+            }    }      }
         return $LocalCol
-    }
-}
-  
-function Get-SwordFishChassisThermal
-{
+}    }
+
+function Get-SwordFishChassisThermal{
 <#
 .SYNOPSIS
     Retrieve The list of valid Chassis' Thermal sensors from the SwordFish Target Chassis.
@@ -99,26 +91,24 @@ process{
     }
 }
 
-function Get-SwordFishChassisPower
-{
-    <#
-    .SYNOPSIS
-        Retrieve The list of valid Chassis' Power sensors from the SwordFish Target Chassis.
-    .DESCRIPTION
-        This command will return all of the Power sensors for a specific Chassis ID. You must
-        specify either to retrieve the PowerControl values, the Voltage values or the 
-        PowerSupply values. 
-    .PARAMETER ChassisId
-        The Chassis ID name for a specific Chassis is required.
-    .PARAMETER MetricName
-        The metric name is required, and only PowerControl, Voltage, and PowerSupply are valid.
-    .EXAMPLE
-         Get-SwordFishCHassisThermal -ChassisId Chassis-13 -MetricName Voltage
-
-    .LINK
-        https://redfish.dmtf.org/schemas/Chassis.v1_9_0.json
-    #>   
-    [CmdletBinding()]
+function Get-SwordFishChassisPower{
+<#
+.SYNOPSIS
+    Retrieve The list of valid Chassis' Power sensors from the SwordFish Target Chassis.
+.DESCRIPTION
+    This command will return all of the Power sensors for a specific Chassis ID. You must
+    specify either to retrieve the PowerControl values, the Voltage values or the 
+    PowerSupply values. 
+.PARAMETER ChassisId
+    The Chassis ID name for a specific Chassis is required.
+.PARAMETER MetricName
+    The metric name is required, and only PowerControl, Voltage, and PowerSupply are valid.
+.EXAMPLE
+     Get-SwordFishCHassisThermal -ChassisId Chassis-13 -MetricName Voltage
+.LINK
+    https://redfish.dmtf.org/schemas/Chassis.v1_9_0.json
+#>   
+[CmdletBinding()]
 param(  [Parameter (Mandatory = $True)]
         [string] $ChassisId,
         
@@ -126,7 +116,6 @@ param(  [Parameter (Mandatory = $True)]
         [Validateset ("PowerControl","Voltages","PowerSupplies")]
         [string] $MetricName
     )
-
 process{
     $LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
     write-verbose "Folder = $LocalUri"
@@ -147,10 +136,7 @@ process{
                                         }
                         "PowerSupplies" {   $ReturnSet=(invoke-restmethod2 -uri $Power).PowerSupplies
                                         }
-                    }
-                } 
-        }
+        }       }   } 
     return $ReturnSet
-
     }
 }

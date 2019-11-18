@@ -19,6 +19,8 @@ function Get-SwordFishStoragePool{
     .EXAMPLE
          Get-SwordFishStoragePool -StorageServiceId AC-102345
     .EXAMPLE
+         Get-SwordFishStoragePool -StorageSystemId AC-102345
+    .EXAMPLE
          Get-SwordFishStoragePool -StorageServiceId AC-102345 -EndpointRole Target
     .EXAMPLE
          Get-SwordFishStoragePool -EndpointRole Initiator
@@ -33,7 +35,16 @@ function Get-SwordFishStoragePool{
     )
     process{
         $SPsCol=@() 
-        foreach($link in (Get-SwordFishStorageService -StorageServiceID $StorageServiceID))
+        $StorageClasses=@("StorageSystems","StorageServices")
+        # This allows me to do a search first for the Non-Class of Service Swordfish, then do the search for Class-of-Service type swordfish.
+        # StorageSystems is service/less, thusly doesnt require class-of-service as specified in Swordfish 1.1.0+
+        foreach ($StorageClass in $StorageClasses)
+        {   if ($StorageClass -like "StorageSystems")
+                {   $Links = Get-SwordFishStorageService -StorageServiceID $StorageServiceID
+                } else 
+                {   $Links = Get-SwordFishStorageSystem -SystemID $StorageSystemId
+                }
+            foreach($link in $Links)
             {   $SPsURI = $base + (($link).StoragePools).'@odata.id'
                 write-verbose "Opening URI SPsURI = $SPsURI"
                 $SPsData = invoke-restmethod2 -uri $SPsURI
@@ -51,6 +62,7 @@ function Get-SwordFishStoragePool{
                         {   write-verbose "++++Adding $SPData"
                             $SPsCol+=$SPData
             }   }       }
+        }
         return $SPsCol
     }
 }

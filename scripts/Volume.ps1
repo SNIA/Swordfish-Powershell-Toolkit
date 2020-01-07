@@ -4,11 +4,14 @@ function Get-SwordFishVolume{
     Retrieve The list of valid Volumes from the SwordFish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Volumes that exist across all of 
-    the Storage Services, unless a  specific Storage Service ID is used to limit it, or a specific 
+    the Storage Services and/or Storage Systems, unless a  specific Storage Services ID or Storage Systems ID is used to limit it, or a specific 
     Volume ID is directly requested. 
 .PARAMETER StorageServiceId
     The Storage Service ID name for a specific Storage Service, otherwise the command
-    will return Storage Groups for all Storage Services.
+    will return Volumes for all Storage Services and/or Storage Systems.
+.PARAMETER StorageSystemId
+    The Storage Service ID name for a specific Storage Service, otherwise the command
+    will return Volumes for all Storage Services and/or Storage Systems.
 .PARAMETER VolumeId
     The Storage Group ID will limit the returned data to the type specified, otherwise the command 
     will return all Volumes.
@@ -26,6 +29,7 @@ function Get-SwordFishVolume{
 [CmdletBinding()]
     param(
         [string] $StorageServiceID='',
+        [string] $StorageSystemID ='',
         
         [string] $VolumeId
     )

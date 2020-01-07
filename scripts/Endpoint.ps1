@@ -19,6 +19,8 @@ function Get-SwordFishEndpoint{
     .EXAMPLE
          Get-SwordFishEndpoint -StorageServiceId AC-102345
     .EXAMPLE
+         Get-SwordFishEndpoint -StorageSystemId AC-102345
+    .EXAMPLE
          Get-SwordFishEndpoint -StorageServiceId AC-102345 -EndpointRole Target
     .EXAMPLE
          Get-SwordFishEndpoint -EndpointRole Initiator
@@ -28,25 +30,33 @@ function Get-SwordFishEndpoint{
     [CmdletBinding()]
     param(
         [string] $StorageServiceID='',
+        [string] $StorageSystemID ='',
 
         [Validateset('Initiator','Target','')]
         [string] $EndPointRole=''
     )
     process{
         $EPsCol=@() 
-        foreach($link in (Get-SwordFishStorageService -StorageServiceID $StorageServiceID))
-            {   $EPsURI = $base + (($link).Endpoints).'@odata.id'
-                write-verbose "Opening URI EPsURI = $EPsURI"
-                $EPsData = invoke-restmethod2 -uri $EPsURI
-                $EPs = $EPsData.members
-                foreach ($EP in $EPs )
-                {   $EPuri = $Base+ ($EP.'@odata.id')
-                    write-verbose "Opening URI EPuri = $EPuri"
-                    $EPData = invoke-restmethod2 -uri $EPuri
-                    if  ( ( $EPData.EndpointRole -like $EndPointRole ) -or ( $EndPointRole -eq '') ) 
+        $StorageClasses=@("StorageSystems","StorageServices")
+        # This allows me to do a search first for the Non-Class of Service Swordfish, then do the search for Class-of-Service type swordfish.
+        # StorageSystems is service/less, thusly doesnt require class-of-service as specified in Swordfish 1.1.0+
+        foreach ($StorageClass in $StorageClasses)
+        {   if ($StorageClass -like "StorageSystems")
+                {   $Links = Get-SwordFishStorageService -StorageServiceID $StorageServiceID
+                } else 
+                {   $Links = Get-SwordFishStorageSystem -SystemID $StorageSystemId
+                }
+            foreach($link in $Links)
+                {   $EPsURI = $base + (($link).Endpoints).'@odata.id'
+                    write-verbose "Opening URI EPsURI = $EPsURI"
+                    $EPsData = invoke-restmethod2 -uri $EPsURI
+                    $EPs = $EPsData.members
+                    foreach ($EP in $EPs )
+                    {   $EPuri = $Base+ ($EP.'@odata.id')
+                        write-verbose "Opening URI EPuri = $EPuri"
+                        $EPData = invoke-restmethod2 -uri $EPuri
+                        if  ( ( $EPData.EndpointRole -like $EndPointRole ) -or ( $EndPointRole -eq '') ) 
                             {   $EPsCol+=$EPData
-                            }
-            }   }   
+        }        }   }      }  
         return $EPsCol
-    }
-}
+}   }

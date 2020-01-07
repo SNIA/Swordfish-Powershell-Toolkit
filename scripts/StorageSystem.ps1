@@ -6,7 +6,7 @@ function Get-SwordFishStorageSystem{
         This command will either return the a complete collection of 
         Storage System objects that exist or if a single Storage System is selected, 
         it will return only the single Storage System ID.
-    .PARAMETER StorageServiceId
+    .PARAMETER StorageSystemID
         The Storage System ID name for a specific Storage System, otherwise the command
         will return all Storage Systems.
     .EXAMPLE

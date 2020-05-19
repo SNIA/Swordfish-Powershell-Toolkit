@@ -3,12 +3,16 @@ function Get-SwordFishChassis{
 .SYNOPSIS
     Retrieve The list of valid Chassis' from the SwordFish Target.
 .DESCRIPTION
-    This command will either return the a complete collection of 
-    Chassis objects that exist or if a single Chassis ID is selected, 
-    it will return only the single Chassis ID.
+    This command will either return the a complete collection of Chassis objects that exist or if a single Chassis ID is selected, 
+    it will return only the single Chassis ID. Note that this command doesnt return the Chassis Collection, but instead returns a 
+    PowerShell Object that represents an Array of all of the Chassis that are in the Chassis collection. This default behavior 
+    can be overridden using parameter called "ReturnCollectionOnly" and setting that value to True
 .PARAMETER ChassisId
     The Chassis ID name for a specific Chassis, otherwise the command
     will return all Chassis.
+.PARAMETER ReturnCollectionOnly
+    A Boolean value that defaults to $False, will return a powershell array of the Chassis. To set this value true indicates that
+    instead you wish to see the raw Chassis Collection Object and not what the Chassis Collection points to.
 .EXAMPLE
     Get-SwordFishChassis
 .EXAMPLE
@@ -17,25 +21,32 @@ function Get-SwordFishChassis{
     https://redfish.dmtf.org/schemas/Chassis.v1_9_0.json
 #>   
 [CmdletBinding()]
-param   (  [string] $ChassisId
+param   (   [string]    $ChassisId,
+            [boolean]   $ReturnChassisCollectionOnly =   $False
         )
-process{$LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
-        write-verbose "Folder = $LocalUri"
-        $LocalData = invoke-restmethod2 -uri $LocalUri
-        # Now must find if this contains links or directly goes to members. Only one of these will exist, whichever one will be the one that survives this assignment.
-        $Links = (($LocalData).Links).Members + ($LocalData).Members
-        $LocalCol=@()
-        foreach($link in $Links)
-            {   $SingletonUri=($link).'@odata.id'
-                if ($SingletonUri) # needed to avoid an empty dataset getting inserted into collection
+process{
+    $LocalUri = Get-SwordfishURIFolderByFolder "Chassis"
+    write-verbose "Folder = $LocalUri"
+    $LocalData = invoke-restmethod2 -uri $LocalUri
+    # Now must find if this contains links or directly goes to members. Only one of these will exist, whichever one will be the one that survives this assignment.
+    $Links = (($LocalData).Links).Members + ($LocalData).Members
+    $LocalCol=@()
+    foreach($link in $Links)
+        {   $SingletonUri=($link).'@odata.id'
+            if ($SingletonUri) # needed to avoid an empty dataset getting inserted into collection
                 {   $Singleton=$base+$SingletonUri
                     $LocalChassis=invoke-restmethod2 -uri $Singleton
                     if ( ( ($LocalChassis).id -like $ChassisId ) -or ( $ChassisId -eq '' ) )
                         {   write-verbose "Adding singleton to collection"
                             $LocalCol+=$LocalChassis 
-            }    }      }
-        return $LocalCol
-}    }
+        }       }      }
+    if ( $ReturnChassisCollectionOnly )
+        {   return $LocalData
+        } else
+        {   return $LocalCol
+        }   
+    }
+}
 
 function Get-SwordFishChassisThermal{
 <#
@@ -75,8 +86,7 @@ process{
             $Singleton=$base+$SingletonUri
             $Thermals=$Singleton+"/Thermal"
             if  ( ( (invoke-restmethod2 -uri $Singleton).id -like $ChassisId ) -or ( $ChassisId -eq '' ) )
-                {   write-Verbose "Found Chassis"
-                    switch ($MetricName)
+                {   switch ($MetricName)
                     {   "Temperatures"  {   $ReturnSet=(invoke-restmethod2 -uri $Thermals).Temperatures
                                         }
                         "Fans"          {   $ReturnSet=(invoke-restmethod2 -uri $Thermals).Fans
@@ -128,13 +138,19 @@ process{
             $Singleton=$base+$SingletonUri
             $Power=$Singleton+"/Power"
             if  ( ( (invoke-restmethod2 -uri $Singleton).id -like $ChassisId ) -or ( $ChassisId -eq '' ) )
-                {   write-Verbose "Found Chassis"
-                    switch ($MetricName)
-                    {   "PowerControl"  {   $ReturnSet=(invoke-restmethod2 -uri $Power).PowerControl
+                {   switch ($MetricName)
+                    {   "PowerControl"  {   $PowerControlObj = (invoke-restmethod2 -uri $Power).PowerControl
+                                            $ReturnSet+=$PowerControlObj
                                         }
                         "Voltages"      {   $ReturnSet=(invoke-restmethod2 -uri $Power).Voltages
                                         }
-                        "PowerSupplies" {   $ReturnSet=(invoke-restmethod2 -uri $Power).PowerSupplies
+                        "PowerSupplies" {   $MyPowerSupplies = (invoke-restmethod2 -uri ($Power+'/PowerSupplies') )
+                                            $MyPSObj=@()
+                                            foreach( $MyPS in ($MyPowerSupplies).Members )
+                                            {   $MyPSURI= $MyPS.'@odata.id'
+                                                $MyPSObj+= (invoke-restmethod2 -uri ( $base+$MyPSURI ) )
+                                            }
+                                            $ReturnSet=$MyPSObj
                                         }
         }       }   } 
     return $ReturnSet

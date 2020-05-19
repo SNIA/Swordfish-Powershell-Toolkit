@@ -16,7 +16,7 @@
         [cmdletbinding()]
         param   (
             [Parameter(position=0)]
-            [string]$Target="192.168.1.229",
+            [string]$Target="192.168.1.201",
             
             [Parameter(position=1)]
             [string]$Port="5000"
@@ -192,7 +192,6 @@ function Invoke-Mockup
 }
 
 function Get-SwordFishODataTypeName 
-
 {   [cmdletbinding()]
     param   ( $DataObject
             )
@@ -213,8 +212,8 @@ function Get-SwordfishURIFolderByFolder
 {   [cmdletbinding()]
     param ( $Folder
           )
-
-    $GetRootLocation = invoke-restmethod2 -uri "$BaseUri"  
+    $GetRootLocation = invoke-restmethod2 -uri "$BaseUri" 
+     
     if ( ((($GetRootLocation).links).$($Folder)).'@odata.id')
         {   $FolderUri = $Base + ((($GetRootLocation).links).$($Folder)).'@odata.id'
         } else 

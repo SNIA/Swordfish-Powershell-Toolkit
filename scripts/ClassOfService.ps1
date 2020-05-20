@@ -1,3 +1,6 @@
+<# These will be re-enabled once we support Storage Services. For now the PowerShell Toolkit doesnt support ClassOfService.
+#>
+
 function Get-SwordFishClassOfService{
 <#
 .SYNOPSIS

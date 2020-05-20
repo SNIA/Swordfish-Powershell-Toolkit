@@ -68,13 +68,11 @@ Connect-SwordFishMockup
 Get-SwordFishChassis
 Get-SwordFishChassisPower
 Get-SwordFishChassisThermal
-Get-SwordFishClassOfService
-Get-SwordFishClassOfServiceLineOfService
 Get-SwordfishDrive
 Get-SwordFishEndpoint
-Get-SwordFishStorageGroup
-Get-SwordFishStoragePool
-Get-SwordFishStorageService
+Get-SwordFishConnection
+Get-SwordFishPool
+Get-SwordFishStorage
 Get-SwordFishVolume
 ```
 ### Alternate SwordFish Targets

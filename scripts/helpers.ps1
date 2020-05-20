@@ -1,22 +1,65 @@
 ﻿function Connect-SwordFishTarget {
-    <#
-    .SYNOPSIS
-        Connects to a SNIA SwordFish API enabled device.
-    .DESCRIPTION
-        Connect-SwordFishTarget is an advanced function that provides the initial connection to a SwordFish
-        so that other subsequent commands can be run without having to authenticate individually.
-        It is recommended to ignore the server certificate validation (-IgnoreServerCertificate param)
-    .PARAMETER Group
-        The DNS name or IP address of the SwordFish Target Device.
-    .EXAMPLE
-         Connect-SwordFish -Target 192.168.1.50 -port 5000
-    .NOTES
-        By default if the port is not given, it assumes port 5000, and if no hostname is given it assumes localhost.
-    #>
+<#
+.SYNOPSIS
+    Connects to a SNIA SwordFish API enabled device.
+.DESCRIPTION
+    Connect-SwordFishTarget is an advanced function that provides the initial connection to a SwordFish
+    so that other subsequent commands can be run without having to authenticate individually.
+.PARAMETER Target
+    The DNS name or IP address of the SwordFish Target Device.
+.PARAMETER Port
+    The DNS name or IP address of the SwordFish Target Device.
+.EXAMPLE
+    PS:> Connect-SwordFish -Target 192.168.1.50 -port 5000
+        
+    @odata.Copyright : Copyright 2020 HPE and DMTF
+    @odata.type      : #ServiceRoot.v1_3_0.ServiceRoot
+    @odata.id        : /redfish/v1
+    RedfishVersion   : 1.0.2
+    Id               : RootService
+    Name             : Root Service
+    Chassis          : @{@odata.id=/redfish/v1/Chassis}
+    Storage          : @{@odata.id=/redfish/v1/Storage}
+    AccountService   : @{@odata.id=/redfish/v1/AccountService}
+    EventService     : @{@odata.id=/redfish/v1/EventService}
+    LineOfService    : @{@odata.id=/redfish/v1/LineOfService}
+    Fabrics          : @{@odata.id=/redfish/v1/Fabrics}
+.EXAMPLE
+    Connect-SwordFish -Target 192.168.1.50 -port 5000 | ConvertTo-Json
+    
+    {
+        "@odata.Copyright":  "Copyright 2020 HPE and DMTF",
+        "@odata.type":  "#ServiceRoot.v1_3_0.ServiceRoot",
+        "@odata.id":  "/redfish/v1",
+        "RedfishVersion":  "1.0.2",
+        "Id":  "RootService",
+        "Name":  "Root Service",
+        "Chassis":  {
+                        "@odata.id":  "/redfish/v1/Chassis"
+                    },
+        "Storage":  {
+                        "@odata.id":  "/redfish/v1/Storage"
+                    },
+        "AccountService":  {
+                               "@odata.id":  "/redfish/v1/AccountService"
+                           },
+        "EventService":  {
+                             "@odata.id":  "/redfish/v1/EventService"
+                         },
+        "LineOfService":  {
+                              "@odata.id":  "/redfish/v1/LineOfService"
+                          },
+        "Fabrics":  {
+                        "@odata.id":  "/redfish/v1/Fabrics"
+                    }
+    }
+.NOTES
+    By default if the port is not given, it assumes port 5000, and if no hostname is given it assumes localhost.
+#>
         [cmdletbinding()]
         param   (
             [Parameter(position=0)]
-            [string]$Target="192.168.1.229",
+            [string]$Target="192.168.1.201",
             
             [Parameter(position=1)]
             [string]$Port="5000"
@@ -26,7 +69,7 @@
             $Global:RedFishRoot = "/redfish/v1/"
             $Global:BaseUri = $Base+$RedfishRoot
             $Global:MOCK = $false
-            Write-host "Base URI = $BaseUri"
+            Write-Verbose "Base URI = $BaseUri"
             Try     {   $ReturnData = invoke-restmethod -uri "$BaseUri" 
                     }
             Catch   {   $_
@@ -192,7 +235,6 @@ function Invoke-Mockup
 }
 
 function Get-SwordFishODataTypeName 
-
 {   [cmdletbinding()]
     param   ( $DataObject
             )
@@ -213,8 +255,8 @@ function Get-SwordfishURIFolderByFolder
 {   [cmdletbinding()]
     param ( $Folder
           )
-
-    $GetRootLocation = invoke-restmethod2 -uri "$BaseUri"  
+    $GetRootLocation = invoke-restmethod2 -uri "$BaseUri" 
+     
     if ( ((($GetRootLocation).links).$($Folder)).'@odata.id')
         {   $FolderUri = $Base + ((($GetRootLocation).links).$($Folder)).'@odata.id'
         } else 

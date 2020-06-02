@@ -50,32 +50,39 @@ All of the verbs are well known verbs and match the RestAPI CRUD (Create, Read, 
 ```powershell
 PS:> Get-Verb
 ```
-In each case, the SwordFish Noun refers to a Folder that has been made singular. i.e. StorageServices --> StorageService
-The Swordfish PowerShell module works with collections of objects. When you make a request for something like Storage Services, the commands will return an array of objects that represent each storage service. In these cases, you can limit the return to a specific storage service by specifying the storage service name to be returned:
+In each case, the SwordFish Noun refers to a Folder that has been made singular. i.e. StoragePools --> StoragePool
+The Swordfish PowerShell module works with collections of objects. When you make a request for something like Storage Pools, the commands will return an array of objects that represent each storage service. In these cases, you can limit the return to a specific storage service by specifying the storage service name to be returned:
 ```powershell
-PS:> Get-SwordFishStorageService -StorageServiceID 1
+PS:> Get-SwordFishStorage -StorageID 1
 ```
-9. To get subordinate information about an object, i.e to return information such as the power metrics for a chassis, additional commands have been added. The extra commands for this deeper information follow the naming scheme:
+9. To get the Collection that something like a Pool belongs to, you can now add to most commands the argument -ReturnCollectionOnly and set it to $True. The output from this will be the collection instead of end devices.
+```powershell
+PS:> Get-SwordFishStoragePool -StorageId 1 -ReturnCollectionOnly $True
+```
+10. To get subordinate information about an object, i.e to return information such as the power metrics for a chassis, additional commands have been added. The extra commands for this deeper information follow the naming scheme:
 ```<original_command><DetailNoun>```
 An example of this would be the Power or Thermal metrics gathered by the Chassis object. These each have three detailed objects (metrics) under each of these detailed nouns; i.e. Power has as metrics <PowerControl>,<PowerSupplies>, and <Voltages>. So the command for this would appear as such:
 ```powershell
   PS:> Get-SwordFishChassisPower -MetricName Voltages
 ``` 
+11. This item is only here because the number of items in this list should go to eleven. Just kidding, To obtain the raw JSON from a command for testing purposes, you can pipe the output of any powershell object to the built-in powershell Json converter.
+```powershell
+  PS:> Get-SwordfishStorage | ConvertTo-Json
+  
 The current list of supported cmdlets are:
 ```powershell
 Connect-SwordFishTarget
 Connect-SwordFishMockup
-Get-SwordFishChassis
-Get-SwordFishChassisPower
-Get-SwordFishChassisThermal
-Get-SwordFishClassOfService
-Get-SwordFishClassOfServiceLineOfService
+Get-SwordfishChassis
+Get-SwordfishChassisPower
+Get-SwordfishChassisThermal
+Get-SwordfishController
 Get-SwordfishDrive
-Get-SwordFishEndpoint
-Get-SwordFishStorageGroup
-Get-SwordFishStoragePool
-Get-SwordFishStorageService
-Get-SwordFishVolume
+Get-SwordfishEndpoint
+Get-SwordfishConnection
+Get-SwordfishPool
+Get-SwordfishStorage
+Get-SwordfishVolume
 ```
 ### Alternate SwordFish Targets
 

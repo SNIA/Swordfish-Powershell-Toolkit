@@ -1,78 +1,100 @@
 function Get-SwordFishDrive{
-    <#
-    .SYNOPSIS
-        Retrieve The list of valid Drives from the SwordFish Target.
-    .DESCRIPTION
-        This command will either return the a complete collection of 
-        Drives that exist across all of the Storage Services or Storage Systems, 
-        unless a specific Storage Service ID or Storage System ID is used to limit 
-        it, or a specific Drive ID is directly requested. 
-    .PARAMETER StorageServiceId
-        The Storage Service ID name for a specific Storage Service, otherwise the command
-        will return drives for all Storage Services and Storage Systems.
-    .PARAMETER StorageSystemId
-        The Storage System ID name for a specific Storage System, otherwise the command
-        will return drives for all Storage Systems and Storage Services.
-    .PARAMETER DriveId
-        The Drive ID will limit the returned data
-        to the type specified, otherwise the command will return all Drives.
-    .EXAMPLE
-         Get-SwordFishStorageDrive
-    .EXAMPLE
-         Get-SwordFishStorageDrive -StorageServiceId AC-102345
-    .EXAMPLE
-         Get-SwordFishStorageDrive -StorageSystemId AC-102345
-    .EXAMPLE
-         Get-SwordFishStorageDrive -StorageServiceId AC-102345 -DriveId 2
-    .EXAMPLE
-         Get-SwordFishStorageDrive -DriveId 1
-    .LINK
-        http://redfish.dmtf.org/schemas/swordfish/v1/Drive.v1_2_0.json
-    #>   
-    [CmdletBinding()]
+<#
+.SYNOPSIS
+    Retrieve The list of valid Drives from the SwordFish Target.
+.DESCRIPTION
+    This command will either return the a complete collection of Drives that exist across all of the Storage Systems, 
+    unless a specific Storage Service ID or Storage System IDof ChassisID is used to limit it, or a specific Drive ID is directly requested. 
+.PARAMETER StorageId
+    by default behavior of the command will return all drives connected to all chassis, this option
+    tells the command instead to only search for drives assigned to a specific Storage system. Assumes that the Storage ID contains a 
+    DriveCollection that points to all of its drives
+.PARAMETER ChassisId
+    The deafult behavior of the command will discover all chassisIDs and return all drives connected
+    to each ChassisID. By specifying a ChassisID you can filter the results to only present drives from 
+    a single specified ChassisID
+.PARAMETER DriveId
+    The Drive ID will limit the returned data to the single drive specified, otherwise the command will return all Drives.
+.EXAMPLE
+     Get-SwordFishStorageDrive
+.EXAMPLE
+     Get-SwordFishStorageDrive -ChassisId AC-102345
+.EXAMPLE
+     Get-SwordFishStorageDrive -StorageId AC-102345
+.EXAMPLE
+     Get-SwordFishStorageDrive -DriveId 1
+.LINK
+    http://redfish.dmtf.org/schemas/swordfish/v1/Drive.v1_2_0.json
+#>   
+    [CmdletBinding(DefaultParameterSetName='Default')]
     param(
-        [string] $StorageServiceID,
-        [string] $StorageSystemID,
-        [string] $DriveId
-    )
+        [Parameter(ParameterSetName='ByStorageID')] [string]    $StorageID,
 
+        [Parameter(ParameterSetName='ByChassisID')] [string]    $ChassisID,
+
+        [Parameter(ParameterSetName='ByStorageID')]
+        [Parameter(ParameterSetName='ByChassisID')]
+        [Parameter(ParameterSetName='Default')]     [string]    $DriveId,
+
+        [Parameter(ParameterSetName='ByStorageID')]
+        [Parameter(ParameterSetName='ByChassisID')] [boolean]   $ReturnDriveCollectionOnly =   $False
+    )
+    
     process
-    {   $StorageClasses=@("StorageSystems","StorageServices")
-        # This allows me to do a search first for the Non-Class of Service Swordfish, then do the search for Class-of-Service type swordfish.
-        # StorageSystems is service/less, thusly doesnt require class-of-service as specified in Swordfish 1.1.0+
-        $DsCol=@() 
-        foreach ($StorageClass in $StorageClasses)
-        {   $LocalUri = Get-SwordfishURIFolderByFolder "$StorageClass"
-            write-verbose "Folder = $LocalUri"
-            $LocalData = invoke-restmethod2 -uri $LocalUri
-            $SSsLinks = ($LocalData).Members
-            $SSsCol=@()
-            foreach($SS in $SSsLinks)
-            {   $SSRawUri=$(($SS).'@odata.id')
-                $SSUri=$base+$SSRawUri
-                $Data = invoke-restmethod2 -uri $SSUri
-                write-verbose "-+-+ Determining if the Storage Service is excluded by parameter"
-                if ( ( ( ($Data).id -like $StorageServiceId ) -or ( $StorageServiceId -eq '' ) ) -and ( (($Data).id -like $StorageSystemId )  -or ( $StorageSystemId -eq ''  ) )  )
-                    {   $DDrives=($Data).Drives
-                        write-verbose "Data Drives = $DDrives"
-                        $DRoot = (($Data).Drives).'@odata.id'
-                        $DsUri=$base+$DRoot
-                        write-verbose "-+-+ Obtaining the collection of drives $DsUri"
-                        $DsData = invoke-restmethod2 -uri $DsUri
-                        #write-host "DsData = $DsData"
-                        $Ds = $($DsData).Members
-                        #write-host "Ds = $Ds"
-                        foreach($D in $Ds)
-                        {   write-verbose "D = $D"
-                            $DRawUri=$(($D).'@odata.id')
-                            $DUri=$base+$DRawUri
-                            write-verbose "-+-+ Determining if the Drive should be excluded by parameter $DUri"
-                            try {   $DriveToAdd = invoke-RestMethod2 -uri $DUri
-                                    if ( ( ($DriveToAdd).id -like $DriveId) -or ( $DriveId -eq '' ) )             
-                                    {   $DsCol+=$DriveToAdd
+    {   $FullDriveCollection=@()
+        if ( -not $StorageID )
+            {   $ChassisUri = Get-SwordfishURIFolderByFolder "Chassis"
+                write-verbose "Folder = $ChassisUri"
+                $ChassisData = invoke-restmethod2 -uri $ChassisUri
+                # Search for the drives by detecting them from /redfish/v1/Chassis/{id}/Drives
+                foreach($Chas in ($ChassisData).Members )
+                    {   write-host "Walking the Chassis's"
+                        $MyChasObj = $Chas.'@odata.id'
+                        $MyChasSplit = $MyChasObj.split('/')
+                        $MyChasName= $MyChasSplit[ ($MyChasSplit.Length -1 ) ]
+                        write-host "Chassis = $MyChasName"
+                        $DriveCol = Invoke-RestMethod2 -uri ( $base + ($Chas).'@odata.id' + '/Drives' )
+            
+                        foreach( $Drive in ( $DriveCol).Members )
+                            {   $MyDriveURI =   $Drive.'@odata.id'
+                                $MyDrive    =   Invoke-RestMethod2 -uri ( $base + $MyDriveURI ) 
+                                if( ( $ByChassisID -eq $MyChasName ) -or ( -not $ByChassisID ) )
+                                    {   # Only add the resulting drive if the Chassis ID matches or was not set.
+                                        if ( ( $MyDrive.id -like $DriveID) -or ( -not $DriveID ))
+                                            {   # Only add the resulting drive if the Drive ID matches or was not set
+                                                $FullDriveCollection += $MyDrive
+                                            }
                                     }
+                            }
+                    }
+            } else 
+            {   $StorageUri = Get-SwordfishURIFolderByFolder "Storage"
+                write-verbose "Folder = $StorageUri"
+                $StorageData = invoke-restmethod2 -uri $ChassisUri
+                foreach($Stor in ($StorageData).Members )
+                {   write-host "Walking the StorageID's"
+                    $MyStorObj = $Stor.'@odata.id'
+                    $MyStorSplit = $MyStorObj.split('/')
+                    $MyStorageName= $MyStorSplit[ ($MyStorSplit.Length -1 ) ]
+                    write-host "Storage = $MyStorageName"
+                    $DriveCol = Invoke-RestMethod2 -uri ( $base + ($Stor).'@odata.id' + '/Drives' )
+                    foreach( $Drive in ( $DriveCol).Members )
+                        {   $MyDriveURI =   $Drive.'@odata.id'
+                            $MyDrive    =   Invoke-RestMethod2 -uri ( $base + $MyDriveURI ) 
+                            if( ( $ByStorageID -eq $MyStorName ) -or ( -not $ByStorageID ) )
+                                {   # Only add the resulting drive if the Storage ID matches or was not set.
+                                    if ( ( $MyDrive.id -like $DriveID) -or ( -not $DriveID ))
+                                        {   # Only add the resulting drive if the Drive ID matches or was not set
+                                            $FullDriveCollection += $MyDrive
+                                        }
                                 }
-                            catch{  write-verbose "-+-+ No Drives found on this system"
-        }   }       }   }        } 
-        return $DsCol
-}   }
+                        }
+                } 
+            }
+        if ( $ReturnDriveCollectionOnly )
+            {   return $DriveCol
+            } else 
+            {    return $FullDriveCollection
+            }
+    }
+}

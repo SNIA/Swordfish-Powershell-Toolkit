@@ -44,7 +44,7 @@ function Get-SwordFishEndpoint{
     Status             : @{State=Disabled; Health=Warning}
 
 .EXAMPLE 
-    PS:> Get-SwordhfishEndpoint | Format-Table Name,'@odata.id', Description
+    PS:> Get-SwordfishEndpoint | Format-Table Name,'@odata.id', Description
     Name                 @odata.id                                                                          Description
     ----                 ---------                                                                          -----------
     active_eth1          /redfish/v1/Fabrics/AC-109032/Endpoints/active_eth1                                active configuration, Port named eth1. iSCSI Target.
@@ -58,15 +58,15 @@ function Get-SwordFishEndpoint{
     Q-IQN                /redfish/v1/Fabrics/AC-109032/Endpoints/0b2b4bd8361b856bbc000000000000000000000010 Device named Q-IQN. Registered iSCSI Initiator.
     Borg-IQN             /redfish/v1/Fabrics/AC-109032/Endpoints/0b2b4bd8361b856bbc000000000000000000000011 Device named Borg-IQN. Registered iSCSI Initiator.
 .EXAMPLE
-    Get-SwordFishEndpoint -StorageId AC-102345
+    Get-SwordfishEndpoint -StorageId AC-102345
 
     { Output is the same as Example 1, since this target only represents a single target swordifsh device }
 .EXAMPLE
-    Get-SwordFishEndpoint -FabricId AC-102345
+    Get-SwordfishEndpoint -FabricId AC-102345
 
     { Output is the same as Example 1, since this target only represents a single fabric which houses endpoint devices }
 .EXAMPLE
-    Get-SwordFishEndpoint -EndpointId active_eth1
+    Get-SwordfishEndpoint -EndpointId active_eth1
 
     @Redfish.Copyright : Copyright 2020 HPE and DMTF
     @odata.id          : /redfish/v1/Fabrics/AC-109032/Endpoints/active_eth1
@@ -79,7 +79,7 @@ function Get-SwordFishEndpoint{
     Id                 :
     Status             : @{State=Disabled; Health=Warning}
 .EXAMPLE
-    Get-SwordFishEndpoint -EndpointId active_eth1 | ConvertTo-Json
+    Get-SwordfishEndpoint -EndpointId active_eth1 | ConvertTo-Json
 
     {
         "@Redfish.Copyright":  "Copyright 2020 HPE and DMTF",
@@ -106,7 +106,7 @@ function Get-SwordFishEndpoint{
                    }
     }
 .EXAMPLE
-    Get-SwordFishEndpoint -ReturnCollectionOnly $True
+    Get-SwordfishEndpoint -ReturnCollectionOnly $True
 
     @Redfish.Copyright  : Copyright 2020 HPE and DMTF
     @odata.id           : /redfish/v1/Fabrics/AC-109032/Endpoints

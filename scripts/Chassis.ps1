@@ -1,4 +1,5 @@
-function Get-SwordFishChassis{
+function Get-SwordFishChassis
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Chassis' from the SwordFish Target.
@@ -109,7 +110,8 @@ process{
     }
 }
 
-function Get-SwordFishChassisThermal{
+function Get-SwordFishChassisThermal
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Chassis' Thermal sensors from the SwordFish Target Chassis.
@@ -237,7 +239,8 @@ process{
     }
 }
 
-function Get-SwordfishChassisPower{
+function Get-SwordfishChassisPower
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Chassis' Power sensors from the SwordFish Target Chassis.

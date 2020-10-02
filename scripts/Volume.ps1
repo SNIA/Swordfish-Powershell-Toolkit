@@ -26,6 +26,7 @@ function Get-SwordFishVolume{
 #>   
 [CmdletBinding()]
     param(  [string]    $StorageId,
+            [string]    $StorageServicesId,
             [string]    $VolumeId,
             [boolean]   $ReturnCollectionOnly   =   $False
         )

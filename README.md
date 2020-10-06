@@ -24,7 +24,10 @@ PS:> Get-Module -Name SNIASwordFish
 ```
 4. Once the module has been loaded a connect to a Swordfish Target using:
 ```powershell
-Connect-SwordfishTarget
+Connect-SwordfishTarget -target 192.168.1.100 -protocol https
+
+5. If your storage device requires an Autorization token, you can use the following command to obtain or populate this token. Once this token has been gathered, all further commands will attempt to use the token by default in the rest method header. 
+Get-SwordfishSessionToken -target 192.168.1.100 -protocol https -Username chris -password P@ssw0rd!
 ```
 This command will set the various global variables that other commands need to operate
 ```powershell
@@ -50,39 +53,36 @@ All of the verbs are well known verbs and match the RestAPI CRUD (Create, Read, 
 ```powershell
 PS:> Get-Verb
 ```
-In each case, the SwordFish Noun refers to a Folder that has been made singular. i.e. StoragePools --> StoragePool
-The Swordfish PowerShell module works with collections of objects. When you make a request for something like Storage Pools, the commands will return an array of objects that represent each storage service. In these cases, you can limit the return to a specific storage service by specifying the storage service name to be returned:
+In each case, the SwordFish Noun refers to a Folder that has been made singular. i.e. StorageServices --> StorageService
+The Swordfish PowerShell module works with collections of objects. When you make a request for something like Storage Services, the commands will return an array of objects that represent each storage service. In these cases, you can limit the return to a specific storage service by specifying the storage service name to be returned:
 ```powershell
-PS:> Get-SwordFishStorage -StorageID 1
+PS:> Get-SwordFishStorageService -StorageServiceID 1
 ```
-9. To get the Collection that something like a Pool belongs to, you can now add to most commands the argument -ReturnCollectionOnly and set it to $True. The output from this will be the collection instead of end devices.
-```powershell
-PS:> Get-SwordFishStoragePool -StorageId 1 -ReturnCollectionOnly $True
-```
-10. To get subordinate information about an object, i.e to return information such as the power metrics for a chassis, additional commands have been added. The extra commands for this deeper information follow the naming scheme:
+9. To get subordinate information about an object, i.e to return information such as the power metrics for a chassis, additional commands have been added. The extra commands for this deeper information follow the naming scheme:
 ```<original_command><DetailNoun>```
 An example of this would be the Power or Thermal metrics gathered by the Chassis object. These each have three detailed objects (metrics) under each of these detailed nouns; i.e. Power has as metrics <PowerControl>,<PowerSupplies>, and <Voltages>. So the command for this would appear as such:
 ```powershell
   PS:> Get-SwordFishChassisPower -MetricName Voltages
 ``` 
-11. This item is only here because the number of items in this list should go to eleven. Just kidding, To obtain the raw JSON from a command for testing purposes, you can pipe the output of any powershell object to the built-in powershell Json converter.
-```powershell
-  PS:> Get-SwordfishStorage | ConvertTo-Json
-  
 The current list of supported cmdlets are:
 ```powershell
 Connect-SwordFishTarget
 Connect-SwordFishMockup
-Get-SwordfishChassis
-Get-SwordfishChassisPower
-Get-SwordfishChassisThermal
+Get-SwordfishSessionToken
+Get-SwordFishChassis
+Get-SwordFishChassisPower
+Get-SwordFishChassisThermal
+Get-SwordfishConnection
 Get-SwordfishController
 Get-SwordfishDrive
-Get-SwordfishEndpoint
-Get-SwordfishConnection
-Get-SwordfishPool
-Get-SwordfishStorage
+Get-SwordFishEndpoint
+Get-SwordfishGroup
+Get-SwordFishPool
+Get-SwordFishStorage
+Get-SwordFishStorageService
+Get-SwordfishSystem
 Get-SwordfishVolume
+Get-SwordfishZone
 ```
 ### Alternate SwordFish Targets
 

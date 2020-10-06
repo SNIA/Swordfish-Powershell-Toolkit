@@ -1,4 +1,5 @@
-function Get-SwordFishEndpoint{
+function Get-SwordFishEndpoint
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Endpoint from the SwordFish Target.
@@ -44,7 +45,7 @@ function Get-SwordFishEndpoint{
     Status             : @{State=Disabled; Health=Warning}
 
 .EXAMPLE 
-    PS:> Get-SwordfishEndpoint | Format-Table Name,'@odata.id', Description
+    PS:> Get-SwordhfishEndpoint | Format-Table Name,'@odata.id', Description
     Name                 @odata.id                                                                          Description
     ----                 ---------                                                                          -----------
     active_eth1          /redfish/v1/Fabrics/AC-109032/Endpoints/active_eth1                                active configuration, Port named eth1. iSCSI Target.
@@ -58,15 +59,15 @@ function Get-SwordFishEndpoint{
     Q-IQN                /redfish/v1/Fabrics/AC-109032/Endpoints/0b2b4bd8361b856bbc000000000000000000000010 Device named Q-IQN. Registered iSCSI Initiator.
     Borg-IQN             /redfish/v1/Fabrics/AC-109032/Endpoints/0b2b4bd8361b856bbc000000000000000000000011 Device named Borg-IQN. Registered iSCSI Initiator.
 .EXAMPLE
-    Get-SwordfishEndpoint -StorageId AC-102345
+    Get-SwordFishEndpoint -StorageId AC-102345
 
     { Output is the same as Example 1, since this target only represents a single target swordifsh device }
 .EXAMPLE
-    Get-SwordfishEndpoint -FabricId AC-102345
+    Get-SwordFishEndpoint -FabricId AC-102345
 
     { Output is the same as Example 1, since this target only represents a single fabric which houses endpoint devices }
 .EXAMPLE
-    Get-SwordfishEndpoint -EndpointId active_eth1
+    Get-SwordFishEndpoint -EndpointId active_eth1
 
     @Redfish.Copyright : Copyright 2020 HPE and DMTF
     @odata.id          : /redfish/v1/Fabrics/AC-109032/Endpoints/active_eth1
@@ -79,7 +80,7 @@ function Get-SwordFishEndpoint{
     Id                 :
     Status             : @{State=Disabled; Health=Warning}
 .EXAMPLE
-    Get-SwordfishEndpoint -EndpointId active_eth1 | ConvertTo-Json
+    Get-SwordFishEndpoint -EndpointId active_eth1 | ConvertTo-Json
 
     {
         "@Redfish.Copyright":  "Copyright 2020 HPE and DMTF",
@@ -106,7 +107,7 @@ function Get-SwordFishEndpoint{
                    }
     }
 .EXAMPLE
-    Get-SwordfishEndpoint -ReturnCollectionOnly $True
+    Get-SwordFishEndpoint -ReturnCollectionOnly $True
 
     @Redfish.Copyright  : Copyright 2020 HPE and DMTF
     @odata.id           : /redfish/v1/Fabrics/AC-109032/Endpoints
@@ -118,79 +119,81 @@ function Get-SwordFishEndpoint{
 .LINK
     http://redfish.dmtf.org/schemas/swordfish/v1/Endpoint.v1_2_0.json
 #>   
-    [CmdletBinding()]
-    param(
-        [string]    $StorageId,
-        [string]    $FabricId,
-        [string]    $EndpointId,
-        [boolean]   $ReturnCollectionOnly   =   $False
-    )
-    process{
-        $FullEndpointCollection=@()
-        if ( -not $StorageID )
-            {   $FabricUri = Get-SwordfishURIFolderByFolder "Fabrics"
-                write-verbose "Folder = $FabricUri"
-                $FabricsData = invoke-restmethod2 -uri $FabricUri
-                # Search for the Endpoints by detecting them from /redfish/v1/Fabrics/{id}/Drives
-                foreach($Fabric in $FabricsData.Members )
-                    {   write-verbose "Walking the Fabrics"
-                        $MyFabricObj    = $Fabric.'@odata.id'
-                        $MyFabricSplit  = $MyFabricObj.split('/')
-                        $MyFabricName   = $MyFabricSplit[ ($MyFabricSplit.Length -1 ) ]
-                        write-verbose "Fabric = $MyFabricName"
-                        $EndpointsCol = Invoke-RestMethod2 -uri ( $base + $MyFabricObj + '/Endpoints' )
-                        foreach( $Endpoint in ( $EndpointsCol).Members )
-                            {   $MyEndpointURI     =   $Endpoint.'@odata.id'
-                                $MyEndpoint        =   Invoke-RestMethod2 -uri ( $base + $MyEndpointURI )
-                                $MyEndpointSplit   =   $MyEndpointURI.split('/')
-                                $MyEndpointName    =   $MyEndpointSplit[ ( $MyEndpointSplit.length -1) ] 
-                                if( ( $FabricID -eq $MyFabricName ) -or ( -not $FabricID ) )
-                                    {   # Only add the resulting drive if the Chassis ID matches or was not set.
-                                        if ( ( $MyEndpointName -like $EndpointID) -or ( -not $EndpointID ))
-                                            {   # Only add the resulting drive if the Drive ID matches or was not set
-                                                $FullEndpointCollection += $MyEndpoint
-                                                $ReturnOnlyColl = $EndpointsCol
-                                            }
-                                    }
-                            }
-                    }
-            } else 
-            {   $StorageUri = Get-SwordfishURIFolderByFolder "Storage"
-                write-verbose "Folder = $StorageUri"
-                $StorageData = invoke-restmethod2 -uri $StorageUri
-                foreach($Stor in ($StorageData).Members )
-                {   write-verbose "Walking the StorageID's"
-                    $MyStorObj = $Stor.'@odata.id'
-                    $MyStorSplit = $MyStorObj.split('/')
-                    $MyStorageName= $MyStorSplit[ ( $MyStorSplit.Length -1 ) ]
-                    write-verbose "Storage = $MyStorageName"
-                    # Now I need to explore the link from the actual storage device, since the Endpoints likely point somewhere else. I need to follow the other location.
-                    $MyStorage = Invoke-RestMethod2 -uri ( $base + $MyStorObj )
-                    $MyEndpointCollectionlocation = ($MyStorage.Endpoints)
-                    write-verbose "My Endpoint Collection Location = $MyEndpointCollectionLocation"
-                    $EndpointsCol = Invoke-RestMethod2 -uri ( $base + $MyEndpointCollectionLocation )
-                    foreach( $Endpoint in ( $EndpointsCol).Members )
-                        {   $MyEndpointURI =   $Endpoint.'@odata.id'
-                            $MyEndpoint    =   Invoke-RestMethod2 -uri ( $base + $MyEndpointURI )
-                            $MyEndpointSplit = $MyEndpointURI.split('/')
-                            $MyEndpointName =   $MyEndpointSplit[ ( $MyEndpointSplit.length -1) ] 
-                            write-verbose "Endpoint Name = $MyEndpointName"
-                            if( ( $StorageID -eq $MyStorageName ) -or ( -not $StorageID ) )
-                                {   # Only add the resulting drive if the Storage ID matches or was not set.
-                                    if ( ( $MyEndpointName -like $EndpointID) -or ( -not $EndpointID ))
-                                        {   # Only add the resulting drive if the Drive ID matches or was not set
-                                            $FullEndpointCollection += $MyEndpoint
-                                            $ReturnOnlyColl = $EndpointsCol
-                                        }
-                                }
-                        }
-                } 
-            }
-        if ( $ReturnCollectionOnly )
-            {       return $ReturnOnlyColl
-            } else 
-            {       return $FullEndpointCollection
-            }
-    }
-}
+[CmdletBinding(DefaultParameterSetName='Default')]
+param(  [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,
+        [Parameter(ParameterSetName='ByStorageServiceID')]  [string]    $StorageServiceID,
+        [Parameter(ParameterSetName='ByFabricID')]          [string]    $FabricID,
 
+        [Parameter(ParameterSetName='ByStorageID')]
+        [Parameter(ParameterSetName='ByStorageServiceID')]
+        [Parameter(ParameterSetName='ByFabricID')]
+        [Parameter(ParameterSetName='Default')]             [string]    $EndpointId,
+
+        [Parameter(ParameterSetName='ByStorageServiceID')]
+        [Parameter(ParameterSetName='ByStorageID')]        
+        [Parameter(ParameterSetName='ByFabricID')]        
+        [Parameter(ParameterSetName='Default')]             [boolean]   $ReturnCollectionOnly =   $False
+     )
+process{
+    $FullEPCollection=@()
+    $FullEPCollectionOnly=@()
+    switch ($PSCmdlet.ParameterSetName )
+    {     'Default'           { $DefEPCol     = @()
+                                $DefEPColOnly = @()
+                                # foreach ( $FabID in (Get-SwordfishFabric).id )
+                                #{   $DefEPCol        += Get-SwordfishEndpoint -FabricID $FabID
+                                #    $DefEPColOnly    += Get-SwordfishEndpoint -FabricID $FabID -ReturnCollectionOnly $True
+                                #}
+                                foreach ( $StorID in (Get-SwordfishStorage).id )
+                                {   $DefEPCol        += Get-SwordfishEndpoint -StorageID $StorID
+                                    $DefEPColOnly    += Get-SwordfishEndpoint -StorageID $StorID -ReturnCollectionOnly $True
+                                }
+                                foreach ( $SSID in (Get-SwordfishStorageServices).id )
+                                {   $DefEPCol        += Get-SwordfishEndpoint -StorageServiceID $SSID
+                                    $DefEPColOnly    += Get-SwordfishEndpoint -StorageServiceID $SSID -ReturnCollectionOnly $True
+                                }
+                                if ( $ReturnCollectionOnly )
+                                {   return ($DefEPColOnly | get-unique)
+                                } else 
+                                {   if ( $EndpointID )
+                                    {   return ( $DefEPCol | where-object {$_.id -eq $EndpointId} ) 
+                                    } else 
+                                    {   return $DefEPCol
+                                    }
+                                } 
+                            }
+        'ByStorageServiceID'{   $PulledData = Get-SwordfishStorageServices -StorageID $StorageServiceID
+                            }
+        'ByStorageID'       {   $PulledData = Get-SwordfishStorage -StorageID $StorageID
+                            }
+        # 'ByFabricID'        {   $PulledData = Get-SwordfishFabric -FabricID $FabricID
+    }
+    $FullEPCollectionOnly  =@()
+    $FullEPCollection     =@()
+    if ( $PSCmdlet.ParameterSetName -ne 'Default' )
+        {   $MemberSet = $PulledData.Endpoints
+            foreach ( $EPorEPC in $Memberset )
+                {   $EPColOrEP = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
+                    if ( -not $EPColOrEP.Members ) 
+                        {   $EPMemberOrCollection = $MemberSet
+                        } else 
+                        {   $EPMemberOrCollection = $EPColOrEP.Members    
+                        }
+                    foreach ( $MyEPData in $EPMemberOrCollection )
+                        {   $MyEP      = Invoke-RestMethod2 -uri ( $base + ($MyEPData.'@odata.id') )
+                            $FullEPCollectionOnly  += $EPColOrEP
+                            $FullEPCollection      += $MyEP
+                        }
+                }
+            if ( $ReturnCollectionOnly )
+                {   return $FullEPCollectionOnly
+                } else 
+                {   if ( $EndpointID)
+                        {   return $FullEPCollection | where-object { $_.id -eq $EndpointID }
+                        } else 
+                        {   return $FullEPCollection
+                        }            
+                }
+        }
+}
+}

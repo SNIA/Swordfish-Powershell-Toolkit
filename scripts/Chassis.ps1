@@ -1,4 +1,5 @@
-function Get-SwordFishChassis{
+function Get-SwordFishChassis
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Chassis' from the SwordFish Target.
@@ -109,7 +110,8 @@ process{
     }
 }
 
-function Get-SwordFishChassisThermal{
+function Get-SwordFishChassisThermal
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Chassis' Thermal sensors from the SwordFish Target Chassis.
@@ -140,64 +142,19 @@ function Get-SwordFishChassisThermal{
     ReadingCelsius  : 26
     PhysicalContext : ChassisSocketA_left-side backplane
 .EXAMPLE
-    PS:> Get-SwordfishChassisThermal -ChassisID AC109032 -MetricName Fans
+    Get-SwordFishChassisThermal -ChassisId enclosure_1 -MetricName Fans
 
-    @odata.id       : /redfish/v1/Chassis/AC-109032/Thermal#/Fans/1
-    MemberId        : 1
-    Name            : fan1
-    Status          : @{State=Enabled; Health=OK}
-    ReadingRPM      : 11220
-    PhysicalContext : ChassisSocketA_lower front of controller A
+    @odata.id : /redfish/v1/Chassis/enclosure_1/Thermal#/Fans/0
+    MemberId  : 0
+    Reading   : 4740
+    Name      : Fan 1
+    Status    : @{State=Enabled; Health=OK}
 
-    @odata.id       : /redfish/v1/Chassis/AC-109032/Thermal#/Fans/2
-    MemberId        : 2
-    Name            : fan2
-    Status          : @{State=Enabled; Health=OK}
-    ReadingRPM      : 11220
-    PhysicalContext : ChassisSocketA_lower left rear of controller A
-.EXAMPLE
-    PS:> Get-SwordfishChassisThermal -ChassisID AC109032 -MetricName Fans | Format-Table '@odata.id', MemberId, Name, ReadingRPM, PhysicalContext
-
-    @odata.id                                      MemberId Name ReadingRPM     PhysicalContext
-    ---------                                      -------- ---- -------------- ---------------
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/1         1 fan1          11220 ChassisSocketA_lower front of controller A 
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/2         2 fan2          11237 ChassisSocketA_lower left rear of controller A
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/3         3 fan3          11611 ChassisSocketA_lower right rear of controller A
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/4         4 fan4          10829 ChassisSocketA_upper right front of controller A
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/5         5 fan5          10982 ChassisSocketA_upper left front of controller A
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/6         6 fan6          10693 ChassisSocketA_upper left rear of controller A
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/7         7 fan1          11466 ChassisSocketB_lower front of controller B
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/8         8 fan2          11313 ChassisSocketB_lower left rear of controller B
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/9         9 fan3          11050 ChassisSocketB_lower right rear of controller B
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/10       10 fan4          10914 ChassisSocketB_upper right front of controller B
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/11       11 fan5          10650 ChassisSocketB_upper left front of controller B
-    /redfish/v1/Chassis/AC-109032/Thermal#/Fans/12       12 fan6          10829 ChassisSocketB_upper left rear of controller B
-.EXAMPLE
-    PS:> Get-SwordfishChassisThermal -ChassisID AC109032 -MetricName Fans | ConvertTo-Json
-    [
-        {
-            "@odata.id":  "/redfish/v1/Chassis/AC-109032/Thermal#/Fans/1",
-            "MemberId":  1,
-            "Name":  "fan1",
-            "Status":  {
-                           "State":  "Enabled",
-                           "Health":  "OK"
-                       },
-            "ReadingCelsius":  11211,
-            "PhysicalContext":  "ChassisSocketA_lower front of controller A"
-        },
-        {
-            "@odata.id":  "/redfish/v1/Chassis/AC-109032/Thermal#/Fans/2",
-            "MemberId":  2,
-            "Name":  "fan2",
-            "Status":  {
-                           "State":  "Enabled",
-                           "Health":  "OK"
-                       },
-            "ReadingCelsius":  11245,
-            "PhysicalContext":  "ChassisSocketA_lower left rear of controller A"
-        }
-    ]
+    @odata.id : /redfish/v1/Chassis/enclosure_1/Thermal#/Fans/1
+    MemberId  : 1
+    Reading   : 4680
+    Name      : Fan 2
+    Status    : @{State=Enabled; Health=OK}
 .LINK
     https://redfish.dmtf.org/schemas/Chassis.v1_9_0.json
 #>   
@@ -232,12 +189,13 @@ process{
                     }
                 } 
         }
-    return $ReturnSet
+    return ( $ReturnSet | get-unique )
 
     }
 }
 
-function Get-SwordfishChassisPower{
+function Get-SwordfishChassisPower
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Chassis' Power sensors from the SwordFish Target Chassis.

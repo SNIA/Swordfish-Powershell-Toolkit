@@ -8,13 +8,14 @@
 . $PSScriptRoot\scripts\Volume.ps1
 . $PSScriptRoot\scripts\Drive.ps1
 . $PSScriptRoot\scripts\Zone.ps1
-# . $PSScriptRoot\scripts\ClassOfService.ps1
+. $PSScriptRoot\scripts\Sesson.ps1
+. $PSScriptRoot\scripts\System.ps1
 
 
-Export-ModuleMember -Function       Connect-SwordfishTarget,        Connect-SwordfishMockup,
+Export-ModuleMember -Function       Connect-SwordfishTarget,        Connect-SwordfishMockup,    Get-SwordfishSessionToken,
     Get-SwordfishChassis,           Get-SwordfishChassisThermal,    Get-SwordfishChassisPower, 
-    Get-SwordfishStorage, 
-    Get-SwordfishEndpoint, 
+    Get-SwordfishStorage,           Get-SwordfishSystem,            Get-SwordfishGroup,
+    Get-SwordfishEndpoint,          Get-SwordfishFabric,
     Get-SwordfishPool, 
     Get-SwordfishConnection, 
     Get-SwordfishVolume,
@@ -24,4 +25,5 @@ Export-ModuleMember -Function       Connect-SwordfishTarget,        Connect-Swor
     Invoke-SwordfishDependancySeleniumCheck,
     Invoke-SwordfishDependancyChromeCheck,
     Get-SwordfishStorage,
+    Get-SwordFishStorageServices,
     StripHTMLCode

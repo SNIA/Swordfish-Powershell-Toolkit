@@ -5,64 +5,134 @@ function Get-SwordFishVolume{
 .DESCRIPTION
     This command will either return the a complete collection of Volumes that exist across all of 
     the Storage Services and/or Storage Systems, unless a  specific Storage Services ID or Storage Systems ID is used to limit it, or a specific 
-    Volume ID is directly requested. 
+    Volume ID is directly requested. It will search the following locations; /refish/v1/Storage/id/volumes, /refish/v1/StorageServices/id/volumes,
+    /redfish/v1/Storage/id/StoragePools/id/Volumes, and /redfish/v1/StorageServices/id/StoragePools/id/Volumes
 .PARAMETER StorageId
-    The Storage Service ID name for a specific Storage Service, otherwise the command
-    will return Volumes for all Storage Services and/or Storage Systems.
+    The Storage ID name for a specific Storage System, otherwise the command
+    will return Volumes for all Storage Services and/or Storage Systems and all pools.
+.PARAMETER StorageServiceId
+    The StorageService ID name for a specific Storage Service, otherwise the command
+    will return Volumes for all Storage Services and/or Storage Systems and all pools.
+.PARAMETER PoolId
+    The Storage Pool ID name for a specific Storage Service or Storage System, otherwise the command
+    will return Volumes for all pools within all of the Storage Services and/or Storage Systems.
 .PARAMETER VolumeId
     The Storage Group ID will limit the returned data to the type specified, otherwise the command will return all Volumes.
 .PARAMETER ReturnCollectioOnly
     This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishStorageVolume
+    Get-SwordFishVolume
 .EXAMPLE
-    Get-SwordFishStorageVolume -StorageId AC-102345
+    Get-SwordFishVolume -StorageId AC-102345
 .EXAMPLE
-    Get-SwordFishStorageVolume -VolumeId 1
+    Get-SwordFishVolume -VolumeId 00c0ff50437d000052ab465f01000000
 .EXAMPLE
-    Get-SwordFishStorageVolume -ReturnCollectionOnly    
+    Get-SwordFishVolume -StorageServiceID S1 -VolumeId 00c0ff50437d000052ab465f01000000
+
+    @odata.context           : /redfish/v1/$metadata#Volume.Volume
+    @odata.id                : /redfish/v1/StorageServices/S1/Volumes/00c0ff50437d000052ab465f01000000
+    @odata.type              : #Volume.v1_4_0.Volume
+    Id                       : 00c0ff50437d000052ab465f01000000
+    Name                     : Crush50
+    Manufacturer             : HPE
+    BlockSizeBytes           : 512
+    CapacityBytes            : 49996103680
+    AccessCapabilities       : {Read, Write}
+    RemainingCapacityPercent : 99
+    Encrypted                : True
+    EncryptionTypes          : {NativeDriveEncryption}
+    IOStatistics             : @{ReadHitIORequests=881; ReadIOKiBytes=11952; WriteHitIORequests=1055; WriteIOKiBytes=386842}
+    Capacity                 : @{Data=}
+    Status                   : @{State=Enabled; Health=OK}
+    CapacitySources          : {@{@odata.id=/redfish/v1/StorageServices/S1/Volumes/00c0ff50437d000052ab465f01000000#/CapacitySources/0; @odata.type=#Capacity.v1_1_2.CapacitySource; Id=00c0ff50437d000052ab465f01000000; Name=Crush50; ProvidingPools=}}
+.EXAMPLE
+    Get-SwordFishVolume -ReturnCollectionOnly $True
+
+    @odata.context      : /redfish/v1/$metadata#VolumeCollection.VolumeCollection
+    @odata.type         : #VolumeCollection.VolumeCollection
+    @odata.id           : /redfish/v1/StorageServices/S1/Volumes
+    Name                : Volume Collection
+    Members@odata.count : 2
+    Members             : {@{@odata.id=/redfish/v1/StorageServices/S1/Volumes/00c0ff50437d0000d9c73e5f01000000}, @{@odata.id=/redfish/v1/StorageServices/S1/Volumes/00c0ff50437d000052ab465f01000000}}
 .LINK
     http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_2_0.json
 #>   
-[CmdletBinding()]
-    param(  [string]    $StorageId,
-            [string]    $VolumeId,
-            [boolean]   $ReturnCollectionOnly   =   $False
+[CmdletBinding(DefaultParameterSetName='Default')]
+param(      [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,
+            [Parameter(ParameterSetName='ByStorageServiceID')]  [string]    $StorageServiceID,
+            [Parameter(ParameterSetName='ByStoragePoolID')]     [string]    $StoragePoolID,
+
+            [Parameter(ParameterSetName='ByStorageID')]
+            [Parameter(ParameterSetName='ByStorageServiceID')]
+            [Parameter(ParameterSetName='ByStoragePoolID')]
+            [Parameter(ParameterSetName='Default')]             [string]    $VolumeId,
+
+            [Parameter(ParameterSetName='ByStorageServiceID')]
+            [Parameter(ParameterSetName='ByStorageID')]        
+            [Parameter(ParameterSetName='Default')]
+            [Parameter(ParameterSetName='ByStoragePoolID')]     [boolean]   $ReturnCollectionOnly =   $False  
         )
-    process{
-        $MyVolsCol=@()
-        $StorageUri = Get-SwordfishURIFolderByFolder "Storage"
-        write-verbose "Storage Folder = $StorageUri"
-        $StorageData = invoke-restmethod2 -uri $StorageUri
-        foreach( $StorageSys in ( $StorageData ).Members )
-            {   $MyStorageSysURI = $Base + $StorageSys.'@odata.id' + '/Volumes'
-                write-verbose "MyStorageSysURI = $MyStorageSysURI"
-                #Gotta find my Array Name to see if it matches passed in filter
-                $MyStorageSysObj   = $StorageSys.'@odata.id'
-                $MyStorageSysArray = $MyStorageSysObj.split('/')
-                $MyStorageSysName  = $MyStorageSysArray[ ($MyStorageSysArray.length -1) ]
-                write-verbose "MyStorageSysName = $MyStorageSysName"
-                if ( ($StorageId -like $MyStorageSysName) -or ( -not $StorageId ) )
-                    {   $MyVolCollection = invoke-restmethod2 -uri ( $MyStorageSysURI )
-                        foreach( $MyVol in ($MyVolCollection.Members) )
-                            {   #Gotta find my Pool name to see if it matches passed in filter
-                                $MyVolObj   = $MyVol.'@odata.id'
-                                $MyVolArray = $MyVolObj.split('/')
-                                $MyVolName  = $MyVolArray[ ($MyVolArray.length -1) ]
-                                write-verbose "MyVolumeName = $MyVolName"
-                                if ( ($VolumeId -like $MyVolName) -or (-not $VolumeId) )
-                                    {   $Volume = invoke-restmethod2 -uri ( $Base + $MyVol.'@odata.id' )
-                                        $MyVolsCol+=$Volume
-                                        $ReturnColl = $MyVolCollection
-                                    }                                 
+process{
+    $FullVolCollection=@()
+    $FullVolCollectionOnly=@()
+    switch ($PSCmdlet.ParameterSetName )
+    {     'Default'           { $DefVolsCol     = @()
+                                $DefVolsColOnly = @()
+                                foreach ( $PoolID in (Get-SwordfishPool).id )
+                                {   $DefVolsCol        += Get-SwordfishVolume -StoragePoolID $PoolID
+                                    $DefVolsColOnly    += Get-SwordfishVolume -StoragePoolID $PoolID -ReturnCollectionOnly $True
+                                }
+                                foreach ( $StorID in (Get-SwordfishStorage).id )
+                                {   $DefVolsCol        += Get-SwordfishVolume -StorageID $StorID
+                                    $DefVolsColOnly    += Get-SwordfishVolume -StorageID $StorID -ReturnCollectionOnly $True
+                                }
+                                foreach ( $SSID in (Get-SwordfishStorageServices).id )
+                                {   $DefVolsCol        += Get-SwordfishVolume -StorageServiceID $SSID
+                                    $DefVolsColOnly    += Get-SwordfishVolume -StorageServiceID $SSID -ReturnCollectionOnly $True
+                                }
+                                if ( $ReturnCollectionOnly )
+                                {   return ($DefVolsColOnly | get-unique)
+                                } else 
+                                {   if ( $VolumeID )
+                                    {   return ( $DefVolsCol | where-object {$_.id -eq $VolumeId} ) 
+                                    } else 
+                                    {   return $DefVolsCol
+                                    }
+                                } 
                             }
-                    }
+        'ByStorageServiceID'{   $PulledData = Get-SwordfishStorageServices -StorageID $StorageServiceID
+                            }
+        'ByStorageID'       {   $PulledData = Get-SwordfishStorage -StorageID $StorageID
+                            }
+        'ByStoragePoolID'   {   $FindUri = Get-SwordfishURIFolderByFolder "StoragePool"
+                            }
+    }
+    $FullVolCollectionOnly  =@()
+    $FullVoleCollection     =@()
+    if ( $PSCmdlet.ParameterSetName -ne 'Default' )
+    {   $MemberSet = $PulledData.Volumes
+        foreach ( $VorVC in $Memberset )
+        {   $VolColOrVols = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
+            if ( -not $VolColOrVols.Members ) 
+                {   $VolMemberOrCollection = $MemberSet
+                } else 
+                {   $VolMemberOrCollection = $VolColOrVols.Members    
+                }
+            foreach ( $MyVolData in $VolMemberOrCollection )
+            {   $MyVol      = Invoke-RestMethod2 -uri ( $base + ($MyVolData.'@odata.id') )
+                $FullVolCollectionOnly  += $VolColOrVols
+                $FullVolCollection      += $MyVol
             }
-        if ( $ReturnCollectionOnly )
-            {   return $ReturnColl
+        }
+    if ( $ReturnCollectionOnly )
+        {   return $FullVolCollectionOnly
+        } else 
+        {   if ( $VolumeID)
+            {   return $FullVolCollection | where-object { $_.id -eq $VolumeID }
             } else 
-            {   return $MyVolsCol            
-            }
+            {   return $FullVolCollection
+            }            
+        }
     }
 }
-
+}

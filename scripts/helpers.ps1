@@ -9,6 +9,8 @@
     The DNS name or IP address of the SwordFish Target Device.
 .PARAMETER Port
     The DNS name or IP address of the SwordFish Target Device.
+.PARAMETER Protocol
+    Can be used to force the toolkit to use either HTTP or HTTPS. Either the Port can be specified, or the HTTPs protocol since the HTTPS protocol will use port 443.
 .EXAMPLE
     PS:> Connect-SwordFish -Target 192.168.1.50 -port 5000
         
@@ -62,10 +64,18 @@
             [string]$Target="192.168.1.201",
             
             [Parameter(position=1)]
-            [string]$Port="5000"
+            [string]$Port="5000",
+            
+            [Parameter(position=1)]
+            [string]$Protocol="http"
+            
         )
         Process{
-            $Global:Base = "http://$($Target):$($Port)"
+            if ( $Protocol -eq 'http')
+                {   $Global:Base = "http://$($Target):$($Port)"
+                } else 
+                {   $Global:Base = "https://$($Target)"                
+                }
             $Global:RedFishRoot = "/redfish/v1/"
             $Global:BaseUri = $Base+$RedfishRoot
             $Global:MOCK = $false
@@ -82,7 +92,7 @@
             }
         }
     }
-
+ 
 function Connect-SwordFishMockup {
 <#
 .SYNOPSIS
@@ -192,8 +202,13 @@ function invoke-restmethod2{
     param   (   [string] $Uri
             )
     process {   try {   if ( -not $MOCK)
-                        {   $ReturnObj = invoke-restmethod -Uri $Uri
-                            write-verbose "Getting rest2 $Uri"
+                        {   write-verbose "Getting Result in Invoke-RestMethod2 Function using URI $Uri"
+                            if ( -not $XAuthToken ) 
+                                {   $XAuthToken = ""
+                                }
+                            $XHead = @{ 'X-Auth-Token'   = $XAuthToken }
+                            write-verbose "Headers Object is $XHead"
+                            $ReturnObj = invoke-restmethod -Uri $Uri -headers $XHead
                         } else
                         {   $ReturnObj = invoke-Mockup -MockupURI $Uri
                         }
@@ -255,8 +270,9 @@ function Get-SwordfishURIFolderByFolder
 {   [cmdletbinding()]
     param ( $Folder
           )
+    write-verbose "Invoke-RestMethod from Get-SwordfishURIFolderByFolder function to find folder $Folder"      
     $GetRootLocation = invoke-restmethod2 -uri "$BaseUri" 
-     
+    
     if ( ((($GetRootLocation).links).$($Folder)).'@odata.id')
         {   $FolderUri = $Base + ((($GetRootLocation).links).$($Folder)).'@odata.id'
         } else 

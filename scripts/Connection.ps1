@@ -1,4 +1,5 @@
-function Get-SwordfishConnection{
+function Get-SwordfishConnection
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Connections from the SwordFish Target.

@@ -5,140 +5,108 @@ function Get-SwordFishPool{
 .DESCRIPTION
     This command will either return the a complete collection of Storagep Pool objects that exist across all of the Storage Systems, unless a 
     specific Storage System ID is used to limit it, or a specific StoragePool ID is directly requested. 
+.PARAMETER StoragePoolId
+    The Storage pool ID for a specific pool, otherwise the command will return all Storage Pools for all Storage Systems and storage services.
 .PARAMETER StorageId
     The Storage System ID name for a specific Storage System, otherwise the command will return Storage Pool for all Storage Systems.
+.PARAMETER StorageServiceId
+    The Storage Service ID name for a specific Storage Service, otherwise the command will return Storage Pool for all Storage Systems and Storage Services.
 .PARAMETER PoolId
     The StoragePool ID name for a specific StoragePool, otherwise the command will return all Storage Pool.
 .PARAMETER ReturnCollectioOnly
     This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    PS:> Get-SwordFishPool
-    
-    @Redfish.Copyright : Copyright 2020 HPE and DMTF
-    @odata.id          : /redfish/v1/Storage/AC-109032/StoragePools/default
-    @odata.type        : #StoragePool.v1_3_1.StoragePool
-    Id                 : 0a2b4bd8361b856bbc000000000000000000000001
-    Name               : default
-    Description        : Default pool
-    CapacityInfo       : @{ConsumedBytes=3996069624926; AllocatedBytes=24716521871770}
-    Status             : @{HealthRollUp=OK; Health=OK; State=Enabled}
-    AllocatedVolumes   : {@{@odata.id=/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/Crypt-MovsOld},
-                          @{@odata.id=/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/Crypt-Audio},
-                          @{@odata.id=/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/V2},
-                          @{@odata.id=/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/SCSQL2017}...}
-    CapacitySources    : {@{ProvidedCapacity=; ProvidingDrives=}}
-    Compressed         : True
-    Deduplicated       : True
-    Encryption         : True
-    SupportedRAIDTypes : RAID6TP
+    Get-SwordFishPool -StorageServiceID S1 -StoragePoolID 00c0ff5043920000603c3d5f01000000
+
+    @odata.context           : /redfish/v1/$metadata#StoragePool.StoragePool
+    @odata.id                : /redfish/v1/StorageServices/S1/StoragePools/B
+    @odata.type              : #StoragePool.v1_2_0.StoragePool
+    Id                       : 00c0ff5043920000603c3d5f01000000
+    Name                     : B
+    Description              : Pool
+    MaxBlockSizeBytes        : 512
+    AllocatedVolumes         : @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/B/Volumes}
+    AllocatedPools           : @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools}
+    RemainingCapacityPercent : 99
+    IOStatistics             : @{ReadHitIORequests=542362; ReadIOKiBytes=148062208; ReadIORequestTime=62324; WriteHitIORequests=158; WriteIOKiBytes=384657; WriteIORequestTime=0}
+    Capacity                 : @{Data=}
+    Status                   : @{State=Enabled; Health=OK}
+    CapacitySources          : {@{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/B#/CapacitySources/0; @odata.type=#Capacity.v1_1_2.CapacitySource; Id=00c0ff5043920000603c3d5f01000000; Name=B; ProvidingPools=}}
 .EXAMPLE
     Get-SwordFishPool -StorageId AC-102345
     
-    { The output of this command will look similar to example 1, since only a single pool is exposed. }
+    { The output of this command will look similar to example 1, but may display multiple or a single pool. }
 .EXAMPLE
-    Get-SwordFishPool -PoolID default 
+    Get-SwordFishPool -StorageServiceID S1 
 
-    { The output of this command will look similar to example 1, since only a single pool is exposed. }
+    { The output of this command will look similar to example 1, but may display multiple or a single pool. }
 .EXAMPLE
-    PS:> Get-SwordfishPool | ConvertTo-Json    
+    Get-SwordFishPool -ReturnCollectionOnly $true
 
-    {
-        "@Redfish.Copyright":  "Copyright 2020 HPE and DMTF",
-        "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default",
-        "@odata.type":  "#StoragePool.v1_3_1.StoragePool",
-        "Id":  "0a2b4bd8361b856bbc000000000000000000000001",
-        "Name":  "default",
-        "Description":  "Default pool",
-        "CapacityInfo":  {
-                             "ConsumedBytes":  3996069633246,
-                             "AllocatedBytes":  24716521871770
-                         },
-        "Status":  {
-                       "HealthRollUp":  "OK",
-                       "Health":  "OK",
-                       "State":  "Enabled"
-                   },
-        "AllocatedVolumes":  [
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/SCSQL2017"
-                                 },
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/SCSCOM2019"
-                                 },
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/SCVMM2019"
-                                 },
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/SQL2019-DataBase"
-                                 },
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/SQL2019-Logs"
-                                 },
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/DS9CSV"
-                                 },
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/EnterpriseCSV"
-                                 },
-                                 {
-                                     "@odata.id":  "/redfish/v1/Storage/AC-109032/StoragePools/default/Volumes/DS9CSV1"
-                                 },
-                             ],
-        "CapacitySources":  [
-                                {
-                                    "ProvidedCapacity":  "@{AllocatedCapacity=24716521871770; ConsumedBytes=3996069633246}",
-                                    "ProvidingDrives":  "@{Drives=System.Object[]}"
-                                }
-                            ],
-        "Compressed":  true,
-        "Deduplicated":  true,
-        "Encryption":  true,
-        "SupportedRAIDTypes":  "RAID6TP"
-    }
+    @odata.context      : /redfish/v1/$metadata#StoragePoolCollection.StoragePoolCollection
+    @odata.type         : #StoragePoolCollection.StoragePoolCollection
+    @odata.id           : /redfish/v1/StorageServices/S1/StoragePools
+    Name                : StoragePool Collection
+    Members@odata.count : 4
+    Members             : {@{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/00c0ff50437d0000f93a3d5f00000000}, @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/00c0ff5043920000593c3d5f00000000}, @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/A},
+                           @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/B}}
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/StoragePool.v1_2_0.json
+    http://redfish.dmtf.org/schemas/swordfish/v1/StoragePool.v1_5_0.json
 #>   
-[CmdletBinding()]
-    param(  [string]    $StorageId,
-            [string]    $PoolId,
-            [boolean]   $ReturnCollectionOnly   =   $False
-        )
-    process{
-        $MyPoolsCol=@()
-        $StorageUri = Get-SwordfishURIFolderByFolder "Storage"
-        write-verbose "Storage Folder = $StorageUri"
-        $StorageData = invoke-restmethod2 -uri $StorageUri
-        foreach( $StorageSys in ( $StorageData ).Members )
-            {   $MyStorageSysURI = $Base + $StorageSys.'@odata.id' + '/StoragePools'
-                write-verbose "MyStorageSysURI = $MyStorageSysURI"
-                #Gotta find my Array Name to see if it matches passed in filter
-                $MyStorageSysObj   = $StorageSys.'@odata.id'
-                $MyStorageSysArray = $MyStorageSysObj.split('/')
-                $MyStorageSysName  = $MyStorageSysArray[ ($MyStorageSysArray.length -1) ]
-                write-verbose "MyStorageSysName = $MyStorageSysName"
-                if ( ($StorageId -like $MyStorageSysName) -or ( -not $StorageId ) )
-                    {   $MyPoolCollection = invoke-restmethod2 -uri ( $MyStorageSysURI )
-                        foreach( $MyPool in ($MyPoolCollection.Members) )
-                            {   #Gotta find my Pool name to see if it matches passed in filter
-                                $MyPoolObj   = $MyPool.'@odata.id'
-                                $MyPoolArray = $MyPoolObj.split('/')
-                                $MyPoolName  = $MyPoolArray[ ($MyPoolArray.length -1) ]
-                                write-verbose "MyPoolName = $MyPoolName"
-                                if ( ($PoolId -like $MyPoolName) -or (-not $PoolId) )
-                                    {   $Pool = invoke-restmethod2 -uri ( $Base + $MyPool.'@odata.id' )
-                                        $MyPoolCol+=$Pool
-                                        $ReturnColl = $MyPoolCollection
-                                    }                                 
+[CmdletBinding( DefaultParameterSetName='Default' )]
+param(      [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,
+            [Parameter(ParameterSetName='ByStorageServiceID')]  [string]    $StorageServiceID,
+            
+            [Parameter(ParameterSetName='ByStorageServiceID')]
+            [Parameter(ParameterSetName='ByStorageID')]        
+            [Parameter(ParameterSetName='Default')]             [string]    $StoragePoolID,
+
+            [Parameter(ParameterSetName='ByStorageServiceID')]
+            [Parameter(ParameterSetName='ByStorageID')]        
+            [Parameter(ParameterSetName='Default')]             [switch]    $ReturnCollectionOnly
+     )
+
+process{
+    switch ($PSCmdlet.ParameterSetName )
+        {     'Default'         {   foreach ( $StorID in (Get-SwordfishStorage).id )
+                                        {   [array]$DefPoolCol += Get-SwordfishPool -StorageID $StorID -ReturnCollectionOnly:$ReturnCollectionOnly
+                                        }
+                                    foreach ( $SSID in (Get-SwordfishStorageServices).id )
+                                        {   [array]$DefPoolCol += Get-SwordfishPool -StorageServiceID $SSID -ReturnCollectionOnly:$ReturnCollectionOnly
+                                        }
+                                    if ( $StoragePoolID ) 
+                                        {   return ( $DefPoolCol | where-object { $_.id -eq $StoragePoolID } )
+                                        } else 
+                                        {   return $DefPoolCol
+                                        }                                             
+                                }   
+            'ByStorageServiceID'{   $PulledData = Get-SwordfishStorageServices -StorageID $StorageServiceID
+                                }
+            'ByStorageID'       {   $PulledData = Get-SwordfishStorage -StorageID $StorageID
+                                }
+        }
+    if ( $PSCmdlet.ParameterSetName -ne 'Default' )
+        {   $MemberSet = [array]$FullPoolCollectionOnly = $PulledData.StoragePools
+            foreach ( $PorPC in $Memberset )
+                {   $MyPorPC = Invoke-RestMethod2 -uri ( $base + ($PorPC.'@odata.id') )
+                    if ( -not $MyPorPC.Members ) 
+                        {   [array]$FullPoolSet += $MyPorPC
+                        } else 
+                        {   [array]$FullPoolCollectionOnly = $MyPorPC
+                            foreach ( $Pool in $MyPorPC.Members)
+                            {   [array]$FullPoolSet += Invoke-RestMethod2 -uri ( $base + ($Pool.'@odata.id') )
                             }
+                        }
+                }
+            if ( $ReturnCollectionOnly )
+                {   return $FullPoolCollectionOnly | get-unique
+                } else 
+                {   IF ( $StoragePoolID )
+                    {   return ( $FullPoolSet | where-object { $_.id -eq $StoragePoolID } )
+                    } else 
+                    {   return ( $FullPoolSet )
                     }
-            }
-        if ( $ReturnCollectionOnly )
-            {   return $ReturnColl
-            } else 
-            {   return $MyPoolCol            
-            }
-    }
+                }
+        }
 }
-
-
-
+}

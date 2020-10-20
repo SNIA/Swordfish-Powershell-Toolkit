@@ -9,6 +9,8 @@
     The DNS name or IP address of the SwordFish Target Device.
 .PARAMETER Port
     The DNS name or IP address of the SwordFish Target Device.
+.PARAMETER Protocol
+    Can be used to force the toolkit to use either HTTP or HTTPS. Either the Port can be specified, or the HTTPs protocol since the HTTPS protocol will use port 443.
 .EXAMPLE
     PS:> Connect-SwordFish -Target 192.168.1.50 -port 5000
         
@@ -55,34 +57,35 @@
     }
 .NOTES
     By default if the port is not given, it assumes port 5000, and if no hostname is given it assumes localhost.
+.LINK
+    https://redfish.dmtf.org/schemas/v1/redfish-schema.v1_7_0.json
 #>
-        [cmdletbinding()]
-        param   (
-            [Parameter(position=0)]
-            [string]$Target="192.168.1.201",
-            
-            [Parameter(position=1)]
-            [string]$Port="5000"
-        )
-        Process{
-            $Global:Base = "http://$($Target):$($Port)"
+[CmdletBinding(DefaultParameterSetName='Default')]
+param (                                 [string]    $Target     = "192.168.100.98",
+                                        [string]    $Port       = "5000",            
+        [Validateset("http","https")]   [string]    $Protocol   = "https"            
+      )
+Process{
+    if ( $Protocol -eq 'http')
+                {   $Global:Base = "http://$($Target):$($Port)"
+                } else 
+                {   $Global:Base = "https://$($Target)"                
+                }
             $Global:RedFishRoot = "/redfish/v1/"
-            $Global:BaseUri = $Base+$RedfishRoot
-            $Global:MOCK = $false
-            Write-Verbose "Base URI = $BaseUri"
+            $Global:BaseUri     = $Base+$RedfishRoot
+            $Global:MOCK        = $false
             Try     {   $ReturnData = invoke-restmethod -uri "$BaseUri" 
                     }
             Catch   {   $_
                     }
             if ( $ReturnData )
-            {   return $ReturnData
-            }
-            else 
-            {   Write-Error "No RedFish/SwordFish target Detected or wrong port used at that address"
-            }
+                {   return $ReturnData
+                } else 
+                {   Write-Error "No RedFish/SwordFish target Detected or wrong port used at that address"
+                }
         }
     }
-
+ 
 function Connect-SwordFishMockup {
 <#
 .SYNOPSIS
@@ -191,9 +194,14 @@ function invoke-restmethod2{
     [cmdletbinding()]
     param   (   [string] $Uri
             )
-    process {   try {   if ( -not $MOCK)
-                        {   $ReturnObj = invoke-restmethod -Uri $Uri
-                            write-verbose "Getting rest2 $Uri"
+    process {   try {   if ( -not $MOCK -and $Uri -ne $base )
+                        {   write-verbose "Getting Result in Invoke-RestMethod2 Function using URI $Uri"
+                            if ( -not $XAuthToken ) 
+                                {   $XAuthToken = ""
+                                }
+                            $XHead = @{ 'X-Auth-Token'   = $XAuthToken }
+                            write-verbose "Headers Object is $XHead"
+                            $ReturnObj = invoke-restmethod -Uri $Uri -headers $XHead
                         } else
                         {   $ReturnObj = invoke-Mockup -MockupURI $Uri
                         }
@@ -255,8 +263,9 @@ function Get-SwordfishURIFolderByFolder
 {   [cmdletbinding()]
     param ( $Folder
           )
+    write-verbose "Invoke-RestMethod from Get-SwordfishURIFolderByFolder function to find folder $Folder"      
     $GetRootLocation = invoke-restmethod2 -uri "$BaseUri" 
-     
+    
     if ( ((($GetRootLocation).links).$($Folder)).'@odata.id')
         {   $FolderUri = $Base + ((($GetRootLocation).links).$($Folder)).'@odata.id'
         } else 

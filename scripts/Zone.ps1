@@ -57,9 +57,6 @@ function Get-SwordfishZone{
     /redfish/v1/Fabric/AC-109032/Zones/NSSCORCH              NSSCORCH             Client                        1                       0
     /redfish/v1/Fabric/AC-109032/Zones/NSSCDPM               NSSCDPM              Client                        1                       1
     /redfish/v1/Fabric/AC-109032/Zones/riker                 riker                Client                        1                       0
-    /redfish/v1/Fabric/AC-109032/Zones/picard                picard               Client                        1                       2
-    /redfish/v1/Fabric/AC-109032/Zones/kirk                  kirk                 Client                        1                       2
-    /redfish/v1/Fabric/AC-109032/Zones/spock                 spock                Client                        1                       2
     /redfish/v1/Fabric/AC-109032/Zones/Q                     Q                    Client                        1                       1
     /redfish/v1/Fabric/AC-109032/Zones/Borg                  Borg                 Client                        1                       3
     /redfish/v1/Fabric/AC-109032/Zones/DFSR1                 DFSR1                Client                        1                       2
@@ -94,79 +91,46 @@ function Get-SwordfishZone{
 .LINK
     http://redfish.dmtf.org/schemas/v1/Zone.v1_0_0.json
 #>   
-[CmdletBinding()]
-param(
-    [string]    $StorageId,
-    [string]    $FabricId,
-    [string]    $ZoneId,
-    [boolean]   $ReturnCollectionOnly   =   $False
-)
+[CmdletBinding(DefaultParameterSetName='Default')]
+param(  [Parameter(ParameterSetName='ByFabricID')]          [string]    $FabricID,
+
+        [Parameter(ParameterSetName='ByFabricID')]
+        [Parameter(ParameterSetName='Default')]             [string]    $ZoneId,
+
+        [Parameter(ParameterSetName='ByFabricID')]        
+        [Parameter(ParameterSetName='Default')]             [Switch]    $ReturnCollectionOnly
+     )
 process{
-    $ReturnZoneColl=@()
-    if ( -not $StorageID )
-        {   $FabricUri = Get-SwordfishURIFolderByFolder "Fabrics"
-            write-verbose "Folder = $FabricUri"
-            $FabricsData = invoke-restmethod2 -uri $FabricUri
-            # Search for the Endpoints by detecting them from /redfish/v1/Fabrics/{id}/Drives
-            foreach($Fabric in $FabricsData.Members )
-                {   write-verbose "Walking the Fabrics"
-                    $MyFabricObj    = $Fabric.'@odata.id'
-                    $MyFabricSplit  = $MyFabricObj.split('/')
-                    $MyFabricName   = $MyFabricSplit[ ($MyFabricSplit.Length -1 ) ]
-                    write-verbose "Fabric = $MyFabricName"
-                    $ZonesCol = Invoke-RestMethod2 -uri ( $base + $MyFabricObj + '/Zones' )
-                    foreach( $Zone in ( $ZonesCol).Members )
-                        {   $MyZoneURI     =   $Zone.'@odata.id'
-                            $MyZone        =   Invoke-RestMethod2 -uri ( $base + $MyZoneURI )
-                            $MyZoneSplit   =   $MyZoneURI.split('/')
-                            $MyZoneName    =   $MyZoneSplit[ ( $MyConnectionSplit.length -1) ] 
-                            if( ( $FabricID -eq $MyFabricName ) -or ( -not $FabricID ) )
-                                {   # Only add the resulting drive if the Chassis ID matches or was not set.
-                                    if ( ( $MyZoneName -like $ZoneID) -or ( -not $ZoneID ))
-                                        {   # Only add the resulting drive if the Drive ID matches or was not set
-                                            $ReturnZoneColl += $MyZone
-                                            $ReturnOnlyColl = $ZonesCol
-                                        }
+    switch ($PSCmdlet.ParameterSetName )
+    {   'Default'       {   foreach ( $FabID in (Get-SwordfishFabric).id )
+                                {   [array]$DefZoneCol += Get-SwordfishZone -FabricID $FabID -ReturnCollectionOnly:$ReturnCollectionOnly
                                 }
+                            if ( $ZoneID )
+                                {   return ( $DefZoneCol | where-object {$_.id -eq $ZoneId} ) 
+                                } else 
+                                {   return $DefZoneCol
+                                } 
+                        }
+        'ByFabricID'    {   $PulledData = Get-SwordfishFabric           -FabricID $FabricID
+                        }
+    }
+    if ( $PSCmdlet.ParameterSetName -ne 'Default' )
+        {   $MemberSet = $EPMemberOrCollection = $PulledData.Zones
+            foreach ( $EPorEPC in $Memberset )
+                {   $EPColOrEP = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
+                    if ( $EPColOrEP.Members ) 
+                        {   $EPMemberOrCollection = $EPColOrEP.Members    
+                        }
+                    [Array]$FullZoneCollectionOnly += $EPColOrEP
+                    foreach ( $MyEPData in $EPMemberOrCollection )
+                        {   [array]$FullZoneCollection += Invoke-RestMethod2 -uri ( $base + ($MyEPData.'@odata.id') )                          
                         }
                 }
-        } else 
-        {   $StorageUri = Get-SwordfishURIFolderByFolder "Storage"
-            write-verbose "Folder = $StorageUri"
-            $StorageData = invoke-restmethod2 -uri $StorageUri
-            foreach($Stor in ($StorageData).Members )
-            {   write-verbose "Walking the StorageID's"
-                $MyStorObj = $Stor.'@odata.id'
-                $MyStorSplit = $MyStorObj.split('/')
-                $MyStorageName= $MyStorSplit[ ( $MyStorSplit.Length -1 ) ]
-                write-verbose "Storage = $MyStorageName"
-                # Now I need to explore the link from the actual storage device, since the Endpoints likely point somewhere else. I need to follow the other location.
-                $MyStorage = Invoke-RestMethod2 -uri ( $base + $MyStorObj )
-                $MyZoneCollectionlocation = ($MyStorage.Zones)
-                write-verbose "My Zone Collection Location = $MyZoneCollectionLocation"
-                $ZonesCol = Invoke-RestMethod2 -uri ( $base + $MyZoneCollectionLocation )
-                foreach( $Zone in ( $ZoneCol).Members )
-                    {   $MyZoneURI =   $Zone.'@odata.id'
-                        $MyZone    =   Invoke-RestMethod2 -uri ( $base + $MyZoneURI )
-                        $MyZoneSplit = $MyZoneURI.split('/')
-                        $MyZoneName =   $MyZoneSplit[ ( $MyZoneSplit.length -1) ] 
-                        write-verbose "Zone Name = $MyZoneName"
-                        if( ( $StorageID -eq $MyStorageName ) -or ( -not $StorageID ) )
-                            {   # Only add the resulting drive if the Storage ID matches or was not set.
-                                if ( ( $MyZoneName -like $ZoneID) -or ( -not $ZoneID ))
-                                    {   # Only add the resulting drive if the Drive ID matches or was not set
-                                        $ReturnZoneColl += $MyZone
-                                        $ReturnOnlyColl = $ConnectionsCol
-                                    }
-                            }
-                    }
-            } 
-        }
-    if ( $ReturnCollectionOnly )
-        {       return $ReturnOnlyColl
-        } else 
-        {       return $ReturnZoneColl
-        }
-}
-}
-
+            if ( $ReturnCollectionOnly )
+                {   return $FullZoneCollectionOnly
+                } else 
+                {   if ( $ZoneID)
+                        {   return $FullZoneCollection | where-object { $_.id -eq $ZoneID }
+                        } else 
+                        {   return $FullZoneCollection
+}}      }       }       }            

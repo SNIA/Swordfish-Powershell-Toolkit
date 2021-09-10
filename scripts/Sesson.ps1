@@ -39,7 +39,7 @@ param   (                                   [string] $Target    = "192.168.100.9
                                             [string] $Username  = "chris",
                                             [string] $Password  = "Pa55w0rd!"       
         )
-Process{    
+Process{  
     if (-not ([System.Management.Automation.PSTypeName]'ServerCertificateValidationCallback').Type)
         {   $certCallback = @"
         using System;
@@ -79,11 +79,13 @@ Process{
     $Global:MOCK        = $false
     $SSBody = @{    UserName    =   $Username;
                     Password    =   $Password
-               }     
+               }
+    $SSContType = @{   'Content-type'    = 'Application/json'
+    }
     $BodyJSON = $SSBody | convertto-json
     Write-Verbose "Base URI = $BaseUri"
-    Try     {   $ReturnData = invoke-restmethod -uri ( $BaseURI + "SessionService/Sessions" ) -method Post -Body $BodyJSON
-                $ReturnATok = invoke-WebRequest -uri ( $BaseURI + "SessionService/Sessions" ) -method Post -Body $BodyJSON
+    Try     {   $ReturnData = invoke-restmethod -uri ( $BaseURI + "SessionService/Sessions" ) -header $SSContType -method Post -Body $BodyJSON
+                $ReturnATok = invoke-WebRequest -uri ( $BaseURI + "SessionService/Sessions" ) -header $SSContType -method Post -Body $BodyJSON
             }
     Catch   {   $_
             }

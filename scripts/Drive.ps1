@@ -68,12 +68,18 @@ function Get-SwordFishDrive{
                            @{@odata.id=/redfish/v1/StorageServices/S1/Drives/1.4}...}
 .LINK
     https://redfish.dmtf.org/schemas/v1/Drive.v1_11_0.json
+    The Drives and Drives Collections will existing in the following Locations    
+        /redfish/v1/Drives/{DriveId}
+        /redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}
+        /redfish/v1/Storage/{StorageId}/Drives/{DriveId}
+        /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(
         [Parameter(ParameterSetName='ByStorageID')] [string]           $StorageID,
         [Parameter(ParameterSetName='ByStorageServiceID')] [string]    $StorageServiceID,
         [Parameter(ParameterSetName='ByChassisID')] [string]           $ChassisID,
+        [Parameter(ParameterSetName='RootCollection')] [string]        $RootCollection,
 
         [Parameter(ParameterSetName='ByStorageID')]
         [Parameter(ParameterSetName='ByStorageServiceID')]
@@ -84,6 +90,7 @@ param(
         [Parameter(ParameterSetName='ByStorageID')]        
         [Parameter(ParameterSetName='Default')]
         [Parameter(ParameterSetName='ByChassisID')] [switch]           $ReturnCollectionOnly
+
     )
 process
 {   switch ($PSCmdlet.ParameterSetName )
@@ -93,6 +100,9 @@ process
                                         }
                                     foreach ( $StorID in Get-SwordfishStorage )
                                         {   $DefDriveCol += Get-SwordfishDrive -StorageID $StorID.id -ReturnCollectionOnly:$ReturnCollectionOnly
+                                        }
+                                    foreach ( $SSID in Get-SwordfishStorageServices )
+                                        {   $DefDriveCol += Get-SwordfishDrive -StorageServiceID $SSID.id -ReturnCollectionOnly:$ReturnCollectionOnly
                                         }
                                     foreach ( $SSID in Get-SwordfishStorageServices )
                                         {   $DefDriveCol += Get-SwordfishDrive -StorageServiceID $SSID.id -ReturnCollectionOnly:$ReturnCollectionOnly

@@ -1,3 +1,4 @@
+
 . $PSScriptRoot\scripts\helpers.ps1
 . $PSScriptRoot\scripts\Chassis.ps1
 . $PSScriptRoot\scripts\Storage.ps1
@@ -19,10 +20,15 @@
 . $PSScriptRoot\scripts\IOConnectivityLoSCapabilities.ps1
 . $PSScriptRoot\scripts\Manager.ps1
 
-
 Export-ModuleMember -Function       Connect-SwordfishTarget,        Connect-SwordfishMockup,    
+    
     Get-SwordfishChassis,           Get-SwordfishChassisThermal,    Get-SwordfishChassisPower, 
+    Get-RedfishChassis,             Get-RedfishChassisThermal,      Get-RedfishChassisPower,
+
     Get-SwordfishStorage,           Get-SwordfishSystem,            Get-SwordFishStorageServices,            
+
+    Get-SwordfishStorage,           Get-RedfishSystem,            
+
     Get-SwordfishEndpoint,          Get-SwordfishFabric,            Get-SwordfishEthernetInterface,
     Get-SwordfishPool,              Get-SwordfishEndpointGroup,     Get-SwordfishClassesOfService,
     Get-SwordfishConnection,        Get-SwordfishSessionService,    Get-SwordfishDataStorageLinesOfService,
@@ -30,5 +36,6 @@ Export-ModuleMember -Function       Connect-SwordfishTarget,        Connect-Swor
     Get-SwordfishDrive,             Get-SwordfishManager,           Get-SwordfishIOConnectivityLoSCapabilities,
     Get-SwordfishTask,              Get-SwordfishSession,           Invoke-SwordfishDependancySeleniumCheck,
     Get-SwordfishGroup,             Get-SwordfishStorage,           Invoke-SwordfishDependancyChromeCheck,
-    Get-SwordfishZone,              Get-SwordfishController,        
+    Get-SwordfishZone,              Get-SwordfishController,        Get-SwordfishSystemComponent, 
+    Get-RedfishSystem,              Get-RedfishSystemComponent,     Get-SwordfishManagerComponent,
     StripHTMLCode

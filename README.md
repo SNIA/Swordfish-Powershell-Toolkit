@@ -24,7 +24,9 @@ PS:> Get-Module -Name SNIASwordFish
 ```
 4. Once the module has been loaded a connect to a Swordfish Target using:
 ```powershell
-Connect-SwordfishTarget -target 192.168.1.100 -protocol https
+Connect-SwordfishTarget -target 192.168.1.100
+-or-
+Connect-RedfishTarget -target 192.168.1.100
 
 5. If your storage device requires an Autorization token, you can use the following command to obtain or populate this token. Once this token has been gathered, all further commands will attempt to use the token by default in the rest method header. 
 Get-SwordfishSessionToken -target 192.168.1.100 -protocol https -Username chris -password P@ssw0rd!
@@ -66,15 +68,23 @@ An example of this would be the Power or Thermal metrics gathered by the Chassis
 ``` 
 The current list of supported cmdlets are:
 ```powershell
-Connect-SwordFishTarget
+Connect-SwordfishTarget
+Connect-RedfishTarger
 Connect-SwordFishMockup
 Get-SwordfishSessionToken
+Get-RedfishSessionToken
 
 Get-SwordfishStorage
+Get-RedfishStorage
 Get-SwordfishStorageService
 Get-SwordfishSystem
+Get-RedfishSystem
+Get-SwordfishSystemComponent
+Get-RedfishSystemComponent
 Get-SwordfishChassis
+Get-RedfishChassis
 Get-SwordfishSessionService
+Get-RedfishSessionService
 Get-SwordfishZone
 Get-SwordfishTask
 
@@ -91,6 +101,10 @@ Get-SwordFishPool
 Get-SwordfishVolume
 Get-SwordfishSession
 Get-SwordfishManager
+Get-SwordfishManagerComponent
+Get-RedfishSession
+Get-RedfishManager
+Get-RedfishManagerComponent
 Get-SwordfishClassOfService
 Get-SwordfishDataStorageLinesOfService
 Get-SwordfishDataStorageLoSCapabilities

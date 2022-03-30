@@ -69,7 +69,6 @@ function Get-SwordfishDrive{
 .LINK
     https://redfish.dmtf.org/schemas/v1/Drive.v1_11_0.json
     The Drives and Drives Collections will existing in the following Locations    
-        /redfish/v1/Drives/{DriveId}
         /redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}
         /redfish/v1/Storage/{StorageId}/Drives/{DriveId}
         /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}

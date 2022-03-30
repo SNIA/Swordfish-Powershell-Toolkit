@@ -1,18 +1,18 @@
-﻿function Connect-SwordFishTarget {
+﻿function Connect-SwordfishTarget {
 <#
 .SYNOPSIS
-    Connects to a SNIA SwordFish API enabled device.
+    Connects to a SNIA Swordfish API enabled device.
 .DESCRIPTION
-    Connect-SwordFishTarget is an advanced function that provides the initial connection to a SwordFish
+    Connect-SwordfishTarget is an advanced function that provides the initial connection to a Swordfish
     so that other subsequent commands can be run without having to authenticate individually.
 .PARAMETER Target
-    The DNS name or IP address of the SwordFish Target Device.
+    The DNS name or IP address of the Swordfish Target Device.
 .PARAMETER Port
-    The DNS name or IP address of the SwordFish Target Device.
+    The DNS name or IP address of the Swordfish Target Device.
 .PARAMETER Protocol
     Can be used to force the toolkit to use either HTTP or HTTPS. Either the Port can be specified, or the HTTPs protocol since the HTTPS protocol will use port 443.
 .EXAMPLE
-    PS:> Connect-SwordFish -Target 192.168.1.50 -port 5000
+    PS:> Connect-Swordfish -Target 192.168.1.50 -port 5000
         
     @odata.Copyright : Copyright 2020 HPE and DMTF
     @odata.type      : #ServiceRoot.v1_3_0.ServiceRoot
@@ -27,7 +27,7 @@
     LineOfService    : @{@odata.id=/redfish/v1/LineOfService}
     Fabrics          : @{@odata.id=/redfish/v1/Fabrics}
 .EXAMPLE
-    Connect-SwordFish -Target 192.168.1.50 -port 5000 | ConvertTo-Json
+    Connect-Swordfish -Target 192.168.1.50 -port 5000 | ConvertTo-Json
     
     {
         "@odata.Copyright":  "Copyright 2020 HPE and DMTF",
@@ -81,31 +81,31 @@ Process{
             if ( $ReturnData )
                 {   return $ReturnData
                 } else 
-                {   Write-Error "No RedFish/SwordFish target Detected or wrong port used at that address"
+                {   Write-Error "No RedFish/Swordfish target Detected or wrong port used at that address"
                 }
         }
     }
  
-function Connect-SwordFishMockup {
+function Connect-SwordfishMockup {
 <#
 .SYNOPSIS
-    Connects to the SNIA Swordfish Mockup as if were a SwordFish Target.
+    Connects to the SNIA Swordfish Mockup as if were a Swordfish Target.
 .DESCRIPTION
-    Connect-SwordMockup is an advanced function that provides the initial connection to a SwordFish
+    Connect-SwordMockup is an advanced function that provides the initial connection to a Swordfish
     so that other subsequent commands can be run without having to authenticate individually.
 .EXAMPLE
-     Connect-SwordFishMockup
+     Connect-SwordfishMockup
 .NOTES
-    The site http://swordfishmockups.com/redfish/v1/ site is hard coded into this command.
+    The site http://Swordfishmockups.com/redfish/v1/ site is hard coded into this command.
 #>
     [CmdletBinding()]
     param   (   
             )
     Process {
-        $Global:Base = "http://swordfishmockups.com"
+        $Global:Base = "http://Swordfishmockups.com"
         $Global:RedFishRoot = "/redfish/v1/"
         $Global:BaseUri = $Base+$RedfishRoot
-        if ( Invoke-SwordFishDependancySeleniumCheck -and Invoke-SwordFishDependancyChromeCheck )
+        if ( Invoke-SwordfishDependancySeleniumCheck -and Invoke-SwordfishDependancyChromeCheck )
         {   Try
             {               write-verbose "Creating Option Object"
                 $ChromeOptions = New-Object OpenQA.Selenium.Chrome.ChromeOptions
@@ -140,7 +140,7 @@ function Connect-SwordFishMockup {
                     return $ReturnObj
                 }
                 else 
-                {   Write-Error "No RedFish/SwordFish target Detected or wrong port used at that address"
+                {   Write-Error "No RedFish/Swordfish target Detected or wrong port used at that address"
                 }
 
             }
@@ -148,7 +148,7 @@ function Connect-SwordFishMockup {
         }
     }
 
-function Invoke-SwordFishDependancySeleniumCheck{   
+function Invoke-SwordfishDependancySeleniumCheck{   
     if ( get-module -name Selenium )
         {   write-verbose "Check: Selenium is installed and imported"
             $returncode=$true
@@ -164,7 +164,7 @@ function Invoke-SwordFishDependancySeleniumCheck{
         }
     return $returncode
 }
-function Invoke-SwordFishDependancyChromeCheck{   
+function Invoke-SwordfishDependancyChromeCheck{   
     $x86 = ((Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall") | Where-Object { $_.GetValue( "DisplayName" ) -like "*Chrome*" } ).Length -gt 0;
     $x64 = ((Get-ChildItem "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") | Where-Object { $_.GetValue( "DisplayName" ) -like "*Chrome*" } ).Length -gt 0;
     if ( $x86 -or $x64 )
@@ -233,7 +233,7 @@ function Invoke-Mockup
 
     start-sleep -Seconds 1
     try     {   $ReturnObj = $ReturnData | ConvertFrom-JSON
-                $ODataTypeName = Get-SwordFishODataTypeName $ReturnObj
+                $ODataTypeName = Get-SwordfishODataTypeName $ReturnObj
                 write-verbose "Odata type name is $ODataTypeName"
                 return $ReturnObj
             }
@@ -242,7 +242,7 @@ function Invoke-Mockup
             }
 }
 
-function Get-SwordFishODataTypeName 
+function Get-SwordfishODataTypeName 
 {   [cmdletbinding()]
     param   ( $DataObject
             )

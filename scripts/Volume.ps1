@@ -1,7 +1,7 @@
-function Get-SwordFishVolume{
+function Get-SwordfishVolume{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Volumes from the SwordFish Target.
+    Retrieve The list of valid Volumes from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Volumes that exist across all of 
     the Storage Services and/or Storage Systems, unless a  specific Storage Services ID or Storage Systems ID is used to limit it, or a specific 
@@ -21,13 +21,13 @@ function Get-SwordFishVolume{
 .PARAMETER ReturnCollectioOnly
     This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishVolume
+    Get-SwordfishVolume
 .EXAMPLE
-    Get-SwordFishVolume -StorageId AC-102345
+    Get-SwordfishVolume -StorageId AC-102345
 .EXAMPLE
-    Get-SwordFishVolume -VolumeId 00c0ff50437d000052ab465f01000000
+    Get-SwordfishVolume -VolumeId 00c0ff50437d000052ab465f01000000
 .EXAMPLE
-    Get-SwordFishVolume -StorageServiceID S1 -VolumeId 00c0ff50437d000052ab465f01000000
+    Get-SwordfishVolume -StorageServiceID S1 -VolumeId 00c0ff50437d000052ab465f01000000
 
     @odata.context           : /redfish/v1/$metadata#Volume.Volume
     @odata.id                : /redfish/v1/StorageServices/S1/Volumes/00c0ff50437d000052ab465f01000000
@@ -46,7 +46,7 @@ function Get-SwordFishVolume{
     Status                   : @{State=Enabled; Health=OK}
     CapacitySources          : {@{@odata.id=/redfish/v1/StorageServices/S1/Volumes/00c0ff50437d000052ab465f01000000#/CapacitySources/0; @odata.type=#Capacity.v1_1_2.CapacitySource; Id=00c0ff50437d000052ab465f01000000; Name=Crush50; ProvidingPools=}}
 .EXAMPLE
-    Get-SwordFishVolume -ReturnCollectionOnly $True
+    Get-SwordfishVolume -ReturnCollectionOnly $True
 
     @odata.context      : /redfish/v1/$metadata#VolumeCollection.VolumeCollection
     @odata.type         : #VolumeCollection.VolumeCollection

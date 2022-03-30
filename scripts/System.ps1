@@ -1,7 +1,7 @@
 function Get-SwordfishSystem{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Computer Systems from the SwordFish Target.
+    Retrieve The list of valid Computer Systems from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of System objects that exist or if a single 
     System is selected, it will return only the single System ID.

@@ -1,8 +1,8 @@
-function Get-SwordFishChassis
+function Get-SwordfishChassis
 {
 <#
 .SYNOPSIS
-    Retrieve The list of valid Chassis' from the SwordFish Target.
+    Retrieve The list of valid Chassis' from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Chassis objects that exist or if a single Chassis ID is selected, 
     it will return only the single Chassis ID. Note that this command doesnt return the Chassis Collection, but instead returns a 
@@ -15,7 +15,7 @@ function Get-SwordFishChassis
     A Boolean value that defaults to $False, will return a powershell array of the Chassis. To set this value true indicates that
     instead you wish to see the raw Chassis Collection Object and not what the Chassis Collection points to.
 .EXAMPLE
-    PS:> Get-SwordFishChassis
+    PS:> Get-SwordfishChassis
 
     @Redfish.Copyright : Copyright 2020 HPE and DMTF
     @odata.id          : /redfish/v1/Chassis/AC-109032
@@ -110,7 +110,7 @@ function Get-SwordfishChassisThermal
 {
 <#
 .SYNOPSIS
-    Retrieve The list of valid Chassis' Thermal sensors from the SwordFish Target Chassis(S).
+    Retrieve The list of valid Chassis' Thermal sensors from the Swordfish Target Chassis(S).
 .DESCRIPTION
     This command will return all of the Thermal sensors for a specific Chassis ID.  
 .PARAMETER ChassisId
@@ -125,7 +125,7 @@ function Get-SwordfishChassisThermal
 .PARAMETER ReturnCollectionOnly
     If specified (as a swich) the command will return the collection that contains all of the thermal values.
 .EXAMPLE
-    Get-SwordFishChassisThermal
+    Get-SwordfishChassisThermal
 
     @odata.context : /redfish/v1/$metadata#Thermal.Thermal
     @odata.id      : /redfish/v1/Chassis/enclosure_1/Thermal
@@ -138,7 +138,7 @@ function Get-SwordfishChassisThermal
     Fans           : {@{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/0; MemberId=0; Reading=4740; Name=Fan 1; Status=}, @{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/1; MemberId=1; Reading=4560; Name=Fan 2; Status=},
                     @{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/2; MemberId=2; Reading=4740; Name=Fan 3; Status=}, @{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/3; MemberId=3; Reading=4740; Name=Fan 4; Status=}}
 .EXAMPLE
-    PS C:\Users\chris\Desktop\Swordfish-Powershell-Toolkit> Get-SwordFishChassisThermal -MetricName Fans
+    PS C:\Users\chris\Desktop\Swordfish-Powershell-Toolkit> Get-SwordfishChassisThermal -MetricName Fans
 
     @odata.id : /redfish/v1/Chassis/enclosure_1/Thermal#/Fans/0
     MemberId  : 0
@@ -152,7 +152,7 @@ function Get-SwordfishChassisThermal
     Name      : Fan 2
     Status    : @{State=Enabled; Health=OK}
 .EXAMPLE
-    Get-SwordFishChassisThermal -ChassisID enclosure_1 -MetricName Temperatures
+    Get-SwordfishChassisThermal -ChassisID enclosure_1 -MetricName Temperatures
 
     @odata.id      : /redfish/v1/Chassis/enclosure_1/Thermal#/Temperatures/0
     MemberId       : 0
@@ -383,7 +383,7 @@ function Get-SwordfishChassisPower
 {
 <#
 .SYNOPSIS
-    Retrieve The list of valid Chassis(s) Power sensors from the SwordFish Target Chassis(s).
+    Retrieve The list of valid Chassis(s) Power sensors from the Swordfish Target Chassis(s).
 .DESCRIPTION
     This command will return all of the Power sensors for a specific Chassis ID. You must
     specify either to retrieve the PowerControl values, the Voltage values or the 

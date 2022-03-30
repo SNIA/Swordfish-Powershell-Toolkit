@@ -1,4 +1,4 @@
-function Get-SwordFishDataStorageLinesOfService{
+function Get-SwordfishDataStorageLinesOfService{
 <#
 .SYNOPSIS
     The command will return Data Storage Lines of service deined under Classes of Service in a Storage Service Model.
@@ -18,7 +18,7 @@ function Get-SwordFishDataStorageLinesOfService{
 .PARAMETER ReturnCollectioOnly
     This switch will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishDataStorageLinesOfService
+    Get-SwordfishDataStorageLinesOfService
 
     @odata.context     : /redfish/v1/$metadata#DataStorageLineOfService.DataStorageLineOfService
     @odata.id          : /redfish/v1/StorageServices/S1/ClassesOfService/DefaultCOS/DataStorageLineOfService/DSLOS
@@ -28,7 +28,7 @@ function Get-SwordFishDataStorageLinesOfService{
     AccessCapabilities : {Read, Write}
     IsSpaceEfficient   : False
 .EXAMPLE
-    Get-SwordFishDataStorageLinesOfService -ReturnCollectionOnly
+    Get-SwordfishDataStorageLinesOfService -ReturnCollectionOnly
 
     @odata.context      : /redfish/v1/$metadata#DataStorageLineOfServiceCollection.DataStorageLineOfServiceCollection
     @odata.type         : #DataStorageLineOfServiceCollection.DataStorageLineOfServiceCollection
@@ -38,7 +38,7 @@ function Get-SwordFishDataStorageLinesOfService{
     Members             : {@{@odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/DefaultCOS/DataStorageLineOfService/DSLOS}}
 
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/DataStorageLineOfService.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/DataStorageLineOfService.json
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
     param(  [Parameter(ParameterSetName='ByStorageServiceID')]  [string]    $StorageServiceID,

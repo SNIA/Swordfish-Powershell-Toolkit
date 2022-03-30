@@ -1,7 +1,7 @@
 function Get-SwordfishManager{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Managers from the SwordFish Target.
+    Retrieve The list of valid Managers from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Manager objects that exist across all of the 
     Storage Systems, unless a specific ID is used to limit it. 
@@ -163,7 +163,7 @@ function Get-SwordfishManagerComponent
 {
     <#
     .SYNOPSIS
-        Retrieve The list of valid Managers from the SwordFish Target.
+        Retrieve The list of valid Managers from the Swordfish Target.
     .DESCRIPTION
         This command will either return the a complete collection of Manager objects that exist across all of the 
         Storage Systems, unless a specific Storage system ID is used to limit it. 

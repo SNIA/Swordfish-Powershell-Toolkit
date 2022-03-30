@@ -1,7 +1,7 @@
 function Get-SwordfishZone{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Zones from the SwordFish Target.
+    Retrieve The list of valid Zones from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Zone objects that exist across all of the 
     Storage Systems, unless a specific Storage system ID is used to limit it, or a specific Zone ID 
@@ -18,7 +18,7 @@ function Get-SwordfishZone{
     This directive boolean value defaults to false, but will return the collection instead of an array of the 
     actual objects if set to true.
 .EXAMPLE
-    PS:> Get-SwordFishZone
+    PS:> Get-SwordfishZone
 
     @Redfish.Copyright      : Copyright 2020 HPE and DMTF
     @odata.id               : /redfish/v1/Fabric/AC-109032/Zones/riker

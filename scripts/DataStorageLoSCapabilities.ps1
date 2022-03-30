@@ -1,7 +1,7 @@
-function Get-SwordFishDataStorageLoSCapabilities{
+function Get-SwordfishDataStorageLoSCapabilities{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Data Storage Lines Of Service Capabilities from the SwordFish Target.
+    Retrieve The list of valid Data Storage Lines Of Service Capabilities from the Swordfish Target.
 .DESCRIPTION
     This command will either return the complete collection of Data Storage Lines Of Service Capabilities that 
     exist across all of the Storage Services, unless a  specific Storage Services ID is used to limit it, or a 
@@ -17,7 +17,7 @@ function Get-SwordFishDataStorageLoSCapabilities{
 .PARAMETER ReturnCollectioOnly
     This switch will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishDataStorageLoSCapabilities -ReturnCollectionOnly
+    Get-SwordfishDataStorageLoSCapabilities -ReturnCollectionOnly
 
     @odata.context      : /redfish/v1/$metadata#DataStorageLoSCapabilitiesCollection.DataStorageLoSCapabilitiesCollection
     @odata.type         : #DataStorageLoSCapabilitiesCollection.DataStorageLoSCapabilitiesCollection
@@ -26,7 +26,7 @@ function Get-SwordFishDataStorageLoSCapabilities{
     Members@odata.count : 0
     Members             : {}
 .EXAMPLE
-    Get-SwordFishDataStorageLoSCapabilities
+    Get-SwordfishDataStorageLoSCapabilities
 
     @odata.context              : /redfish/v1/$metadata#DataStorageLoSCapabilities.DataStorageLoSCapabilities
     @odata.id                   : /redfish/v1/StorageServices/S1/DataStorageLoSCapabilities/DSLOSC
@@ -40,7 +40,7 @@ function Get-SwordFishDataStorageLoSCapabilities{
                                   @odata.type=#DataStorageLineOfService.v1_1_0.DataStorageLineOfService; Id=DSLOS; Name=Data Storage Line of Service;
                                   AccessCapabilities=System.Object[]; IsSpaceEfficient=False}}
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLoSCapabilities.v1_1_3.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/DataProtectionLoSCapabilities.v1_1_3.json
 #> 
 
 [CmdletBinding(DefaultParameterSetName='Default')]

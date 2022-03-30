@@ -1,7 +1,7 @@
-function Get-SwordFishDrive{
+function Get-SwordfishDrive{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Drives from the SwordFish Target.
+    Retrieve The list of valid Drives from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Drives that exist across all of the Storage Systems, 
     unless a specific Storage Service ID or Storage System ID or ChassisID is used to limit it, or a specific Drive ID is directly requested.
@@ -18,7 +18,7 @@ function Get-SwordFishDrive{
 .PARAMETER ReturnCollectioOnly
     This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    PS:> Get-SwordFishDrive
+    PS:> Get-SwordfishDrive
 
     @odata.context     : /redfish/v1/$metadata#Drive.Drive
     @odata.id          : /redfish/v1/StorageServices/S1/Drives/1.14
@@ -50,13 +50,13 @@ function Get-SwordFishDrive{
     PS:> Get-SwordfishDrive -DriveId 1.14
     { They output from this command is limited to only this individual drive, but looks identical to example 1 output }
 .EXAMPLE
-    PS:> Get-SwordFishStorageDrive -ChassisId enclosure_1
+    PS:> Get-SwordfishStorageDrive -ChassisId enclosure_1
 .EXAMPLE
-    PS:> Get-SwordFishStorageDrive -StorageId AC-102345
+    PS:> Get-SwordfishStorageDrive -StorageId AC-102345
 .EXAMPLE
-    PS:> Get-SwordFishStorageDrive -StorageServiceId S1
+    PS:> Get-SwordfishStorageDrive -StorageServiceId S1
 .EXAMPLE
-    PS:> Get-SwordFishStorageDrive -returnCollectionOnly $True
+    PS:> Get-SwordfishStorageDrive -returnCollectionOnly $True
     @odata.context      : /redfish/v1/$metadata#DriveCollection.DriveCollection
     @odata.type         : #DriveCollection.DriveCollection
     @odata.id           : /redfish/v1/StorageServices/S1/Drives

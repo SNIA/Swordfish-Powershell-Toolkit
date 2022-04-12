@@ -1,7 +1,7 @@
 function Get-SwordfishFabric{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Fabrics from the SwordFish Target.
+    Retrieve The list of valid Fabrics from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a collection of Fabrics objects that exist or if a single 
     System is selected, it will return only the single fabric ID.

@@ -25,7 +25,7 @@ Export-ModuleMember -Function       Connect-SwordfishTarget,        Connect-Swor
     Get-SwordfishChassis,           Get-SwordfishChassisThermal,    Get-SwordfishChassisPower, 
     Get-RedfishChassis,             Get-RedfishChassisThermal,      Get-RedfishChassisPower,
 
-    Get-SwordfishStorage,           Get-SwordfishSystem,            Get-SwordFishStorageServices,            
+    Get-SwordfishStorage,           Get-SwordfishSystem,            Get-SwordfishStorageServices,            
 
     Get-SwordfishStorage,           Get-RedfishSystem,            
 

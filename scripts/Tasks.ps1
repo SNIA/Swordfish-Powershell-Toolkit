@@ -1,9 +1,9 @@
 function Get-SwordfishTask{
 <#
 .SYNOPSIS
-    Retrieve The list of Tasks or the Task Service collection from the SwordFish Target.
+    Retrieve The list of Tasks or the Task Service collection from the Swordfish Target.
 .DESCRIPTION
-    Retrieve The list of Tasks or the Task Service collection from the SwordFish Target. 
+    Retrieve The list of Tasks or the Task Service collection from the Swordfish Target. 
 .PARAMETER TaskId
     The TaskId will limit the returned data to ONLY the single Task specified if it exists. Without 
     this argument, the command will attempt to retrieve all tasks.

@@ -1,10 +1,10 @@
 <# These will be re-enabled once we support Storage Services. For now the PowerShell Toolkit doesnt support ClassOfService.
 #>
 
-function Get-SwordFishClassOfService{
+function Get-SwordfishClassOfService{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Classes of Services from the SwordFish Target.
+    Retrieve The list of valid Classes of Services from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of 
     Classes of Services that exist across all of the Storage Services, unless a 
@@ -17,15 +17,15 @@ function Get-SwordFishClassOfService{
     The Class of Service ID will limit the returned data
     to the type specified, otherwise the command will return all Classes of Services.
 .EXAMPLE
-    Get-SwordFishStorageClassOfService
+    Get-SwordfishStorageClassOfService
 .EXAMPLE
-    Get-SwordFishStorageClassOfService -StorageServiceId AC-102345
+    Get-SwordfishStorageClassOfService -StorageServiceId AC-102345
 .EXAMPLE
-    Get-SwordFishStorageClassOfService -StorageServiceId AC-102345 -ClassOfServiceId Gold
+    Get-SwordfishStorageClassOfService -StorageServiceId AC-102345 -ClassOfServiceId Gold
 .EXAMPLE
-    Get-SwordFishStorageClassOfService -ClassOfServiceId Gold
+    Get-SwordfishStorageClassOfService -ClassOfServiceId Gold
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.v1_1_1.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/ClassOfService.v1_1_1.json
 #>   
 [CmdletBinding()]
 param(  [string] $StorageServiceID,
@@ -70,10 +70,10 @@ process{# SS(s) = Storage Service(s)
         return $COSsCol
 }    }
 
-function Get-SwordFishClassOfServiceLineOfService{
+function Get-SwordfishClassOfServiceLineOfService{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Classes of Services from the SwordFish Target.
+    Retrieve The list of valid Classes of Services from the Swordfish Target.
 .DESCRIPTION
     This command requires a specific Storage Service ID and Class of Service ID to
     specify a singular Class of Service. You must specify the Line of Service to 
@@ -85,15 +85,15 @@ function Get-SwordFishClassOfServiceLineOfService{
 .PARAMETER LineOfServiceName
     The type of .
 .EXAMPLE
-    Get-SwordFishStorageClassOfService
+    Get-SwordfishStorageClassOfService
 .EXAMPLE
-    Get-SwordFishStorageClassOfService -StorageServiceId AC-102345
+    Get-SwordfishStorageClassOfService -StorageServiceId AC-102345
 .EXAMPLE
-    Get-SwordFishStorageClassOfService -StorageServiceId AC-102345 -ClassOfServiceId Gold
+    Get-SwordfishStorageClassOfService -StorageServiceId AC-102345 -ClassOfServiceId Gold
 .EXAMPLE
-    Get-SwordFishStorageClassOfService -ClassOfServiceId Gold
+    Get-SwordfishStorageClassOfService -ClassOfServiceId Gold
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.v1_1_1.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/ClassOfService.v1_1_1.json
 #>   
 [CmdletBinding()]
 param(  [string] $StorageServiceID,

@@ -1,7 +1,7 @@
-function Get-SwordFishController{
+function Get-SwordfishController{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Storage Controllers that make up the various Storage Systems from the SwordFish Target.
+    Retrieve The list of valid Storage Controllers that make up the various Storage Systems from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Storage Controller objects that exist across all of the Storage Systems, unless a 
     specific Storage System ID is used to limit it, or a specific Storage Controller ID is directly requested. 
@@ -12,7 +12,7 @@ function Get-SwordFishController{
 .PARAMETER ReturnCollectioOnly
     This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    PS:> Get-SwordFishController
+    PS:> Get-SwordfishController
 
     @odata.Copyright   : Copyright 2020 HPE and DMTF
     @odata.type        : #Storage.v1_8_1.Storage
@@ -49,7 +49,7 @@ function Get-SwordFishController{
     Redundancy         : @{RedundancySet=System.Object[]; Status=OK; MaxNumSupported=2; MemberId=B; RedundancyEndabled=True; Mode=Failover; MinNumNeeded=1}
     
 .EXAMPLE
-    Get-SwordFishController -ControllerId A | ConvertTo-Json
+    Get-SwordfishController -ControllerId A | ConvertTo-Json
 
     {
         "@odata.Copyright":  "Copyright 2020 HPE and DMTF",
@@ -84,7 +84,7 @@ function Get-SwordFishController{
                        }
     }
 .EXAMPLE
-    Get-SwordFishPool -StorageID AC-109032 -ControllerID A 
+    Get-SwordfishPool -StorageID AC-109032 -ControllerID A 
 
     { The output of this command will look similar to example 2, since only a single pool is exposed. }
 .EXAMPLE

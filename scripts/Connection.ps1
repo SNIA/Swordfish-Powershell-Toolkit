@@ -2,7 +2,7 @@ function Get-SwordfishConnection
 {
 <#
 .SYNOPSIS
-    Retrieve The list of valid Connections from the SwordFish Target.
+    Retrieve The list of valid Connections from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Connection objects that exist across all of the 
     Storage Systems, unless a specific Storage system ID is used to limit it, or a specific Conection ID 
@@ -19,7 +19,7 @@ function Get-SwordfishConnection
     This directive boolean value defaults to false, but will return the collection instead of an array of the 
     actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishConnection
+    Get-SwordfishConnection
     
     @Redfish.Copyright               : Copyright 2020 HPE and DMTF
     @odata.id                        : /redfish/v1/Fabrics/AC-109032/Connections/0d2b4bd8361b856bbc000000000000000000000001
@@ -43,13 +43,13 @@ function Get-SwordfishConnection
     Volumes                          : {@{Volume=/redfish/v1/Storage/AC-109032/StoragePools/Default/Volumes/Crypt-Port; LogicalUnitNumber=0}}
     Id                               : 0d2b4bd8361b856bbc000000000000000000000002
 .EXAMPLE
-    Get-SwordFishConnection -StorageId AC-102345
+    Get-SwordfishConnection -StorageId AC-102345
     { Example looks the same as above, but limits the selection to only those Connections pointed to be this storage system }
 .EXAMPLE
-    Get-SwordFishConnection -FabricId AC-102345
+    Get-SwordfishConnection -FabricId AC-102345
     { Example looks the same as above, but limits the selection to only those Connections pointed located in this fabric system }
 .EXAMPLE
-    Get-SwordFishConnection -StorageId AC-102345 -ConnectionId Host1Mapping | ConvertTo-Json
+    Get-SwordfishConnection -StorageId AC-102345 -ConnectionId Host1Mapping | ConvertTo-Json
 
     {
         "@Redfish.Copyright":  "Copyright 2020 HPE and DMTF",
@@ -76,7 +76,7 @@ function Get-SwordfishConnection
     }
 
 .EXAMPLE
-    Get-SwordFishConnection -ReturnCollectionOnly $True
+    Get-SwordfishConnection -ReturnCollectionOnly $True
 
     @Redfish.Copyright  : Copyright 2020 HPE and DMTF
     Members@odata.count : 34
@@ -153,10 +153,10 @@ process{
                         {   return $FullConnCollection
 }}      }       }       }            
 
-function Get-SwordFishGroup{
+function Get-SwordfishGroup{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Volumes from the SwordFish Target.
+    Retrieve The list of valid Volumes from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of StorageGroups that exist across all of 
     the Storage Services and/or Storage Systems, unless a  specific Storage Services ID or Storage Systems ID is used to limit it, or a specific 
@@ -173,7 +173,7 @@ function Get-SwordFishGroup{
 .PARAMETER ReturnCollectioOnly
     This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishGroup -StorageServiceID S1
+    Get-SwordfishGroup -StorageServiceID S1
 
     @odata.context       : /redfish/v1/$metadata#StorageGroup.StorageGroup
     @odata.id            : /redfish/v1/StorageServices/S1/StorageGroups/00c0ff50437d0000d9c73e5f01000000_00c0ff50437d000062a63f5f01010000
@@ -191,11 +191,11 @@ function Get-SwordFishGroup{
     MembersAreConsistent : True
     VolumesAreExposed    : True
 .EXAMPLE
-    Get-SwordFishVolume -StorageId AC-102345
+    Get-SwordfishVolume -StorageId AC-102345
     
     { Output Identical to example 1}
 .EXAMPLE
-    Get-SwordFishGroup -ReturnCollectionOnly $True
+    Get-SwordfishGroup -ReturnCollectionOnly $True
 
     @odata.context      : /redfish/v1/$metadata#StorageGroupCollection.StorageGroupCollection
     @odata.type         : #StorageGroupCollection.StorageGroupCollection
@@ -205,7 +205,7 @@ function Get-SwordFishGroup{
     Members             : {@{@odata.id=/redfish/v1/StorageServices/S1/StorageGroups/00c0ff50437d0000d9c73e5f01000000_00c0ff50437d000062a63f5f01010000},
                           @{@odata.id=/redfish/v1/StorageServices/S1/StorageGroups/00c0ff50437d000052ab465f01000000_00c0ff504392000079aa465f01010000}}
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/EndpointGroup.v1_2_1.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/EndpointGroup.v1_2_1.json
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(      [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,

@@ -1,7 +1,7 @@
-function Get-SwordFishStorage{
+function Get-SwordfishStorage{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Storage Systems from the SwordFish Target.
+    Retrieve The list of valid Storage Systems from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Storage System objects that exist or if a single 
     Storage System is selected, it will return only the single Storage System ID.
@@ -58,7 +58,7 @@ function Get-SwordFishStorage{
                     ]
     }
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/StorageSystem.v1_2_0.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/StorageSystem.v1_2_0.json
 #>   
 [CmdletBinding()]
 param(  [string]    $StorageID,
@@ -82,10 +82,10 @@ process{
 }
 }
 
-function Get-SwordFishStorageServices{
+function Get-SwordfishStorageServices{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Storage Systems from the SwordFish Target.
+    Retrieve The list of valid Storage Systems from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Storage System objects that exist or if a single 
     Storage System is selected, it will return only the single Storage System ID.
@@ -142,7 +142,7 @@ function Get-SwordFishStorageServices{
                     ]
     }
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/StorageSystem.v1_2_0.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/StorageSystem.v1_2_0.json
 #>   
 [CmdletBinding()]
 param(  [string]    $StorageID,

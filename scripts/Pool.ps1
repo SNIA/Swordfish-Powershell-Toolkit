@@ -1,7 +1,7 @@
-function Get-SwordFishPool{
+function Get-SwordfishPool{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Storage Pools from the SwordFish Target.
+    Retrieve The list of valid Storage Pools from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Storagep Pool objects that exist across all of the Storage Systems, unless a 
     specific Storage System ID is used to limit it, or a specific StoragePool ID is directly requested. 
@@ -16,7 +16,7 @@ function Get-SwordFishPool{
 .PARAMETER ReturnCollectioOnly
     This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishPool -StorageServiceID S1 -StoragePoolID 00c0ff5043920000603c3d5f01000000
+    Get-SwordfishPool -StorageServiceID S1 -StoragePoolID 00c0ff5043920000603c3d5f01000000
 
     @odata.context           : /redfish/v1/$metadata#StoragePool.StoragePool
     @odata.id                : /redfish/v1/StorageServices/S1/StoragePools/B
@@ -33,15 +33,15 @@ function Get-SwordFishPool{
     Status                   : @{State=Enabled; Health=OK}
     CapacitySources          : {@{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/B#/CapacitySources/0; @odata.type=#Capacity.v1_1_2.CapacitySource; Id=00c0ff5043920000603c3d5f01000000; Name=B; ProvidingPools=}}
 .EXAMPLE
-    Get-SwordFishPool -StorageId AC-102345
+    Get-SwordfishPool -StorageId AC-102345
     
     { The output of this command will look similar to example 1, but may display multiple or a single pool. }
 .EXAMPLE
-    Get-SwordFishPool -StorageServiceID S1 
+    Get-SwordfishPool -StorageServiceID S1 
 
     { The output of this command will look similar to example 1, but may display multiple or a single pool. }
 .EXAMPLE
-    Get-SwordFishPool -ReturnCollectionOnly $true
+    Get-SwordfishPool -ReturnCollectionOnly $true
 
     @odata.context      : /redfish/v1/$metadata#StoragePoolCollection.StoragePoolCollection
     @odata.type         : #StoragePoolCollection.StoragePoolCollection
@@ -51,7 +51,7 @@ function Get-SwordFishPool{
     Members             : {@{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/00c0ff50437d0000f93a3d5f00000000}, @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/00c0ff5043920000593c3d5f00000000}, @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/A},
                            @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/B}}
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/StoragePool.v1_5_0.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/StoragePool.v1_5_0.json
 #>   
 [CmdletBinding( DefaultParameterSetName='Default' )]
 param(      [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,

@@ -1,7 +1,7 @@
-function Get-SwordFishIOConnectivityLoSCapabilities{
+function Get-SwordfishIOConnectivityLoSCapabilities{
 <#
 .SYNOPSIS
-    Retrieve The list of valid IO Connectivity LoS Capabilities from the SwordFish Target.
+    Retrieve The list of valid IO Connectivity LoS Capabilities from the Swordfish Target.
 .DESCRIPTION
     This command will either return the complete collection of IO Connectivity LoS Capabilities that 
     exist across all of the Storage Services, unless a  specific Storage Services ID is used to limit it, or a 
@@ -16,7 +16,7 @@ function Get-SwordFishIOConnectivityLoSCapabilities{
 .PARAMETER ReturnCollectioOnly
     This switch will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishIOConnectivityLoSCapabilities -ReturnCollectionOnly
+    Get-SwordfishIOConnectivityLoSCapabilities -ReturnCollectionOnly
 
     @odata.context      : /redfish/v1/$metadata#IOConnectivityLoSCapabilitiesCollection.IOConnectivityLoSCapabilitiesCollection
     @odata.type         : #IOConnectivityLoSCapabilitiesCollection.IOConnectivityLoSCapabilitiesCollection
@@ -25,7 +25,7 @@ function Get-SwordFishIOConnectivityLoSCapabilities{
     Members@odata.count : 0
     Members             : {}
 .EXAMPLE
-    Get-SwordFishIOConnectivityLoSCapabilities
+    Get-SwordfishIOConnectivityLoSCapabilities
 
     @odata.context           : /redfish/v1/$metadata#IOConnectivityLoSCapabilities.IOConnectivityLoSCapabilities
     @odata.id                : /redfish/v1/StorageServices/S1/IOConnectivityLoSCapabilities/IOCLOSC
@@ -40,7 +40,7 @@ function Get-SwordFishIOConnectivityLoSCapabilities{
 
 
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLineOfService.v1_2_1.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/IOConnectivityLineOfService.v1_2_1.json
 #> 
 
 [CmdletBinding(DefaultParameterSetName='Default')]

@@ -1,14 +1,14 @@
 function Get-SwordfishSessionToken {
 <#
 .SYNOPSIS
-    Connects to a SNIA SwordFish API enabled device and obtain the Autorization Token that is required for further commands.
+    Connects to a SNIA Swordfish API enabled device and obtain the Autorization Token that is required for further commands.
 .DESCRIPTION
     Get-SwordfishSessionToken is an advanced function that populates a authorization token that the other commands in the 
-    swordfish powershell toolkit use. Once the Token has been obtained other subsequent commands can be run without having to authenticate individually.
+    Swordfish powershell toolkit use. Once the Token has been obtained other subsequent commands can be run without having to authenticate individually.
 .PARAMETER Target
-    The DNS name or IP address of the SwordFish Target Device.
+    The DNS name or IP address of the Swordfish Target Device.
 .PARAMETER Port
-    The DNS name or IP address of the SwordFish Target Device. This will default to 5000 if not specified but is only needed if changing the protocol to HTTP.
+    The DNS name or IP address of the Swordfish Target Device. This will default to 5000 if not specified but is only needed if changing the protocol to HTTP.
 .PARAMETER Protocol
     Can be used to force the toolkit to use either HTTP or HTTPS. Either the Port can be specified, or the HTTPs protocol since the HTTPS protocol will use port 443.
     This will default to HTTPS if not specified
@@ -17,7 +17,7 @@ function Get-SwordfishSessionToken {
 .PARAMETER Password
     The password that will be sent to the device for authentication.
 .EXAMPLE
-    PS:> Get-SwordFishSessionToken -Target 192.168.1.50 -protocol https -username Chris -passwrd Pa55w0rd!
+    PS:> Get-SwordfishSessionToken -Target 192.168.1.50 -protocol https -username Chris -passwrd Pa55w0rd!
         
     @odata.context : /redfish/v1/$metadata#Session.Session
     @odata.id      : /redfish/v1/SessionService/Sessions/68
@@ -39,7 +39,7 @@ param   (                                   [string] $Target    = "192.168.100.9
                                             [string] $Username  = "chris",
                                             [string] $Password  = "Pa55w0rd!"       
         )
-Process{    
+Process{  
     if (-not ([System.Management.Automation.PSTypeName]'ServerCertificateValidationCallback').Type)
         {   $certCallback = @"
         using System;
@@ -79,11 +79,13 @@ Process{
     $Global:MOCK        = $false
     $SSBody = @{    UserName    =   $Username;
                     Password    =   $Password
-               }     
+               }
+    $SSContType = @{   'Content-type'    = 'Application/json'
+    }
     $BodyJSON = $SSBody | convertto-json
     Write-Verbose "Base URI = $BaseUri"
-    Try     {   $ReturnData = invoke-restmethod -uri ( $BaseURI + "SessionService/Sessions" ) -method Post -Body $BodyJSON
-                $ReturnATok = invoke-WebRequest -uri ( $BaseURI + "SessionService/Sessions" ) -method Post -Body $BodyJSON
+    Try     {   $ReturnData = invoke-restmethod -uri ( $BaseURI + "SessionService/Sessions" ) -header $SSContType -method Post -Body $BodyJSON
+                $ReturnATok = invoke-WebRequest -uri ( $BaseURI + "SessionService/Sessions" ) -header $SSContType -method Post -Body $BodyJSON
             }
     Catch   {   $_
             }
@@ -92,7 +94,7 @@ Process{
             $ReturnData | add-member -membertype NoteProperty -name 'X-Auth-Token' -value $XAuthToken
             return ($ReturnData)
         } else 
-        {   Write-Error "No RedFish/SwordFish target Detected or wrong port used at that address"
+        {   Write-Error "No RedFish/Swordfish target Detected or wrong port used at that address"
         }
     }
 }
@@ -131,7 +133,7 @@ function Get-SwordfishSession {
 .DESCRIPTION
     Gets either the collection of Swordfish Sessions, or return the individual session information.
 .PARAMETER SessionID
-    The Session ID present on the SwordFish Target Device.
+    The Session ID present on the Swordfish Target Device.
 .EXAMPLE
     Get-SwordfishSession -SessionID 226
 

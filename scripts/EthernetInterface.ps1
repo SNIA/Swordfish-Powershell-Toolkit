@@ -1,8 +1,8 @@
-function Get-SwordFishEthernetInterface
+function Get-SwordfishEthernetInterface
 {
 <#
 .SYNOPSIS
-    Retrieve The list of valid Endpoint from the SwordFish Target.
+    Retrieve The list of valid Endpoint from the Swordfish Target.
 .DESCRIPTION
     This command will either return the a complete collection of Ethernet Interface objects that exist across all of the 
     Storage Services/Systems, unless a specific ID is used to limit it, or a specific Ethernet Interface ID 
@@ -19,7 +19,7 @@ function Get-SwordFishEthernetInterface
     This directive boolean value defaults to false, but will return the collection instead of an array of the 
     actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishEthernetInterface
+    Get-SwordfishEthernetInterface
 
     @odata.context      : /redfish/v1/$metadata#EthernetInterface.EthernetInterface
     @odata.type         : #EthernetInterface.v1_5_1.EthernetInterface
@@ -41,7 +41,7 @@ function Get-SwordFishEthernetInterface
     PermanentMACAddress : 00:c0:ff:50:43:92
     IPv4Addresses       : {@{Address=192.168.100.99; SubnetMask=255.255.255.0; Gateway=192.168.100.1}}
 .EXAMPLE
-    Get-SwordFishEthernetInterface -ReturnCollectionOnly
+    Get-SwordfishEthernetInterface -ReturnCollectionOnly
 
     @odata.context      : /redfish/v1/$metadata#EthernetInterfaceCollection.EthernetInterfaceCollection
     @odata.type         : #EthernetInterfaceCollection.EthernetInterfaceCollection
@@ -50,7 +50,7 @@ function Get-SwordFishEthernetInterface
     Members@odata.count : 2
     Members             : {@{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8/EthernetInterfaces/A}, @{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8/EthernetInterfaces/B}}
 .EXAMPLE
-    Get-SwordFishEthernetInterface -ReturnCollectionOnly | convertto-JSON
+    Get-SwordfishEthernetInterface -ReturnCollectionOnly | convertto-JSON
 
     {   "@odata.context":  "/redfish/v1/$metadata#EthernetInterfaceCollection.EthernetInterfaceCollection",
         "@odata.type":  "#EthernetInterfaceCollection.EthernetInterfaceCollection",

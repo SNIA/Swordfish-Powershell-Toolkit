@@ -1,7 +1,7 @@
-function Get-SwordFishClassesOfService{
+function Get-SwordfishClassesOfService{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Classes of Service from the SwordFish Target.
+    Retrieve The list of valid Classes of Service from the Swordfish Target.
 .DESCRIPTION
     This command will either return the complete collection of Classes of Service that exist across all of 
     the Storage Services, unless a  specific Storage Services ID is used to limit it, or a specific Class ID
@@ -15,7 +15,7 @@ function Get-SwordFishClassesOfService{
 .PARAMETER ReturnCollectioOnly
     This switch will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    Get-SwordFishDataStorageLinesOfService
+    Get-SwordfishDataStorageLinesOfService
 
     @odata.context            : /redfish/v1/$metadata#ClassOfService.ClassOfService
     @odata.id                 : /redfish/v1/StorageServices/S1/ClassesOfService/RAID1
@@ -52,11 +52,11 @@ function Get-SwordFishClassesOfService{
     Name                      : MSA-DP+ Class of Service
     DataStorageLinesOfService : {@{@odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/MSA-DP+/DataStorageLineOfService/DSLOS}}
  .EXAMPLE
-    Get-SwordFishClassesOfService -StorageServiceID S1
+    Get-SwordfishClassesOfService -StorageServiceID S1
  
     { Output is similar to the previous example output }
 .EXAMPLE
-    Get-SwordFishClassesOfService -ClassId MSA-DP+
+    Get-SwordfishClassesOfService -ClassId MSA-DP+
 
     @odata.context            : /redfish/v1/$metadata#ClassOfService.ClassOfService
     @odata.id                 : /redfish/v1/StorageServices/S1/ClassesOfService/MSA-DP+
@@ -65,7 +65,7 @@ function Get-SwordFishClassesOfService{
     Name                      : MSA-DP+ Class of Service
     DataStorageLinesOfService : {@{@odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/MSA-DP+/DataStorageLineOfService/DSLOS}}
 .EXAMPLE
-    Get-SwordFishClassesOfService -ReturnCollectionOnly
+    Get-SwordfishClassesOfService -ReturnCollectionOnly
 
     @odata.context      : /redfish/v1/$metadata#ClassOfServiceCollection.ClassOfServiceCollection
     @odata.type         : #ClassOfServiceCollection.ClassOfServiceCollection
@@ -77,7 +77,7 @@ function Get-SwordFishClassesOfService{
                           @{@odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/RAID6},
                           @{@odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/RAID10}...}
 .LINK
-    http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.v1_2_0.json
+    http://redfish.dmtf.org/schemas/Swordfish/v1/ClassOfService.v1_2_0.json
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='ByStorageServiceID')]  [string]    $StorageServiceID,

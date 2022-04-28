@@ -2,10 +2,10 @@ function Get-SwordfishEthernetInterface
 {
 <#
 .SYNOPSIS
-    Retrieve The list of valid Endpoint from the Swordfish Target.
+    Retrieve The list of valid Endpoint from the Swordfish or Redfish Targets.
 .DESCRIPTION
     This command will either return the a complete collection of Ethernet Interface objects that exist across all of the 
-    Storage Services/Systems, unless a specific ID is used to limit it, or a specific Ethernet Interface ID 
+    Storage Services or Systems, unless a specific ID is used to limit it, or a specific Ethernet Interface ID 
     is directly requested.
 .PARAMETER StorageId
     The StorageID name for a specific Storage System to query, otherwise the command will return all Ethernet Interfaces 
@@ -127,4 +127,6 @@ process{
                         {   return $FullEISet | where-object { $_.id -eq $EthernetInterfaceID }
                         } else 
                         {   return ( $FullEISet ) 
-}}      }       }       }            
+}}      }       }       
+}   
+Set-Alias -Name 'Get-RedfishEthernetInterface' -value 'Get-SwordfishEthernetInterface'

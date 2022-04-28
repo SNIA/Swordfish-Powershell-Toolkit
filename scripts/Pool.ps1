@@ -1,4 +1,5 @@
-function Get-SwordfishPool{
+function Get-SwordfishPool
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Storage Pools from the Swordfish Target.

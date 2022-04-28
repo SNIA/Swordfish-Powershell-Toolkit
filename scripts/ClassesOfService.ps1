@@ -1,4 +1,5 @@
-function Get-SwordfishClassesOfService{
+function Get-SwordfishClassesOfService
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Classes of Service from the Swordfish Target.

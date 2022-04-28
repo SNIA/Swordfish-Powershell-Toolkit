@@ -1,4 +1,5 @@
-function Get-SwordfishController{
+function Get-SwordfishController
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Storage Controllers that make up the various Storage Systems from the Swordfish Target.
@@ -139,6 +140,6 @@ function Get-SwordfishController{
             }
     }
 }
-
+Set-Alias -name 'Get-RedfishController' -Value 'Get-SwordfishController'
 
 

@@ -1,4 +1,5 @@
-function Get-SwordfishStorage{
+function Get-SwordfishStorage
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Storage Systems from the Swordfish Target.
@@ -81,8 +82,10 @@ process{
         }        
 }
 }
+Set-Alias -Value 'Get-SwordfishStorage' -Name 'Get-RedfishStorage'
 
-function Get-SwordfishStorageServices{
+function Get-SwordfishStorageServices
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Storage Systems from the Swordfish Target.

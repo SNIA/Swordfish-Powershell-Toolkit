@@ -9,7 +9,7 @@
     FormatsToProcess = 'SNIASwordfish.format.ps1xml'
     #NestedModules = @("scripts\Chassis.ps1")
     # Functions to export from this module
-    #FunctionsToExport = '*'
+    FunctionsToExport = '*'
 
     #   Cmdlets to export from this module
     #CmdletsToExport = '*'
@@ -18,7 +18,7 @@
     #VariablesToExport = '*'
 
     # Aliases to export from this module
-    #AliasesToExport = '*'
+    AliasesToExport = '*'
     
     # , @{ModuleName="Chassis"; ModuleVersion="1.13.0"})
 #   GUID = 'ebdcec82-0636-499c-a1a8-0abcde843e2d'

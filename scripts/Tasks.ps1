@@ -1,4 +1,5 @@
-function Get-SwordfishTask{
+function Get-SwordfishTask
+{
 <#
 .SYNOPSIS
     Retrieve The list of Tasks or the Task Service collection from the Swordfish Target.
@@ -72,4 +73,5 @@ process{
                             }
                     }
     }
-}}                   
+}}
+Set-Alias -Name 'Get-RedfishTask' -Value 'Get-SwordfishTask'

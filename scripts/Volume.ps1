@@ -1,4 +1,5 @@
-function Get-SwordfishVolume{
+function Get-SwordfishVolume
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Volumes from the Swordfish Target.
@@ -119,4 +120,5 @@ process{
                 {   return $FullVolSet | where-object { $_.id -eq $VolumeID }
                 } else 
                 {   return $FullVolSet
-}}  }       }   }            
+}}  }       }   } 
+Set-Alias -Name 'Get-RedfishVolume' -Value 'Get-SwordfishVolume'           

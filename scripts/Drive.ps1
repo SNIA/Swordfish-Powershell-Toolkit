@@ -1,9 +1,10 @@
-function Get-SwordfishDrive{
+function Get-SwordfishDrive
+{
 <#
 .SYNOPSIS
-    Retrieve The list of valid Drives from the Swordfish Target.
+    Retrieve The list of valid Drives from the Swordfish or Redfish Target.
 .DESCRIPTION
-    This command will either return the a complete collection of Drives that exist across all of the Storage Systems, 
+    This command will either return the a complete collection of Drives that exist across all of the Storage Systems or Servers, 
     unless a specific Storage Service ID or Storage System ID or ChassisID is used to limit it, or a specific Drive ID is directly requested.
     By default without specifying an ID, the command will search the following locations for /redfish/v1/Storage, /redfish/v1/StorageServices, /redfish/v1/Chassis
     and it will detect if Members points to either a drive collection or points to individual drives. 
@@ -147,3 +148,4 @@ process
         }    
 }
 }
+Set-Alias -Name 'Get-RedfishDrive' -value 'Get-SwordfishDrive'

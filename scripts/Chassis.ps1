@@ -105,7 +105,7 @@ process{
          }   
     }
 }
-Set-Alias -name 'Get-RedfishChassis' -value 'Get-RedfishChassis'
+Set-Alias -name 'Get-RedfishChassis' -value 'Get-SwordfishChassis'
 function Get-SwordfishChassisThermal
 {
 <#

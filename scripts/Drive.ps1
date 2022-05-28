@@ -123,7 +123,9 @@ process
     $FullDriveSet=@()
     $FullDriveCollectionOnly=@()
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
-        {   foreach ( $DriveData in $PulledData.Drives )
+        {   if ( ($PulledData.Links).Drives ) 
+                    { $PulledData = $PulledData.Links }
+            foreach ( $DriveData in $PulledData.Drives )
                 {   $MyDrive = Invoke-RestMethod2 -uri ( $base + ($DriveData.'@odata.id') )
                     if ( $MyDrive.Members )
                         {   foreach ( $SingleDriveData in $MyDrive.members )

@@ -304,9 +304,12 @@ function invoke-restmethod2
                                     if ( -not $XAuthToken ) 
                                             {   $XAuthToken = ""
                                             }
-                                    $XHead = @{ 'X-Auth-Token'   = $XAuthToken }
-                                    write-verbose "Headers Object is $XHead"
-                                    $PowerShellVersion = ($PSVersionTable.PSVersion).major
+                                    $PowerShellVersion = [int]($PSVersionTable.PSVersion).major
+                                    if ( $PowerShellVersion -lt 6)
+                                            {   $XHead = @{ 'X-Auth-Token'   = $XAuthToken }
+                                            }
+                                        else{   $XHead = @{ 'X-Auth-Token'   = $XAuthToken[0] }
+                                            }
                                     if ( $PowerShellVersion -lt 6)
                                         {   $ReturnObj = invoke-restmethod -Uri $Uri -headers $XHead
                                         } else 

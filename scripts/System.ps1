@@ -51,10 +51,10 @@ param(  [string]    $SystemID,
         [switch]    $ReturnCollectionOnly
      )
 process{
-    $SystemData = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Systems")
+    $SystemData = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Systems") 
     $SysCollection=@()
     foreach($Sys in ($SystemData).Members )
-        {   $SysCollection +=  invoke-restmethod2 -uri ( $base + ($Sys.'@odata.id') )  
+        {   $SysCollection +=  invoke-restmethod2 -uri ( $base + ($Sys.'@odata.id') ) 
         }
     if ( $ReturnCollectionOnly )
         {   return $SystemData

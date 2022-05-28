@@ -37,7 +37,7 @@ PS:> Connect-SwordfishTarget -Target 192.168.1.100
 ```
 5. Once a connection has been made, you can issue other commands such as:
 ```powershell
-Get-SwordfishStorage
+Get-SwordfishStorageService
 ```
 6. To view a complete list of commands, use the following:
 ```powershell
@@ -45,7 +45,7 @@ PS:> Get-Command -module SNIASwordfish
 ```
 7. Documented help is available, use the following:
 ```powershell
-PS:> Get-Help Get-SwordfishStorage -Full
+PS:> Get-Help Get-SwordfishStorageService -Full
 ```
 8. This module follows the PowerShell Verb/Noun model. Naming scheme is as follows:
 ```powershell
@@ -58,7 +58,7 @@ PS:> Get-Verb
 In each case, the Swordfish Noun refers to a Folder that has been made singular. i.e. StorageServices --> StorageService
 The Swordfish PowerShell module works with collections of objects. When you make a request for something like Storage Services, the commands will return an array of objects that represent each storage service. In these cases, you can limit the return to a specific storage service by specifying the storage service name to be returned:
 ```powershell
-PS:> Get-SwordfishStorage -StorageID 1
+PS:> Get-SwordfishStorageService -StorageServiceID 1
 ```
 9. To get subordinate information about an object, i.e to return information such as the power metrics for a chassis, additional commands have been added. The extra commands for this deeper information follow the naming scheme:
 ```<original_command><DetailNoun>```

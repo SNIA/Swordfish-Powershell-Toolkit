@@ -261,6 +261,100 @@ Process
   }
 } 
 Set-Alias -name 'Connect-RedfishTarget' -value 'Connect-SwordfishTarget'
+
+function Get-SwordfishByURL
+{
+<#
+.SYNOPSIS
+    Returns a SNIA Swordfish or DMTF Redfish API as specified by a Redfish URL.
+.DESCRIPTION
+    Returns a SNIA Swordfish or DMTF Redfish API as specified by a Redfish URL.
+.PARAMETER URL
+    You can any of the following items, If you pass a string, it must be in the format that
+    starts with the HTTPS://, or if you pass the relative path that starts with /Redfish/v1/. 
+    Alternativly if you pass a Object, it will look for and extract an hash named '@odata.id' and 
+    use the proper relative path from that passed object. This passed object method allows for 
+    more streamlined pipeline objects.
+.EXAMPLE
+    PS:> Get-RedfishByURL -URL 'HTTPS://10.10.2.39/redfish/v1/Chassis/1/Power'
+
+    @odata.context : /redfish/v1/$metadata#Power.Power
+    @odata.etag    : W/"C6FAF238"
+    @odata.id      : /redfish/v1/Chassis/1/Power
+    @odata.type    : #Power.v1_3_0.Power
+    Id             : Power
+    Name           : PowerMetrics
+    Oem            : @{Hpe=}
+    PowerControl   : {@{@odata.id=/redfish/v1/Chassis/1/Power#PowerControl/0; MemberId=0; PowerCapacityWatts=1000; PowerConsumedWatts=100; PowerMetrics=}}
+    PowerSupplies  : {@{@odata.id=/redfish/v1/Chassis/1/Power#PowerSupplies/0; FirmwareVersion=1.00; LastPowerOutputWatts=54; LineInputVoltage=206;
+                     LineInputVoltageType=ACHighLine; Manufacturer=LTEON; MemberId=0; Model=865408-B21; Name=HpeServerPowerSupply; Oem=; PowerCapacityWatts=500;
+                     PowerSupplyType=AC; SerialNumber=5WBXK0BLL832SA; SparePartNumber=866729-001; Status=}, @{@odata.id=/redfish/v1/Chassis/1/Power#PowerSupplies/1;
+                     FirmwareVersion=1.00; LastPowerOutputWatts=46; LineInputVoltage=207; LineInputVoltageType=ACHighLine; Manufacturer=LTEON; MemberId=1; Model=865408-B21;
+                     Name=HpeServerPowerSupply; Oem=; PowerCapacityWatts=500; PowerSupplyType=AC; SerialNumber=5WBXK0BLL833EE; SparePartNumber=866729-001; Status=}}
+    Redundancy     : {@{@odata.id=/redfish/v1/Chassis/1/Power#Redundancy/0; MaxNumSupported=2; MemberId=0; MinNumNeeded=2; Mode=Failover; Name=PowerSupply Redundancy Group 1;
+                     RedundancySet=System.Object[]; Status=}}
+.EXAMPLE 
+    PS:> Get-RedfishByURL -URL '/redfish/v1/Chassis/1/Power'
+
+    @odata.context : /redfish/v1/$metadata#Power.Power
+    @odata.etag    : W/"C6FAF238"
+    @odata.id      : /redfish/v1/Chassis/1/Power
+    @odata.type    : #Power.v1_3_0.Power
+    Id             : Power
+    Name           : PowerMetrics
+    Oem            : @{Hpe=}
+    PowerControl   : {@{@odata.id=/redfish/v1/Chassis/1/Power#PowerControl/0; MemberId=0; PowerCapacityWatts=1000; PowerConsumedWatts=100; PowerMetrics=}}
+    PowerSupplies  : {@{@odata.id=/redfish/v1/Chassis/1/Power#PowerSupplies/0; FirmwareVersion=1.00; LastPowerOutputWatts=54; LineInputVoltage=206;
+                     LineInputVoltageType=ACHighLine; Manufacturer=LTEON; MemberId=0; Model=865408-B21; Name=HpeServerPowerSupply; Oem=; PowerCapacityWatts=500;
+                     PowerSupplyType=AC; SerialNumber=5WBXK0BLL832SA; SparePartNumber=866729-001; Status=}, @{@odata.id=/redfish/v1/Chassis/1/Power#PowerSupplies/1;
+                     FirmwareVersion=1.00; LastPowerOutputWatts=46; LineInputVoltage=207; LineInputVoltageType=ACHighLine; Manufacturer=LTEON; MemberId=1; Model=865408-B21;
+                     Name=HpeServerPowerSupply; Oem=; PowerCapacityWatts=500; PowerSupplyType=AC; SerialNumber=5WBXK0BLL833EE; SparePartNumber=866729-001; Status=}}
+    Redundancy     : {@{@odata.id=/redfish/v1/Chassis/1/Power#Redundancy/0; MaxNumSupported=2; MemberId=0; MinNumNeeded=2; Mode=Failover; Name=PowerSupply Redundancy Group 1;
+                     RedundancySet=System.Object[]; Status=}}
+.EXAMPLE
+    (Get-RedfishChassis).Power | Get-RedfishByUrl
+
+    @odata.context : /redfish/v1/$metadata#Power.Power
+    @odata.etag    : W/"18A86F62"
+    @odata.id      : /redfish/v1/Chassis/1/Power/
+    @odata.type    : #Power.v1_3_0.Power
+    Id             : Power
+    Name           : PowerMetrics
+    Oem            : @{Hpe=}
+    PowerControl   : {@{@odata.id=/redfish/v1/Chassis/1/Power/#PowerControl/0; MemberId=0; PowerCapacityWatts=1000; PowerConsumedWatts=99; PowerMetrics=}}
+    PowerSupplies  : {@{@odata.id=/redfish/v1/Chassis/1/Power/#PowerSupplies/0; FirmwareVersion=1.00; LastPowerOutputWatts=54; LineInputVoltage=206;
+                     LineInputVoltageType=ACHighLine; Manufacturer=LTEON; MemberId=0; Model=865408-B21; Name=HpeServerPowerSupply; Oem=; PowerCapacityWatts=500;
+                     PowerSupplyType=AC; SerialNumber=5WBXK0BLL832SA; SparePartNumber=866729-001; Status=}, @{@odata.id=/redfish/v1/Chassis/1/Power/#PowerSupplies/1;
+                     FirmwareVersion=1.00; LastPowerOutputWatts=45; LineInputVoltage=207; LineInputVoltageType=ACHighLine; Manufacturer=LTEON; MemberId=1; Model=865408-B21;
+                     Name=HpeServerPowerSupply; Oem=; PowerCapacityWatts=500; PowerSupplyType=AC; SerialNumber=5WBXK0BLL833EE; SparePartNumber=866729-001; Status=}}
+    Redundancy     : {@{@odata.id=/redfish/v1/Chassis/1/Power/#Redundancy/0; MaxNumSupported=2; MemberId=0; MinNumNeeded=2; Mode=Failover; Name=PowerSupply Redundancy Group 1;
+                     RedundancySet=System.Object[]; Status=}}
+#>
+[CmdletBinding()]
+    param(  [Parameter(Mandatory=$True, ValueFromPipeline=$true)]   $URL
+         )
+    process
+        {   if ( ( $URL.GetType()).name -eq 'String' )
+                {   write-verbose 'The Passed in Variable is a string'
+                    if ( $URL -like 'https://*' )
+                            {   write-verbose 'The sent parameter starts with HTTPS://'
+                                $MyURL = $URL
+                            }
+                    if ( $URL -like '/redfish/v1*' )
+                            {   write-verbose 'The sent parameter starts with /redfish/v1. Adding HTTPS base.'
+                                $MyURL = $Base + $URL
+                            }                        
+                }
+            if ( $URL.'@odata.id' ) 
+                {   write-verbose 'The sent parameter was a hash table that used @odata.id as a key name'
+                    $MyURL = $Base + $URL.'@odata.id'
+                }
+            $MyData = invoke-restmethod2 -uri ( $MyURL ) 
+            return $MyData
+        }
+}
+Set-Alias -Value 'Get-SwordfishByURL' -Name 'Get-RedfishByURL'
+     
 function FixTheUntrustedLink
 {   if (-not ([System.Management.Automation.PSTypeName]'ServerCertificateValidationCallback').Type)
         {   $certCallback = @"
@@ -323,7 +417,6 @@ function invoke-restmethod2
                     }
             }
 }
-
 function Get-SwordfishODataTypeName 
 {   [cmdletbinding()]
     param   ( $DataObject
@@ -341,7 +434,6 @@ function Get-SwordfishODataTypeName
                 return
             }
 }
-
 function Get-SwordfishURIFolderByFolder
 {   [cmdletbinding()]
     param ( $Folder

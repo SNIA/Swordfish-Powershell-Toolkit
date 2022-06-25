@@ -30,6 +30,7 @@ Connect-RedfishTarget -target 192.168.1.100
 
 5. If your storage device requires an Autorization token, you can use the following command to obtain or populate this token. Once this token has been gathered, all further commands will attempt to use the token by default in the rest method header. 
 Get-SwordfishSessionToken -target 192.168.1.100 -protocol https -Username chris -password P@ssw0rd!
+Get-RedfishSessionToken   -target 192.168.1.100 -protocol https -Username chris -password P@ssw0rd!
 ```
 This command will set the various global variables that other commands need to operate
 ```powershell
@@ -81,7 +82,8 @@ Get-RedFishChassisThermal
 Get-RedfishDrive
 Get-RedfishManager
 Get-RedfishManagerComponent
-  
+Get-RedfishByURL
+
 Connect-SwordfishTarget
 Get-SwordfishSessionToken
 Get-SwordfishStorage
@@ -110,6 +112,7 @@ Get-SwordfishClassOfService
 Get-SwordfishDataStorageLinesOfService
 Get-SwordfishDataStorageLoSCapabilities
 Get-SwordfishIOConnectivityLoSCapabilities
+Get-SwordfishByURL
 ```
 ### Alternate Swordfish Targets
 

@@ -55,14 +55,14 @@ Process{
                     }
                 
             }
-    Catch   {   $_
+    Catch   {   write-error $_
             }
     if ( $ReturnATok )
         {   $Global:XAuthToken = (($ReturnATok.Headers).'X-Auth-Token')
             $ReturnData | add-member -membertype NoteProperty -name 'X-Auth-Token' -value $XAuthToken
             return ($ReturnData)
         } else 
-        {   Write-Error "No RedFish/Swordfish target Detected or wrong port used at that address"
+        {   throw "No RedFish/Swordfish target Detected or wrong port used at that address"
         }
     }
 }

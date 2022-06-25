@@ -41,11 +41,7 @@ function Get-SwordfishSystem
     Members             : {@{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8}}
 .LINK
     https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
-.VERSION 1.13.0
 #>   
-<#PSScriptInfo
-.VERSION 1.13.0
-#>
 [CmdletBinding()]
 param(  [string]    $SystemID,
         [switch]    $ReturnCollectionOnly
@@ -68,20 +64,20 @@ Set-Alias -Value 'Get-SwordfishSystem' -Name 'Get-RedfishSystem'
 
 function Get-SwordfishSystemComponent 
 {
-    <#
-    .SYNOPSIS
+<#
+.SYNOPSIS
         Retrieve The list of valid Subcomponents within a single Computer System.
-    .DESCRIPTION
+.DESCRIPTION
         This command will either return the a complete collection of System Components of a specific type object(s) that exist.
-    .PARAMETER ComputerSystemID
+.PARAMETER ComputerSystemID
         The Computer System ID name for a specific System, otherwise the command
         will return all Computer Systems.
-    .PARAMETER ReturnCollectioOnly
+.PARAMETER ReturnCollectioOnly
         This directive boolean value defaults to false, but will return the collection instead of an array of the actual objects if set to true.
-    .PARAMETER SubComponent
+.PARAMETER SubComponent
         This can be a select set of different subcomponents within the sytems, the valid items are 
         Bios, Boot, EthernetInterfaces, LogServices, Memory, MemoryDomains, NetworkInterfaces, Processors, SecureBoot, Storage, TrustedModules.
-    .EXAMPLE
+.EXAMPLE
         Get-SwordfishSystem -Subcomponent 
     
         @odata.context     : /redfish/v1/$metadata#ComputerSystem.ComputerSystem
@@ -96,11 +92,11 @@ function Get-SwordfishSystemComponent
         Storage            : @{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8/Storage}
         Links              : @{Chassis=System.Object[]; Endpoints=System.Object[]}
     
-    .EXAMPLE
+.EXAMPLE
         PS:> Get-SwordfishSystem -SystemId 00C0FF5038E8
         
         { Output Identical to example 1}
-    .EXAMPLE
+.EXAMPLE
         Get-SwordfishSystem -ReturnCollectionOnly $true
     
         @odata.context      : /redfish/v1/$metadata#ComputerSystemCollection.ComputerSystemCollection
@@ -110,7 +106,7 @@ function Get-SwordfishSystemComponent
         Members@odata.count : 1
         Members             : {@{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8}}
     
-    .EXAMPLE
+.EXAMPLE
         PS:> Get-SwordfishSystem -ReturnCollectionOnly $True | ConvertTo-Json
         
         {   "@odata.Copyright":  "Copyright 2020 HPE and DMTF",
@@ -123,14 +119,10 @@ function Get-SwordfishSystemComponent
                             }
                         ]
         }
-    .LINK
+.LINK
         https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
-    .VERSION 1.13.0
-    #>   
-    <#PSScriptInfo
-    .VERSION 1.13.0
-    #>
-    [CmdletBinding()]
+#>   
+[CmdletBinding()]
     param(  [string]    $SystemID,
             [ValidateSet ('Bios', 'Boot', 'EthernetInterfaces', 'LogServices', 'Memory', 'MemoryDomains', 
                            'NetworkInterfaces', 'Processors', 'SecureBoot', 'Storage', 'TrustedModules')]
@@ -138,6 +130,7 @@ function Get-SwordfishSystemComponent
             [switch]    $ReturnCollectionOnly
          )
     process{
+        $NoCollectionExists=$False
         $SystemData = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Systems")
         $SysCollection=@()
         $SecondOrderData=@()
@@ -153,23 +146,37 @@ function Get-SwordfishSystemComponent
                     }     
         if ( $FirstOrderData )
                 {   $SecondOrderDataCollection = invoke-Restmethod2 -uri ( $base + ($FirstOrderData."$SubComponent").'@odata.id' )
+                    if ( -not $SecondOrderDataCollection )
+                            {   # The data may exist without going to a seperate page
+                                $SecondOrderDataCollection = $FirstOrderData.($SubComponent)
+                                $NoCollectionExists = $True
+                            }
                     foreach ( $Mem in $SecondOrderDataCollection.Members )
-                    {   write-host $Mem
-                        $SecondOrderData += invoke-Restmethod2 -uri ( $base + $Mem.'@odata.id' ) 
-                    } 
+                        {   write-host $Mem
+                            $SecondOrderData += invoke-Restmethod2 -uri ( $base + $Mem.'@odata.id' ) 
+                        } 
                 } 
             else
                 {   $SecondOrderDataCollection = ''
                 }
         if ( -not $SecondOrderDataCollection.'Members' )
             {   # Must be a single object without a collection, return the single object 
+                write-verbose "No Second Order Data Collection members found."
                 $SecondOrderData = $SecondOrderDataCollection
+                $NoCollectionExists = $true
             }
-        if ( $ReturnCollectionOnly)
-                {   return $SecondOrderDataCollection
+        if ( $ReturnCollectionOnly )
+                {   write-verbose "Returning the collection only"
+                    if ( $NoCollectionExists )
+                            {   return
+                            } 
+                        else 
+                            {   return $SecondOrderDataCollection
+                            }   
                 } 
             else 
-                {   return $SecondOrderData
+                {   write-verbose "Returning the Actual Data"
+                    return $SecondOrderData
                 }
     }
 }

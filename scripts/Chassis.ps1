@@ -15,32 +15,284 @@ function Get-SwordfishChassis
     A Boolean value that defaults to $False, will return a powershell array of the Chassis. To set this value true indicates that
     instead you wish to see the raw Chassis Collection Object and not what the Chassis Collection points to.
 .EXAMPLE
-    PS:> Get-SwordfishChassis
+    The following is an example from the HPE ProLiant DL360 Gen 10 Server in the SNIA Labs
+    PS:> Get-RedfishChassis
 
-    @Redfish.Copyright : Copyright 2020 HPE and DMTF
-    @odata.id          : /redfish/v1/Chassis/AC-109032
-    @odata.type        : #Chassis.v1_11_0.Chassis
-    Id                 : AC-109032
-    Name               : 2d2b4bd8361b856bbc00000001000041430001a9e8
-    ChassisType        : Shelf
-    Manufacturer       : HPE-Nimble
-    Model              : CS700
-    SKU                : CS700-2G-36T-3200F
-    SerialNumber       : AC-109032
-    PartNumber         : CS700-2G-36T-3200F
-    IndicatorLED       : Lit
-    PowerState         : On
-    EnviornmentalClass : A2
-    Status             : @{State=Enabled; Health=OK}
-    Thermal            : @{@odata.id=/redfish/v1/Chassis/AC-109032/Thermal}
-    Power              : @{@odata.id=/redfish/v1/Chassis/AC-109032/Power}
-    Drives             : @{@odata.id=/redfish/v1/Chassis/AC-109032/Drives}
-    Links              : @{Storage=}
-
+    @odata.context  : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.etag     : W/"B5DF47B2"
+    @odata.id       : /redfish/v1/Chassis/1/
+    @odata.type     : #Chassis.v1_10_2.Chassis
+    Id              : 1
+    AssetTag        :
+    ChassisType     : RackMount
+    IndicatorLED    : Off
+    Links           : @{ManagedBy=System.Object[]; ComputerSystems=System.Object[]; Drives=System.Object[]}
+    Manufacturer    : HPE
+    Model           : ProLiant DL360 Gen10
+    Name            : Computer System Chassis
+    NetworkAdapters : @{@odata.id=/redfish/v1/Chassis/1/NetworkAdapters/}
+    Oem             : @{Hpe=}
+    PCIeDevices     : @{@odata.id=/redfish/v1/Chassis/1/PCIeDevices/}
+    PCIeSlots       : @{@odata.id=/redfish/v1/Chassis/1/PCIeSlots/}
+    Power           : @{@odata.id=/redfish/v1/Chassis/1/Power/}
+    PowerState      : On
+    SKU             : 867960-B21
+    SerialNumber    : USE726CR3F
+    Status          : @{Health=Warning; State=Enabled}
+    Thermal         : @{@odata.id=/redfish/v1/Chassis/1/Thermal/}
 .EXAMPLE
-    PS:> Get-SwordfishChassis -ChassisId Chassis-13
+    The following is an example from the Dell R640 Server in the SNIA Labs
+    PS:> Get-RedfishChassis
 
-    { This output from this command will appear similar to the above output, but only limit the output to a single chassis instead of a possible collection }
+    @odata.context     : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id          : /redfish/v1/Chassis/System.Embedded.1
+    @odata.type        : #Chassis.v1_11_0.Chassis
+    Actions            : @{#Chassis.Reset=}
+    Assembly           : @{@odata.id=/redfish/v1/Chassis/System.Embedded.1/Assembly}
+    AssetTag           :
+    ChassisType        : RackMount
+    Description        : It represents the properties for physical components for any system.It represent racks, rackmount servers, blades, standalone, modular systems,enclosures, and all
+                         other containers.The non-cpu/device centric parts of the schema are all accessed either directly or indirectly through this resource.
+    EnvironmentalClass : A2 
+    Id                 : System.Embedded.1
+    IndicatorLED       : Lit
+    Links              : @{ComputerSystems=System.Object[]; ComputerSystems@odata.count=1; Contains=System.Object[]; Contains@odata.count=2; CooledBy=System.Object[];
+                         CooledBy@odata.count=16; Drives=System.Object[]; Drives@odata.count=0; ManagedBy=System.Object[]; ManagedBy@odata.count=1; ManagersInChassis=System.Object[];
+                         ManagersInChassis@odata.count=1; PCIeDevices=System.Object[]; PCIeDevices@odata.count=7; PoweredBy=System.Object[]; PoweredBy@odata.count=2;
+                         Processors=System.Object[]; Processors@odata.count=2; Storage=System.Object[]; Storage@odata.count=4}
+    Location           : @{Info=;;;;1; InfoFormat=DataCenter;RoomName;Aisle;RackName;RackSlot; Placement=; PostalAddress=}
+    Manufacturer       : Dell Inc.
+    Memory             : @{@odata.id=/redfish/v1/Systems/System.Embedded.1/Memory}
+    Model              : PowerEdge R640
+    Name               : Computer System Chassis
+    NetworkAdapters    : @{@odata.id=/redfish/v1/Chassis/System.Embedded.1/NetworkAdapters}
+    Oem                : @{Dell=}
+    PCIeSlots          : @{@odata.id=/redfish/v1/Chassis/System.Embedded.1/PCIeSlots}
+    PartNumber         : 008R9MX08
+    PhysicalSecurity   : @{IntrusionSensor=Normal; IntrusionSensorNumber=115; IntrusionSensorReArm=Manual}
+    Power              : @{@odata.id=/redfish/v1/Chassis/System.Embedded.1/Power}
+    PowerState         : On
+    SKU                : GGSPJH2
+    Sensors            : @{@odata.id=/redfish/v1/Chassis/System.Embedded.1/Sensors}
+    SerialNumber       : CN7475171J0074
+    Status             : @{Health=OK; HealthRollup=OK; State=Enabled}
+    Thermal            : @{@odata.id=/redfish/v1/Chassis/System.Embedded.1/Thermal}
+    UUID               : 4c4c4544-0047-5310-8050-c7c04f4a4832
+
+    @Redfish.Settings : @{@odata.context=/redfish/v1/$metadata#Settings.Settings; @odata.type=#Settings.v1_3_0.Settings; SettingsObject=; SupportedApplyTimes=System.Object[]}
+    @odata.context    : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id         : /redfish/v1/Chassis/Enclosure.Internal.0-0:RAID.Slot.1-1
+    @odata.type       : #Chassis.v1_11_0.Chassis
+    Actions           :
+    AssetTag          :
+    ChassisType       : StorageEnclosure
+    Description       : Backplane 0 on Connector 0 of RAID Controller in Slot 1
+    Id                : Enclosure.Internal.0-0:RAID.Slot.1-1
+    Links             : @{ContainedBy=; Contains=System.Object[]; Contains@odata.count=0; Drives=System.Object[]; Drives@odata.count=2; ManagedBy=System.Object[]; ManagedBy@odata.count=1;
+                        PCIeDevices=System.Object[]; PCIeDevices@odata.count=1; Storage=System.Object[]; Storage@odata.count=1}
+    Manufacturer      :
+    Model             : BP14G+ 0:0
+    Name              : BP14G+ 0:0
+    Oem               : @{Dell=}
+    PartNumber        :
+    PowerState        : On
+    SKU               :
+    SerialNumber      :
+    Status            : @{Health=OK; HealthRollup=OK; State=Enabled}
+
+    @Redfish.Settings : @{@odata.context=/redfish/v1/$metadata#Settings.Settings; @odata.type=#Settings.v1_3_0.Settings; SettingsObject=; SupportedApplyTimes=System.Object[]}
+    @odata.context    : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id         : /redfish/v1/Chassis/Enclosure.Internal.0-1:NonRAID.Integrated.1-1
+    @odata.type       : #Chassis.v1_11_0.Chassis
+    Actions           :
+    AssetTag          :
+    ChassisType       : StorageEnclosure
+    Description       : Backplane 1 on Connector 0 of Integrated Storage Controller 1
+    Id                : Enclosure.Internal.0-1:NonRAID.Integrated.1-1
+    Links             : @{ContainedBy=; Contains=System.Object[]; Contains@odata.count=0; Drives=System.Object[]; Drives@odata.count=2; ManagedBy=System.Object[]; ManagedBy@odata.count=1;
+                        PCIeDevices=System.Object[]; PCIeDevices@odata.count=1; Storage=System.Object[]; Storage@odata.count=1}
+    Manufacturer      :
+    Model             : BP14G+ 0:1
+    Name              : BP14G+ 0:1
+    Oem               : @{Dell=}
+    PartNumber        :
+    PowerState        :
+    SKU               :
+    SerialNumber      :
+    Status            : @{Health=; HealthRollup=; State=Enabled}
+.EXAMPLE
+    The following is an example from the Lenovo XCC Server in the SNIA Labs
+    PS:> Get-RedfishChassis
+
+    Manufacturer       : Lenovo
+    Description        : This resource is used to represent a chassis or other physical enclosure for a Redfish implementation.
+    IndicatorLED       : Off
+    SerialNumber       : J10003YV
+    PartNumber         : SB27A01982
+    Memory             : @{@odata.id=/redfish/v1/Systems/1/Memory}
+    @odata.id          : /redfish/v1/Chassis/1
+    UUID               : F95FC508-986B-11E7-85F8-7ED30AE1044F
+    EnvironmentalClass : A4
+    HeightMm           : 44.45
+    SKU                : 7X02CTO1WW
+    PCIeDevices        : @{@odata.id=/redfish/v1/Chassis/1/PCIeDevices}
+    Location           : @{PostalAddress=; Placement=; PartLocation=; Contacts=System.Object[]}
+    Status             : @{State=Enabled; Health=OK}
+    Oem                : @{Lenovo=}
+    Links              : @{ManagedBy=System.Object[]; ManagersInChassis=System.Object[]; PoweredBy=System.Object[]; PCIeDevices=System.Object[]; Storage=System.Object[];
+                         Drives=System.Object[]; ComputerSystems=System.Object[]; Processors=System.Object[]; CooledBy=System.Object[]}
+    NetworkAdapters    : @{@odata.id=/redfish/v1/Chassis/1/NetworkAdapters}
+    Id                 : 1
+    Name               : Chassis
+    @odata.type        : #Chassis.v1_12_0.Chassis
+    AssetTag           :
+    PCIeSlots          : @{@odata.id=/redfish/v1/Chassis/1/PCIeSlots}
+    PowerState         : On
+    Power              : @{@odata.id=/redfish/v1/Chassis/1/Power}
+    @odata.etag        : "186a545456a0a33bb221f5"
+    Model              : 7X02CTO1WW
+    ChassisType        : RackMount
+    Thermal            : @{@odata.id=/redfish/v1/Chassis/1/Thermal}
+    LogServices        : @{@odata.id=/redfish/v1/Systems/1/LogServices}
+
+    Status       : @{State=Enabled; Health=OK}
+    Oem          : @{Lenovo=}
+    Description  : This resource is used to represent a chassis or other physical enclosure for a Redfish implementation.
+    Id           : 3
+    SerialNumber : V1SH77F002S
+    @odata.type  : #Chassis.v1_12_0.Chassis
+    ChassisType  : Enclosure
+    PartNumber   : SC57A01987
+    Name         : Backplane
+    SKU          : 01GV281
+    @odata.etag  : "3c84039472612964eb7"
+    Model        :
+    @odata.id    : /redfish/v1/Chassis/3
+    PowerState   :
+    Manufacturer : LNVO
+.EXAMPLE
+    The following is an example from the Intel Reference Server in the SNIA Labs
+    PS:> Get-RedfishChassis
+    
+    @odata.context   : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id        : /redfish/v1/Chassis/RackMount
+    @odata.type      : #Chassis.v1_9_1.Chassis
+    Id               : RackMount
+    Name             : Computer System Chassis
+    Description      : System Chassis
+    ChassisType      : RackMount
+    Manufacturer     : Intel Corporation
+    Model            : S2600WFT
+    SerialNumber     : ..................
+    PartNumber       : ..................
+    PowerState       : On
+    PhysicalSecurity : @{IntrusionSensorNumber=4; IntrusionSensor=Normal}
+    IndicatorLED     : Off
+    Status           : @{State=Enabled; Health=OK; HealthRollup=OK}
+    Links            : @{Storage=System.Object[]; ComputerSystems=System.Object[]; ManagedBy=System.Object[]; Contains=System.Object[]}
+    @odata.etag      : 315fc4a001fb1cf1ff736adc9b648b01
+
+    @odata.context : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id      : /redfish/v1/Chassis/RackMount/Baseboard
+    @odata.type    : #Chassis.v1_9_1.Chassis
+    Id             : Baseboard
+    Name           : Computer System Card
+    ChassisType    : Card
+    Manufacturer   : Intel Corporation
+    Model          : S2600WFT
+    SerialNumber   : BQWF83800130
+    PartNumber     : H48104-853
+    PowerState     : On
+    Thermal        : @{@odata.id=/redfish/v1/Chassis/RackMount/Baseboard/Thermal}
+    Power          : @{@odata.id=/redfish/v1/Chassis/RackMount/Baseboard/Power}
+    Links          : @{ComputerSystems=System.Object[]; ManagedBy=System.Object[]; ContainedBy=}
+    @odata.etag    : b5fd9b36429d1e08811ae52ecf6c1b5a
+
+    @odata.context : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id      : /redfish/v1/Chassis/RackMount/FrontPanel
+    @odata.type    : #Chassis.v1_9_1.Chassis
+    Id             : FrontPanel
+    Name           : Computer System Card
+    ChassisType    : Card
+    Manufacturer   : Intel Corporation
+    Model          : FFPANEL
+    SerialNumber   : BQWL83104026
+    PartNumber     : H39380-171
+    PowerState     : On
+    Links          : @{ComputerSystems=System.Object[]; ManagedBy=System.Object[]; ContainedBy=}
+    @odata.etag    : 85ca3ef0ee489fbf6448a8d4cc504b9e
+
+    @odata.context : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id      : /redfish/v1/Chassis/RackMount/HSBackplane1
+    @odata.type    : #Chassis.v1_9_1.Chassis
+    Id             : HSBackplane1
+    Name           : Computer System Card
+    ChassisType    : Card
+    Manufacturer   : Intel Corporation
+    Model          : F1U8X25S3PHSBP
+    SerialNumber   : BQWK83500933
+    PartNumber     : H88382-351
+    PowerState     : On
+    Links          : @{ComputerSystems=System.Object[]; Drives=System.Object[]; ManagedBy=System.Object[]; ContainedBy=}
+    @odata.etag    : 23686e2513c28ac886c00c922737a7e3
+
+    @odata.context : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id      : /redfish/v1/Chassis/RackMount/PCIeRiser1
+    @odata.type    : #Chassis.v1_9_1.Chassis
+    Id             : PCIeRiser1
+    Name           : Computer System Card
+    ChassisType    : Card
+    Manufacturer   : Intel Corporation
+    Model          : F1UL16RISER3
+    SerialNumber   : BQWK81301247
+    PartNumber     : H88399-250
+    PowerState     : On
+    Links          : @{ComputerSystems=System.Object[]; ManagedBy=System.Object[]; ContainedBy=}
+    @odata.etag    : 87ac00c0de186c9dd60dd4d9dec0fc64
+
+    @odata.context : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id      : /redfish/v1/Chassis/RackMount/PCIeRiser2
+    @odata.type    : #Chassis.v1_9_1.Chassis
+    Id             : PCIeRiser2
+    Name           : Computer System Card
+    ChassisType    : Card
+    Manufacturer   : Intel Corporation
+    Model          : F1UL16RISER3
+    SerialNumber   : BQWK83600837
+    PartNumber     : H88399-250
+    PowerState     : On
+    Links          : @{ComputerSystems=System.Object[]; ManagedBy=System.Object[]; ContainedBy=}
+    @odata.etag    : 53bf612a650d4a35ba1804f0f4f1c1dd
+
+    @odata.context : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id      : /redfish/v1/Chassis/RackMount/PwrSupply1FRU
+    @odata.type    : #Chassis.v1_9_1.Chassis
+    Id             : PwrSupply1FRU
+    Name           : Computer System Card
+    ChassisType    : Card
+    Manufacturer   : FLEXTRONICS
+    Model          : S-1100ADU00-201
+    SerialNumber   : EXWD83501687
+    PartNumber     : G84027-009
+    PowerState     : On
+    Links          : @{ComputerSystems=System.Object[]; ManagedBy=System.Object[]; ContainedBy=}
+    @odata.etag    : 29aec62a519d15015417a8ee22288e15
+.EXAMPLE
+    PS:> Get-SwordfishChassis -ChassisId PwrSupply1FRU
+
+    @odata.context : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.id      : /redfish/v1/Chassis/RackMount/PwrSupply1FRU
+    @odata.type    : #Chassis.v1_9_1.Chassis
+    Id             : PwrSupply1FRU
+    Name           : Computer System Card
+    ChassisType    : Card
+    Manufacturer   : FLEXTRONICS
+    Model          : S-1100ADU00-201
+    SerialNumber   : EXWD83501687
+    PartNumber     : G84027-009
+    PowerState     : On
+    Links          : @{ComputerSystems=System.Object[]; ManagedBy=System.Object[]; ContainedBy=}
+    @odata.etag    : 29aec62a519d15015417a8ee22288e15
 .EXAMPLE
     PS:> Get-SwordfishChassis | ConvertTo-Json
 
@@ -215,7 +467,7 @@ process{
         }
 }
 }
-Set-Alias -name 'Get-RedishChassisThermal' -Value 'Get-SwordfishChassisThermal'
+Set-Alias -name 'Get-RedfishChassisThermal' -Value 'Get-SwordfishChassisThermal'
 
 function Get-SwordfishChassisPower
 {
@@ -271,42 +523,47 @@ function Get-SwordfishChassisPower
     https://redfish.dmtf.org/schemas/v1/Chassis.v1_14_0.json
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
-param(  [Parameter(ParameterSetName='ByChassisID')]                     [string]    $ChassisID,
-
-        [Parameter(ParameterSetName='ByChassisID')]
-        [Parameter(ParameterSetName='Default')]             
-        [Validateset("PowerControl","Voltages","PowerSupplies","All")]  [string]    $MetricName="All",
-
-        [Parameter(ParameterSetName='ByChassisID')]        
-        [Parameter(ParameterSetName='Default')]                         [Switch]    $ReturnCollectionOnly
+param(                                                                  [string]    $ChassisID,
+        [Validateset("PowerControl","Voltages","PowerSupplies","All")]  [string]    $MetricName="All"      
      ) 
 process
-  { switch ($PSCmdlet.ParameterSetName )
-            {   'Default'       {   foreach ( $ChassID in ( Get-SwordfishChassis ).id )
-                                        {   [array]$DefChassSet += Get-SwordfishChassisPower -ChassisID $ChassID -MetricName $MetricName -ReturnCollectionOnly:$ReturnCollectionOnly
-                                        }
-                                    return ( $DefChassSet )  
-                                }
-                'ByChassisID'   {   $PulledData = Get-SwordfishChassis -ChassisID $ChassisID
-                                }
+  { if ( $ChassisID)
+            {   $MyChassis = Get-RedfishChassis -ChassisId $ChassisID
             }
-    if ( $PSCmdlet.ParameterSetName -ne "Default" )
-        {   $Powers = invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id') +  '/Power' )
-            switch ($MetricName)
-                    {   "PowerControl"  {   [array]$ReturnSet=($Powers).PowerControl
-                                        }
-                        "Voltages"      {   [array]$ReturnSet=($Powers).Voltages
-                                        }
-                        "PowerSupplies" {   [array]$ReturnSet=($Powers).PowerSupplies
-                                        }
-                        "All"           {   [array]$ReturnSet=($Powers)
-                                        }
-                    } 
-            if ( $ReturnCollectionOnly )
-                    {   return $ReturnSet
-                    } 
-                else 
-                    {   return $ReturnSet
-  }     }           }       
+        else 
+            {   $MyChassis = Get-RedfishChassis
+            }
+    if ( $MyChassis.Power )
+            {   # $ReturnData = @{}
+                ForEach ( $PowerHash in ($MyChassis).Power )
+                    {   # write-warning 'Inside loop'
+                        $MyURL = $PowerHash.'@odata.id'
+                        try     {   $Powers = Invoke-RestMethod2 -uri ( $Base + $MyURL )   
+                                    if ( $Powers )
+                                        {   #write-warning 'about to switch'
+                                            #write-host "The url is as follows"
+                                            #$Base + $MyURL
+                                            #$Powers | convertto-json | out-string
+                                            switch ($MetricName)
+                                            {   "PowerControl"  {   $ReturnData = ($Powers).PowerControl
+                                                                }
+                                                "Voltages"      {   $ReturnData = ($Powers).Voltages
+                                                                }
+                                                "PowerSupplies" {   $ReturnData = ($Powers).PowerSupplies
+                                                                }
+                                                "All"           {   $ReturnData = $Powers
+                                                                }
+                                            } 
+                                    }
+                                }
+                        catch   {     write-warning 'Call to Power data failed'
+                                }
+                    }   
+                return $ReturnData
+            }
+        else
+            {   write-warning "No Power subsection found"
+            }
+  }
 }
 Set-Alias -Name 'Get-RedfishChassisPower' -Value 'Get-SwordfishChassisPower'

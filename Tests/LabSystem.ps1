@@ -1,7 +1,7 @@
 # This script will connect to the various options of Redfish Servers so that additional commands can be used to generate examples and tests.
 function Get-RedfishLabSystem
 {   
-    param(  [Switch]    $WriteExampleFile ,
+    param(  [Switch]    $WriteExampleFile,
             [switch]    $ReturnCollectionOnly     
          )
     process
@@ -19,8 +19,8 @@ function Get-RedfishLabSystem
                     $MyString2 = $MyString + 'PS:> Get-RedfishSystem ' + $RCO + ' | ConvertTo-JSON' + "`n"
                     $MyString1 = $MyString1 + ( $Result | Out-String )
                     $MyString2 = $MyString2 + ( $Result | ConvertTo-JSON | Out-String )
-                    $MyFile1   = 'Examples\Get-RedfishSystem ' + $RCO + '.Example.' + $Vendor + '.txt'
-                    $MyFile2   = 'Examples\Get-RedfishSystem ' + $RCO + '.Example.' + $Vendor + '.json'
+                    $MyFile1   = 'Examples\System\Get-RedfishSystem ' + $RCO + '.Example.' + $Vendor + '.txt'
+                    $MyFile2   = 'Examples\System\Get-RedfishSystem ' + $RCO + '.Example.' + $Vendor + '.json'
                     $OutName1  = $MyPath.Replace('SNIASwordfish.psm1',$MyFile1)
                     $OutName2  = $MyPath.Replace('SNIASwordfish.psm1',$MyFile2)
                     write-verbose "The file to be written would be $OutName1 and $OutName2"
@@ -66,8 +66,8 @@ function Get-RedfishLabSystemComponent
                     $MyString2 = $MyString + 'PS:> Get-RedfishChassisPower -SubCompoenet ' + $SubComponent + ' ' + $RCO + "`n"
                     $MyString1 = $MyString1 + ( $Result | Out-String )
                     $MyString2 = $MyString2 + ( $Result | ConvertTo-JSON | Out-String )
-                    $MyFile1   = 'Examples\Get-RedfishSystemSubComponent.' + $SubComponent + $RCO + '.Example.' + $Vendor + '.txt'
-                    $MyFile2   = 'Examples\Get-RedfishSystemSubComponent.' + $SubComponent + $RCO + '.Example.' + $Vendor + '.json'
+                    $MyFile1   = 'Examples\System\Get-RedfishSystemSubComponent.' + $SubComponent + $RCO + '.Example.' + $Vendor + '.txt'
+                    $MyFile2   = 'Examples\System\Get-RedfishSystemSubComponent.' + $SubComponent + $RCO + '.Example.' + $Vendor + '.json'
                     $OutName1  = $MyPath.Replace('SNIASwordfish.psm1',$MyFile1)
                     $OutName2  = $MyPath.Replace('SNIASwordfish.psm1',$MyFile2)
                     write-verbose "The file to be written would be $OutName1 and $OutName2"
@@ -78,8 +78,10 @@ function Get-RedfishLabSystemComponent
                                 $MyString2 | out-file -filepath $OutName2
                             } 
                         else 
-                            {   Write-host $MyString1
-                                Write-host $MyString2                             
+                            {   if ( $result) 
+                                {   write-host $MyString1
+                                    write-host $MyString2
+                                }                            
                             }
                 }
         catch   {   Write-warning 'The Command returned an error. No file written.'
@@ -101,8 +103,8 @@ function Get-RedfishLabChassisThermal
                     $MyString2 = $MyString + 'PS:> Get-RedfishChassisThermal -MetricName ' + $MetricName + "`n"
                     $MyString1 = $MyString1 + ( $Result | Out-String )
                     $MyString2 = $MyString2 + ( $Result | ConvertTo-JSON | Out-String )
-                    $MyFile1   = 'Examples\Get-RedfishChassisThermal-MetricName.' + $MetricName + '.Example.' + $Vendor + '.txt'
-                    $MyFile2   = 'Examples\Get-RedfishChassisThermal-MetricName.' + $MetricName + '.Example.' + $Vendor + '.json'
+                    $MyFile1   = 'Examples\System\Get-RedfishChassisThermal-MetricName.' + $MetricName + '.Example.' + $Vendor + '.txt'
+                    $MyFile2   = 'Examples\System\Get-RedfishChassisThermal-MetricName.' + $MetricName + '.Example.' + $Vendor + '.json'
                     $OutName1  = $MyPath.Replace('SNIASwordfish.psm1',$MyFile1)
                     $OutName2  = $MyPath.Replace('SNIASwordfish.psm1',$MyFile2)
                     write-verbose "The file to be written would be $OutName1 and $OutName2"
@@ -113,8 +115,10 @@ function Get-RedfishLabChassisThermal
                                 $MyString2 | out-file -filepath $OutName2
                             } 
                         else 
-                            {   Write-host $MyString1
-                                Write-host $MyString2                             
+                            {   if ( $Result) 
+                                {   write-host $MyString1
+                                    write-host $MyString2
+                                }                        
                             }
                 }
         catch   {   Write-warning 'The Command returned an error. No file written.'

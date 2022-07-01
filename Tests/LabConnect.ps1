@@ -36,20 +36,21 @@ function Connect-RedfishLabServer
         $Global:Vendor = ($Model.split() )[0]
         $Global:MyPath    = (Get-Module SNIASwordfish).path 
         try     {   $Result = Connect-RedfishTarget -Target $DeviceIP -erroraction stop
-                    $MyString  = '.EXAMPLE ' + "`n"
-                    $MyString += 'This example shows connecting to a ' + $Model + ' server.' + "`n"            
-                    $MyString += 'PS:> Connect-RedfishTaget -Target ' + "'" + $DeviceIp + "'" + " | ConvertTo-JSON `n"
-                    $MyString2 = $MyString + ( $Result | convertto-json | out-string )
-                    $MyString += ( $Result | Out-String )
-                    $MyFile    = 'Examples\Connect-RedfishTarget.Example.' + $Vendor + '.txt'
-                    $MyFile2   = 'Examples\Connect-RedfishTarget.Example.' + $Vendor + '.json'                    
-                    $OutName   = $MyPath.Replace('SNIASwordfish.psm1',$MyFile)
-                    $OutName2  = $MyPath.Replace('SNIASwordfish.psm1',$MyFile2)
-                    write-verbose "The file to be written would be $OutName"
+                    $MyString   = '.EXAMPLE ' + "`n"
+                    $MyString  += 'This example shows connecting to a ' + $Model + ' server.' + "`n"            
+                    $MyString1  = $MyString + 'PS:> Connect-RedfishTaget -Target ' + "'" + $DeviceIp + "'" + " `n"
+                    $MyString2  = $MyString + 'PS:> Connect-RedfishTaget -Target ' + "'" + $DeviceIp + "'" + " | ConvertTo-JSON `n"
+                    $MyString1 += ( $Result | Out-String )
+                    $MyString2 += ( $Result | convertto-json | out-string )
+                    $MyFile1    = 'Examples\Connect-RedfishTarget.Example.' + $Vendor + '.txt'
+                    $MyFile2    = 'Examples\Connect-RedfishTarget.Example.' + $Vendor + '.json'                    
+                    $OutName1   = $MyPath.Replace('SNIASwordfish.psm1',$MyFile1)
+                    $OutName2   = $MyPath.Replace('SNIASwordfish.psm1',$MyFile2)
+                    write-verbose "The file to be written would be $OutName1"
                     write-verbose "The Content to send to the file would be $MyString"
-                    if ( $WriteExampleFile )
+                    if ( $WriteExampleFile -and $result )
                         {   Write-output "The File will be written."
-                            $MyString  | out-file -filepath $OutName
+                            $MyString  | out-file -filepath $OutName1
                             $MyString2 | out-file -filepath $OutName2
                         }
                 }
@@ -58,20 +59,20 @@ function Connect-RedfishLabServer
         
   ##########################################
         try     {   $Result = Get-RedfishSessionToken -username $UName -password $Pword -erroraction stop
-                    $MyString  = '.EXAMPLE ' + "`n"
-                    $MyString += ('This example shows connecting to a ' + $Model + ' server.' + "`n")            
-                    $MyString += 'PS:> Get-RedfishSessionToken -Username ' + "'"  + $Uname + "' -Password '" + $Pword + "'" + "`n"
-                    $MyString2 = $MyString + ( $Result | Out-String )
-                    $MyString += ( $Result | Out-String )
-                    $MyFile    = 'Examples\Get-RedfishSessionToken.Example.' + $Vendor + '.txt'
-                    $MyFile2    = 'Examples\Get-RedfishSessionToken.Example.' + $Vendor + '.json'
-                    $OutName   = $MyPath.Replace('SNIASwordfish.psm1',$MyFile)
-                    $OutName2   = $MyPath.Replace('SNIASwordfish.psm1',$MyFile)
+                    $MyString   = '.EXAMPLE ' + "`n"
+                    $MyString  += ('This example shows connecting to a ' + $Model + ' server.' + "`n")            
+                    $MyString  += 'PS:> Get-RedfishSessionToken -Username ' + "'"  + $Uname + "' -Password '" + $Pword + "'" + "`n"
+                    $MyString1  = $MyString + ( $Result | Out-String )
+                    $MyString2  = $MyString + ( $Result | ConvertTo-Json | Out-String )
+                    $MyFile1    = 'Examples\Session\Get-RedfishSessionToken.Example.' + $Vendor + '.txt'
+                    $MyFile2    = 'Examples\Session\Get-RedfishSessionToken.Example.' + $Vendor + '.json'
+                    $OutName1   = $MyPath.Replace('SNIASwordfish.psm1',$MyFile1)
+                    $OutName2   = $MyPath.Replace('SNIASwordfish.psm1',$MyFile2)
                     write-verbose "The file to be written would be  `n $OutName"
                     write-verbose "The Content to send to the file would be $MyString"
-                    if ( $WriteExampleFile )
+                    if ( $WriteExampleFile -and $result)
                         {   Write-output "The File will be written." 
-                            $MyString  | out-file -filepath $OutName
+                            $MyString1 | out-file -filepath $OutName1
                             $MyString2 | out-file -filepath $OutName2
                     }
                 }

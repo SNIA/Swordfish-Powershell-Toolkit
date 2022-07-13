@@ -72,8 +72,8 @@ The current list of supported cmdlets are:
 Connect-RedfishTarget                              
 Get-RedfishByURL                                   
 Get-RedfishChassis                                 
-Get-RedfishChassisPower                            
-Get-RedfishChassisThermal                          
+Get-RedfishChassisPower -MetricName {PowerControl,Voltages,PowerSupplies}                          
+Get-RedfishChassisThermal -MetricName {Temperatures,Fans,Redundancy}                        
 Get-RedfishController                              
 Get-RedfishDrive                                   
 Get-RedfishManager                                 
@@ -83,7 +83,7 @@ Get-RedfishSessionService
 Get-RedfishSessionToken                            
 Get-RedfishStorage                                 
 Get-RedfishSystem                                  
-Get-RedfishSystemComponent                         
+Get-RedfishSystemComponent -SubComponent {Bios,Boot,EthernetInterfaces,LogServices,Memory,MemoryDomains,NetworkInterfaces,Processors,SecureBoot,Storage,TrustedModules)                        
 Get-RedfishTask                                    
 Get-RedfishTaskService                             
 Get-RedfishVolume                                  
@@ -93,8 +93,8 @@ Get-RedfishSystemLogEntries
 Connect-SwordfishTarget                            
 Get-SwordfishByURL                                 
 Get-SwordfishChassis                               
-Get-SwordfishChassisPower                          
-Get-SwordfishChassisThermal                        
+Get-SwordfishChassisPower -MetricName {PowerControl,Voltages,PowerSupplies}                          
+Get-SwordfishChassisThermal -MetricName {Temperatures,Fans,Redundancy}                         
 Get-SwordfishClassesOfService                      
 Get-SwordfishConnection                            
 Get-SwordfishController                            
@@ -115,7 +115,7 @@ Get-SwordfishSessionToken
 Get-SwordfishStorage                               
 Get-SwordfishStorageServices                       
 Get-SwordfishSystem                                
-Get-SwordfishSystemComponent                       
+Get-SwordfishSystemComponent -SubComponent {Bios,Boot,EthernetInterfaces,LogServices,Memory,MemoryDomains,NetworkInterfaces,Processors,SecureBoot,Storage,TrustedModules)                                
 Get-SwordfishTask                                  
 Get-SwordfishTaskService                           
 Get-SwordfishURIFolderByFolder                     

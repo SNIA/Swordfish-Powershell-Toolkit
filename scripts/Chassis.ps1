@@ -358,6 +358,7 @@ process{
     }
 }
 Set-Alias -name 'Get-RedfishChassis' -value 'Get-SwordfishChassis'
+
 function Get-SwordfishChassisThermal
 {
 <#
@@ -431,16 +432,13 @@ param(  [Parameter(ParameterSetName='ByChassisID')]             [string]    $Cha
 
         [Parameter(ParameterSetName='ByChassisID')]
         [Parameter(ParameterSetName='Default')]             
-        [Validateset("Temperatures","Fans","Redundancy","All")] [string]    $MetricName="All",
-
-        [Parameter(ParameterSetName='ByChassisID')]        
-        [Parameter(ParameterSetName='Default')]                 [Switch]   $ReturnCollectionOnly
+        [Validateset("Temperatures","Fans","Redundancy","All")] [string]    $MetricName="All"
      ) 
 
 process{
     switch ($PSCmdlet.ParameterSetName )
             {   'Default'       {   foreach ( $ChassID in ( Get-SwordfishChassis ).id )
-                                        {   [array]$DefChassSet += Get-SwordfishChassisThermal -ChassisID $ChassID -MetricName $MetricName -ReturnCollectionOnly:$ReturnCollectionOnly
+                                        {   [array]$DefChassSet += Get-SwordfishChassisThermal -ChassisID $ChassID -MetricName $MetricName
                                         }
                                     return ( $DefChassSet )  
                                 }
@@ -448,22 +446,29 @@ process{
                                 }
             }
     if ( $PSCmdlet.ParameterSetName -ne "Default" )
-        {   $Thermals = invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id') +  "Thermal" )
-            switch ($MetricName)
-                    {   "Temperatures"  {   [array]$ReturnSet=($Thermals).Temperatures
-                                        }
-                        "Fans"          {   [array]$ReturnSet=($Thermals).Fans
-                                        }
-                        "Redundancy"    {   [array]$ReturnSet=($Thermals).Redundancy
-                                        }
-                        "All"           {   [array]$ReturnSet=($Thermals)
-                                        }
-                    } 
-            if ( $ReturnCollectionOnly )
-                {   return $ReturnSet
-                } else 
-                {   return $ReturnSet
-                }
+        {   try     {   if ( (invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id'))).Thermal )
+                            {   $ThermalData = (invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id'))).Thermal  
+                                if ( $ThermalData.'@odata.id' )
+                                    {   $ThermalData = Get-RedfishByURL $ThermalData
+                                    }
+                                switch ($MetricName)
+                                    {   "Temperatures"  {   [array]$ReturnSet=($ThermalData).Temperatures
+                                                        }
+                                        "Fans"          {   [array]$ReturnSet=($ThermalData).Fans
+                                                        }
+                                        "Redundancy"    {   [array]$ReturnSet=($ThermalData).Redundancy
+                                                        }
+                                        "All"           {   [array]$ReturnSet=($ThermalData)
+                                                        }
+                                    } 
+                                return $ReturnSet
+                            }
+                          else 
+                            {   return
+                            }
+                    }
+            catch   { $_
+                    }
         }
 }
 }

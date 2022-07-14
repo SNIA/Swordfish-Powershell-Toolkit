@@ -99,3 +99,41 @@ process
             }
  }
 }
+function Clear-RedfishSystemLogEntries
+{
+<#
+.SYNOPSIS
+    Clear the specified Log from the system. 
+.DESCRIPTION
+    Clear the specified logs from the system, or identify the log names.
+.PARAMETER LogName
+    If a Log Name is given the set of logs will be cleared, otherwise the command will return the possible names that can be used.
+#>   
+[CmdletBinding()]
+param(  [string]    $LogName
+     )
+process
+ {  $Result = @()
+    $MyLog = Get-RedfishSystemComponent -SubComponent LogServices
+    foreach ( $ALog in $MyLog)
+        {   if ( $ALog.id -eq $LogName )
+                {   $Logodata = $ALog.'@odata.id' 
+                }
+        }
+    if ( $Logodata )
+            {   if ( -not $Logodata.endswith('/') )
+                    {   $Result = Invoke-RestMethod2 -uri ($Base + $Logodata + '/Actions/LogService.ClearLog/') -Method 'POST'
+                    }
+                    else 
+                    {   $Result = Invoke-RestMethod2 -uri ($Base + $Logodata + 'Actions/LogService.ClearLog/') -Method 'POST'
+                    }
+            }
+        else 
+            {   write-warning 'The LogName was not found in the possible logs on this machine. The possible log names are as follows;'
+                (Get-RedfishSystemComponent -SubComponent LogServices).id | out-string
+                return
+            }
+    return $Result
+        
+ }
+}

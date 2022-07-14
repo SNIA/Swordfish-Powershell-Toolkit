@@ -349,8 +349,17 @@ function Get-SwordfishByURL
                 {   write-verbose 'The sent parameter was a hash table that used @odata.id as a key name'
                     $MyURL = $Base + $URL.'@odata.id'
                 }
-            $MyData = invoke-restmethod2 -uri ( $MyURL ) 
-            return $MyData
+            try     {   $MyData = invoke-restmethod2 -uri ( $MyURL ) -erroraction stop
+                         if ( $MyData.exception )
+                                {  return
+                                } 
+                            else 
+                                { return $MyData
+                                }
+                    }
+            catch   {   $_
+                        return
+                    } 
         }
 }
 Set-Alias -Value 'Get-SwordfishByURL' -Name 'Get-RedfishByURL'
@@ -391,7 +400,9 @@ function FixTheUntrustedLink
 function invoke-restmethod2
 {
     [cmdletbinding()]
-    param   (   [string] $Uri
+    param   (   [Parameter(Mandatory=$true)]    [string] $Uri,
+                                                [string] $Method = 'GET',
+                                                         $Body
             )
     process {   try {   if ( $Uri -ne $base )
                                 {   write-verbose "Getting Result in Invoke-RestMethod2 Function using URI $Uri"
@@ -400,14 +411,30 @@ function invoke-restmethod2
                                             }
                                     $PowerShellVersion = [int]($PSVersionTable.PSVersion).major
                                     if ( $PowerShellVersion -lt 6)
-                                            {   $XHead = @{ 'X-Auth-Token'   = $XAuthToken }
+                                            {   $XHead = @{ 'X-Auth-Token'  = $XAuthToken 
+                                                            # 'accept'        = 'applicaiton/json'
+                                                          }
                                             }
-                                        else{   $XHead = @{ 'X-Auth-Token'   = $XAuthToken[0] }
+                                        else{   $XHead = @{ 'X-Auth-Token'  = $XAuthToken[0] 
+                                                          #  'accept'        = 'applicaiton/json'
+                                                          }
                                             }
                                     if ( $PowerShellVersion -lt 6)
-                                        {   $ReturnObj = invoke-restmethod -Uri $Uri -headers $XHead
-                                        } else 
-                                        {   $ReturnObj = invoke-restmethod -Uri $Uri -headers $XHead -SkipCertificateCheck
+                                        {   if ($Body)
+                                                {   # $Body | convertto-json | out-string
+                                                    # $JSONBody = ( $Body | convertto-json )
+                                                    $ReturnObj = invoke-restmethod -Method $Method -Uri $Uri -headers $XHead -body $Body -contenttype 'application/json' 
+                                                }
+                                                else
+                                                {   $ReturnObj = invoke-restmethod -Method $Method -Uri $Uri -headers $XHead -contenttype 'application/json'
+                                                }        
+                                        }
+                                        else
+                                        {   if ($Body) 
+                                                {   $ReturnObj = invoke-restmethod -Method $Method -Uri $Uri -headers $XHead -body $Body -SkipCertificateCheck
+                                                } else
+                                                {   $ReturnObj = invoke-restmethod -Method $Method -Uri $Uri -headers $XHead -SkipCertificateCheck
+                                                }
                                         }
                                 }    
                         return $ReturnObj

@@ -152,7 +152,7 @@ function Get-SwordfishSystemComponent
                                 $NoCollectionExists = $True
                             }
                     foreach ( $Mem in $SecondOrderDataCollection.Members )
-                        {   write-host $Mem
+                        {   # write-host $Mem
                             $SecondOrderData += invoke-Restmethod2 -uri ( $base + $Mem.'@odata.id' ) 
                         } 
                 } 

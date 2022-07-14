@@ -95,7 +95,8 @@ function Get-SwordfishManagerComponent
         The ManagerID name for a specific Storage System to query, otherwise the command will return all managers 
         defined in the /redfish/v1/Managers/{Managerid}/.
 .PARAMETER SubComponent
-
+        The Subcomponent is a required parameter and consists of 'CommandShell', 'EthernetInterfaces', 'GraphicalConsole', 
+        'HostInterfaces', 'LogServices', 'NetworkProtocol', 'SerialConsole', 'Status', 'VirtualMedia' as valid objects.
 .PARAMETER ReturnCollectioOnly
         This switch will return the collection instead of an array of the actual objects if set.
 .EXAMPLE

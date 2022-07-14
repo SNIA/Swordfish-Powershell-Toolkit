@@ -89,6 +89,10 @@ Get-RedfishTaskService
 Get-RedfishVolume                                  
 Clear-RedfishSystemLogEntries                      
 Get-RedfishSystemLogEntries                        
+Set-RedfishManager -CommandShellServiceEnabled =DateTimeLocalOffset -AutoDSTEnabled -DateTime -TimeZoneName -GraphicConsoleServiceEnabled -SerialConsoleServiceEnabled -LocationIndicatorActive -ServiceIndication
+Set-RedfishTaskService -ServiceEnabled -TaskAutoDeleteTimeoutMinutes
+Get-RedfishCertificateService
+Get-RedfishCertificate
 
 Connect-SwordfishTarget                            
 Get-SwordfishByURL                                 
@@ -121,6 +125,8 @@ Get-SwordfishTaskService
 Get-SwordfishURIFolderByFolder                     
 Get-SwordfishVolume                                
 Get-SwordfishZone                                  
+Get-SwordfishCertificate
+Get-SwordfishCertificateService
 Invoke-RedfishSystemReset                          
 ```
 ### Alternate Swordfish Targets

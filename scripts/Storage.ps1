@@ -66,10 +66,17 @@ param(  [string]    $StorageID,
         [switch]    $ReturnCollectionOnly
      )
 process{
-    $ReturnColl = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Storage")
-    $StorageSystems = (($ReturnColl).Links).Members + ($ReturnColl).Members     # Now must find if this contains links or directly goes to members. 
-    foreach($StorageSys in $StorageSystems)
-        {   [array]$StorageSysCol +=  invoke-restmethod2 -uri ( $base + ( $StorageSys.'@odata.id' ) ) 
+    if ( Get-RedfishByURL $(Get-RedfishSystem).Storage )
+            {   $ReturnColl =( Get-RedfishByURL $(Get-RedfishSystem).Storage )   
+            }
+        else 
+        {   if (  Get-RedfishByURL '/redfish/v1/Storage')
+                {   $ReturnColl = ( Get-RedfishByURL '/redfish/v1/Storage' ) 
+                }
+        }
+    $StorageSystems = $ReturnColl.Members  
+    foreach($MyStor in $ReturnColl.Members )
+        {   [array]$StorageSysCol +=  get-redfishByURL $MyStor 
         }
     if ( $ReturnCollectionOnly )
         {   return $ReturnColl

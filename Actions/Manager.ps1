@@ -156,3 +156,117 @@ process
  }
 }
 
+Function Invoke-RedfishManagerReset
+{
+<#
+.SYNOPSIS
+    This command will reset the Redfish Manager for this system. 
+.DESCRIPTION
+    You may reset the Redfish Manager on the system using this action. However issue the command
+    (Get-RedfishManager).Actions | convertTo-Json to see what the value values for the reset type are.
+.PARAMETER ResetType
+    This is the type of reset that is sent requested of the Redfish manager. 
+    The possible values of this may be 'ForceOff','ForceOn','ForceRestart','GracefulRestart',
+    'GracefulShutdown','Nmi','On','Pause','PowerCycle','PushPowerButton','Resume','Suspend'
+    although not all of these may be valid for your target.
+.NOTES
+https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf section 6.53.4.3
+#>   
+[CmdletBinding()]
+param(  [ValidateSet('ForceOff','ForceOn','ForceRestart','GracefulRestart','GracefulShutdown',
+                     'Nmi','On','Pause','PowerCycle','PushPowerButton','Resume','Suspend')]
+        [string]    $ResetType
+     )
+process
+    {   $SystemData = Get-RedfishManager
+        $MyURL = ((($SystemData).Actions).'#Manager.Reset').Target
+        if ( $MyURL )
+                {   $MyBody = @{  ResetType = $ResetType 
+                               }
+                    $Result = invoke-restmethod2 -uri ( $base + $MyURL) -body $MyBody -Method 'POST'
+                }  
+            else 
+                {   write-error "No Action called Reset found in the Manager"
+                    return
+                }
+        return $Result
+    }
+}
+Function Invoke-RedfishManagerForceFailover
+{
+<#
+.SYNOPSIS
+    This command will Force failover the manager to another Redfish Manager for this system. 
+.DESCRIPTION
+    You may force failover the Redfish Manager on the system using this action. However issue the command
+    (Get-RedfishManager).Actions | convertTo-Json to see if this command is supported and what the valid parameter options are.
+.PARAMETER NewManagerODataId
+    This must be a string that lookes like '/redfish/v1/Managers/3'
+.NOTES
+https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf section 6.53.4.1
+#>   
+[CmdletBinding()]
+param(  [string]    $NewManagerODataId
+     )
+process
+    {   $SystemData = Get-RedfishManager
+        $MyURL = ((($SystemData).Actions).'#Manager.ForceFailover').Target
+        if ( $MyURL )
+                {   $MyBody = @{  NewManager = @{   '@odata.id' = $NewManagerODataId
+                                                } 
+                               }
+                    $Result = invoke-restmethod2 -uri ( $base + $MyURL) -body $MyBody -Method 'POST'
+                }  
+            else 
+                {   write-error "No Action called ForceFailover found in the Manager"
+                    return
+                }
+        return $Result
+    }
+}
+Function Invoke-RedfishManagerModifyRedundancySet
+{
+<#
+.SYNOPSIS
+    This command will Modify the failover manager redundancy set  for this system. 
+.DESCRIPTION
+    You may force failover the Redfish Manager on the system using this action. However issue the command
+    (Get-RedfishManager).Actions | convertTo-Json to see if this command is supported and what the valid parameter options are.
+.PARAMETER NewManagerODataId
+    This must be a string that lookes like '/redfish/v1/Managers/3'
+.NOTES
+https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf section 6.53.4.1
+#>   
+[CmdletBinding()]
+param(  [string]    $AddODataId,
+        [String]    $RemoveODataId
+     )
+process
+    {   $SystemData = Get-RedfishManager
+        $MyURL = ((($SystemData).Actions).'#Manager.ModifyRedundancySet').Target
+        if ( $MyURL )
+                {   $MyBody = @()
+                    if ( $AddODataId )
+                        {   $MyBody += @{ Add = @{ '@odata.id' = $AddODataId
+                                                 }
+                                        }
+                        } 
+                    if ( $RemoveODataId )
+                        {   $MyBody += @{ Remove = @{ '@odata.id' = $AddODataId
+                                                    }
+                                        }
+                        } 
+                    if ( $AddODataId -or $RemoveODataId )
+                            {    $Result = invoke-restmethod2 -uri ( $base + $MyURL) -body $MyBody -Method 'POST'
+                            }  
+                        else
+                            {   write-warning "You Must choose to either add or remove (or both) a new item for this command to work"
+                            }
+                }
+            else
+                {   write-error "No Action called ForceFailover found in the Manager"
+                    return
+                }
+        return $Result
+    }
+}

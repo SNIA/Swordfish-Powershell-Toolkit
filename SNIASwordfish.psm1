@@ -20,7 +20,9 @@
 . $PSScriptRoot\scripts\Certificate.ps1
 
 . $PSScriptRoot\Actions\System.ps1
+. $PSScriptRoot\Actions\Chassis.ps1
 . $PSScriptRoot\Actions\Manager.ps1
 . $PSScriptRoot\Actions\Task.ps1
+. $PSScriptRoot\Actions\Certificate.ps1
 
 Export-ModuleMember -Function * -Alias *      

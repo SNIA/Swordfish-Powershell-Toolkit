@@ -330,6 +330,11 @@ function Get-SwordfishChassis
                                   }
                   }
     }
+.EXAMPLE
+    PS:> Get-Chassis -verbose
+
+    [!Warning]
+    This is the warning
 .LINK
     https://redfish.dmtf.org/schemas/v1/Chassis.v1_16_0.json
 #>   

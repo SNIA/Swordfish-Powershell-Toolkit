@@ -1,7 +1,7 @@
 Request for Participation
-Redfish/Swordfish Interop Lab
+Redfish/Swordfish Innovation Lab
 
-The SNIA Tech Center is hosting Redfish hardware in partnership with the DMTF in an effort to help 
+The SNIA Innovation Lab is hosting Redfish hardware in partnership with the DMTF in an effort to help 
 the protocol mature and increase adoption in the marketplace. There are a number of Server vendors 
 who have placed hardware in this lab for compatibility testing. 
 

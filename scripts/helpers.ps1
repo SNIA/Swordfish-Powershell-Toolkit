@@ -466,7 +466,7 @@ function Get-SwordfishURIFolderByFolder
     param ( $Folder
           )
     write-verbose "Invoke-RestMethod from Get-SwordfishURIFolderByFolder function to find folder $Folder"      
-    $GetRootLocation = invoke-restmethod2 -uri "$BaseUri" 
+    $GetRootLocation = Get-RedfishByURL -URL '/redfish/v1' 
     
     if ( ((($GetRootLocation).links).$($Folder)).'@odata.id')
             {   $FolderUri = $Base + ((($GetRootLocation).links).$($Folder)).'@odata.id'

@@ -97,7 +97,7 @@ function Get-SwordfishController
     Name             : Storage System Collection
     Members          : {@{@odata.id=/redfish/v1/Storage/AC-109032/StorageControllers/A}, @{@odata.id=/redfish/v1/Storage/AC-109032/StorageControllers/B}}
 .LINK
-    http://redfish.dmtf.org/schemas/v1/Storage.v1_8_1.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding()]
     param(  [string]    $StorageId,
@@ -106,7 +106,7 @@ function Get-SwordfishController
         )
     process{
         $MyControllersCol=@()
-        $StorageUri = Get-SwordfishURIFolderByFolder "Storage"
+        $StorageUri = Get-RedfishByURL -URL '/redfish/v1/Storage'
         write-verbose "Storage Folder = $StorageUri"
         $StorageData = invoke-restmethod2 -uri $StorageUri
         foreach( $StorageSys in ( $StorageData ).Members )
@@ -126,7 +126,7 @@ function Get-SwordfishController
                                 $MyControllerName  = $MyControllerArray[ ($MyControllerArray.length -1) ]
                                 write-verbose "MyPoolName = $MyControllerName"
                                 if ( ($ControllerId -like $MyControllerName) -or (-not $ControllerId) )
-                                    {   $Controller = invoke-restmethod2 -uri ( $Base + $MyController.'@odata.id' )
+                                    {   $Controller = Get-RedfishByURL -URL ( $MyController.'@odata.id' )
                                         $MyControllersCol+=$Controller
                                         $ReturnColl = $MyControllerCollection
                                     }                                 

@@ -64,12 +64,12 @@ param(  [Parameter(ParameterSetName='Default')]                 [string]    $Man
      )
 process{
     switch ($PSCmdlet.ParameterSetName )
-        {   'ReturnCollectionOnly'  {   [array]$DefMgrCol = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "Managers" ) 
+        {   'ReturnCollectionOnly'  {   [array]$DefMgrCol = Get-RedfishByUrl -URL ( '/redfish/v1/Managers' ) 
                                         return $DefMgrCol
                                     }
             'Default'               {   # $CollectionSet = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "Managers" )
                                         foreach ( $MgrLink in ( Get-SwordfishManager -ReturnCollectionOnly ).members )
-                                            {   $Mgr = Invoke-RestMethod2 -uri ( $base + ( $MgrLink.'@odata.id' ) )
+                                            {   $Mgr = Get-RedfishByURL -URL ( $MgrLink.'@odata.id' ) 
                                                 [array]$DefMgrCol += $Mgr 
                                             }
                                         if ( $ManagerID )
@@ -100,31 +100,30 @@ function Get-SwordfishManagerComponent
 .PARAMETER ReturnCollectioOnly
         This switch will return the collection instead of an array of the actual objects if set.
 .EXAMPLE
-        Get-SwordfishManager
-    
-        @odata.context     : /redfish/v1/$metadata#Manager.Manager
-        @odata.id          : /redfish/v1/Managers/controller_a
-        @odata.type        : #Manager.v1_3_1.Manager
-        Id                 : controller_a
-        Name               : management_controller_a
-        ManagerType        : ManagementController
-        FirmwareVersion    : IN100R003
-        Status             : @{State=Enabled; Health=OK}
-        EthernetInterfaces : @{@odata.id=/redfish/v1/Managers/controller_a/EthernetInterfaces}
-    
-        @odata.context     : /redfish/v1/$metadata#Manager.Manager
-        @odata.id          : /redfish/v1/Managers/controller_b
-        @odata.type        : #Manager.v1_3_1.Manager
-        Id                 : controller_b
-        Name               : management_controller_b
-        ManagerType        : ManagementController
-        FirmwareVersion    : IN100R003
-        Status             : @{State=Enabled; Health=OK}
-        EthernetInterfaces : @{@odata.id=/redfish/v1/Managers/controller_b/EthernetInterfaces}
+    Get-SwordfishManager
 
-    .LINK
-        http://redfish.dmtf.org/schemas/v1/Manager.v1_10_0.json
-    #>   
+    @odata.context     : /redfish/v1/$metadata#Manager.Manager
+    @odata.id          : /redfish/v1/Managers/controller_a
+    @odata.type        : #Manager.v1_3_1.Manager
+    Id                 : controller_a
+    Name               : management_controller_a
+    ManagerType        : ManagementController
+    FirmwareVersion    : IN100R003
+    Status             : @{State=Enabled; Health=OK}
+    EthernetInterfaces : @{@odata.id=/redfish/v1/Managers/controller_a/EthernetInterfaces}
+    
+    @odata.context     : /redfish/v1/$metadata#Manager.Manager
+    @odata.id          : /redfish/v1/Managers/controller_b
+    @odata.type        : #Manager.v1_3_1.Manager
+    Id                 : controller_b
+    Name               : management_controller_b
+    ManagerType        : ManagementController
+    FirmwareVersion    : IN100R003
+    Status             : @{State=Enabled; Health=OK}
+    EthernetInterfaces : @{@odata.id=/redfish/v1/Managers/controller_b/EthernetInterfaces}
+.LINK
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+#>   
     [CmdletBinding(DefaultParameterSetName='Default')]
     param(  [Parameter(ParameterSetName='ReturnCollectionOnly')]    [Switch]    $ReturnCollectionOnly,  
         
@@ -133,20 +132,20 @@ function Get-SwordfishManagerComponent
                                                                     [string]    $SubComponent
          )
     process
-    {   [array]$DefMgrCol = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "Managers" )
+    {   [array]$DefMgrCol = Get-RedfishManager
             $MyComponent = @()
             $MyCollection = @()
             $MyMgr = @()
             foreach( $Mgr in $DefMgrCol.'Members' )
-                {   $MyMgr += invoke-restmethod2 -uri ( $Base + $Mgr.'@odata.id' )
+                {   $MyMgr += Get-RedfishByURL -URL ( $Mgr.'@odata.id' )
                     $X += $MyMgr."$SubComponent"
-                    $Y += invoke-restmethod2 -uri ( $Base + ($MyMgr."$SubComponent").'@odata.id' )
+                    $Y += Get-RedfishByURL -URL ($MyMgr."$SubComponent").'@odata.id' 
                     if ( $Y )
                             {   if ( $Y.'Members@odata.count' )
                                         {   $MyCollection += $Y
                                             $Z=@()
                                             foreach ( $SubItem in ($Y.'Members') )
-                                                {   $Z += invoke-restmethod2 -uri ( $Base + $SubItem.'@odata.id' )
+                                                {   $Z += Get-RedfishByURL -URL ( $SubItem.'@odata.id' )
                                                 }
                                             $MyComponent += $Z
                                         } 

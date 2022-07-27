@@ -89,7 +89,7 @@ function Get-SwordfishZone{
     }
 
 .LINK
-    http://redfish.dmtf.org/schemas/v1/Zone.v1_0_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='ByFabricID')]          [string]    $FabricID,

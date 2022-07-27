@@ -33,18 +33,18 @@ function Get-SwordfishTask
 
     WARNING: The Specified Task was not detected
 .LINK
-    https://redfish.dmtf.org/schemas/v1/TaskCollection.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='ByTaskID')]        [string]    $TaskID,
         [Parameter(ParameterSetName='ReturnCollection')][Switch]    $ReturnCollectionOnly
      )
 process{    $DefTaskCol=@()
-            if ( $(Get-SwordfishTaskService).Tasks )
-                    {   $MyTasks = ($(Get-SwordfishTaskService).Tasks).'@odata.id'
-                        $ReturnColl = $( Get-RedfishByURL $MyTasks )
+            if ( $(Get-RedfishTaskService).Tasks )
+                    {   $MyTasks = ($(Get-RedfishTaskService).Tasks).'@odata.id'
+                        $ReturnColl = $( Get-RedfishByURL -URL $MyTasks )
                         foreach ( $OneTask in ($ReturnColl).Members )
-                            {   $DefTaskCol += $( Get-RedfishByURL $OneTask )
+                            {   $DefTaskCol += $( Get-RedfishByURL -URL $OneTask )
                             }
                     }
             if ( $ReturnCollectionOnly )
@@ -52,7 +52,7 @@ process{    $DefTaskCol=@()
                     }
                 else 
                     {   if ( $TaskID )
-                                {   return ( $DefTaskColl | where {$_.id -eq $TaskID })
+                                {   return ( $DefTaskColl | where-object { $_.id -eq $TaskID } )
                                 }
                             else 
                                 {  return   $DefTaskColl    
@@ -91,20 +91,16 @@ function Get-SwordfishTaskService
     Get-SwordfishTask
     
     WARNING: No Individual Tasks were detected
-
 .EXAMPLE
     Get-SwordfishTask -Task 1
 
     WARNING: The Specified Task was not detected
 .LINK
-    https://redfish.dmtf.org/schemas/v1/TaskCollection.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
-param(  
-    )
-process{
-    return (invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "Tasks" ) )
-        }
-    
+param( )
+process{    return (Get-RedfishByURL -URL '/redfish/v1/Tasks' )
+       }
 }
 Set-Alias -Name 'Get-RedfishTaskService' -Value 'Get-SwordfishTaskService'

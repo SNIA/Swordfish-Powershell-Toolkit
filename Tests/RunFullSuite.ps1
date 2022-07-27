@@ -5,12 +5,14 @@ function Invoke-RedfishLabTests
          )
     process
     {   write-host "This command will run the complete list of tests against the defined Device."
-        . .\LabConnect.ps1
-        . .\LabSystem.ps1
         . .\LabChassis.ps1
+        . .\LabConnect.ps1
         . .\LabDrive.ps1
+        . .\LabManager.ps1
         . .\LabSession.ps1
         . .\LabStorage.ps1
+        . .\LabSystem.ps1
+        . .\LabTask.ps1
         Write-host "Connecting to Host $Vendor"        
         Connect-RedfishLabServer -Vendor $Vendor -WriteExampleFile
         

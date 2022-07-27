@@ -68,10 +68,10 @@ process{
         }
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = $ItemMemberOrCollection = $PulledData.DataStorageLoSCapabilities
-            [array]$FullItemSet = $ItemColOrItems = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
+            [array]$FullItemSet = $ItemColOrItems = Get-RedfishByURL -URL ( $MemberSet.'@odata.id' )
             $odataraw = $ItemColorItems.'@odata.id'
             $odataProcessed = $odataRaw.substring( 0, $odataRaw.lastIndexOf( '/' ) )
-            [array]$FullDSLOSCCollectionOnly += Invoke-RestMethod2 -uri ( $base + $odataProcessed )
+            [array]$FullDSLOSCCollectionOnly += Get-RedfishByURL -URL $odataProcessed
             if ( $ReturnCollectionOnly )
                 {   return $FullDSLOSCCollectionOnly 
                 } else 

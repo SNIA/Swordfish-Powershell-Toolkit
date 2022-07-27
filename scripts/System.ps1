@@ -40,17 +40,17 @@ function Get-SwordfishSystem
     Members@odata.count : 1
     Members             : {@{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8}}
 .LINK
-    https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding()]
 param(  [string]    $SystemID,
         [switch]    $ReturnCollectionOnly
      )
 process{
-    $SystemData = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Systems") 
+    $SystemData = Get-RedfishByURL -URL '/redfish/v1/Systems' 
     $SysCollection=@()
     foreach($Sys in ($SystemData).Members )
-        {   $SysCollection +=  invoke-restmethod2 -uri ( $base + ($Sys.'@odata.id') ) 
+        {   $SysCollection +=  Get-RedfishByURL -URL ($Sys.'@odata.id')  
         }
     if ( $ReturnCollectionOnly )
         {   return $SystemData
@@ -120,7 +120,7 @@ function Get-SwordfishSystemComponent
                         ]
         }
 .LINK
-        https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding()]
     param(  [string]    $SystemID,
@@ -131,13 +131,12 @@ function Get-SwordfishSystemComponent
          )
     process{
         $NoCollectionExists=$False
-        $SystemData = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Systems")
+        $SystemData = Get-RedfishSystem
         $SysCollection=@()
         $SecondOrderData=@()
         foreach($Sys in ($SystemData).Members )
-            {   $SysCollection +=  invoke-restmethod2 -uri ( $base + ($Sys.'@odata.id') )  
+            {   $SysCollection += Get-RedfishByURL -URL ( $Sys.'@odata.id')  
             }
-
         $FirstOrderData = $SystemData
         if ( $SystemID )
                     {   $FirstOrderData = $SysCollection | where-object { $_.id -eq $SystemId } 
@@ -145,23 +144,20 @@ function Get-SwordfishSystemComponent
                     {   $FirstOrderData = $SysCollection                     
                     }     
         if ( $FirstOrderData )
-                {   $SecondOrderDataCollection = invoke-Restmethod2 -uri ( $base + ($FirstOrderData."$SubComponent").'@odata.id' )
+                {   $SecondOrderDataCollection = Get-RedfishByURL -URL ($FirstOrderData."$SubComponent").'@odata.id' 
                     if ( -not $SecondOrderDataCollection )
-                            {   # The data may exist without going to a seperate page
-                                $SecondOrderDataCollection = $FirstOrderData.($SubComponent)
+                            {   $SecondOrderDataCollection = $FirstOrderData.($SubComponent)
                                 $NoCollectionExists = $True
                             }
                     foreach ( $Mem in $SecondOrderDataCollection.Members )
-                        {   # write-host $Mem
-                            $SecondOrderData += invoke-Restmethod2 -uri ( $base + $Mem.'@odata.id' ) 
+                        {   $SecondOrderData += Get-RedfishByURL -URL ( $Mem.'@odata.id' ) 
                         } 
                 } 
             else
                 {   $SecondOrderDataCollection = ''
                 }
         if ( -not $SecondOrderDataCollection.'Members' )
-            {   # Must be a single object without a collection, return the single object 
-                write-verbose "No Second Order Data Collection members found."
+            {   write-verbose "No Second Order Data Collection members found."
                 $SecondOrderData = $SecondOrderDataCollection
                 $NoCollectionExists = $true
             }

@@ -52,7 +52,7 @@ function Get-SwordfishPool
     Members             : {@{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/00c0ff50437d0000f93a3d5f00000000}, @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/00c0ff5043920000593c3d5f00000000}, @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/A},
                            @{@odata.id=/redfish/v1/StorageServices/S1/StoragePools/B}}
 .LINK
-    http://redfish.dmtf.org/schemas/Swordfish/v1/StoragePool.v1_5_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding( DefaultParameterSetName='Default' )]
 param(      [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,
@@ -89,13 +89,13 @@ process{
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = [array]$FullPoolCollectionOnly = $PulledData.StoragePools
             foreach ( $PorPC in $Memberset )
-                {   $MyPorPC = Invoke-RestMethod2 -uri ( $base + ($PorPC.'@odata.id') )
+                {   $MyPorPC = Get-RedfishByUrl -url ($PorPC.'@odata.id') 
                     if ( -not $MyPorPC.Members ) 
                         {   [array]$FullPoolSet += $MyPorPC
                         } else 
                         {   [array]$FullPoolCollectionOnly = $MyPorPC
                             foreach ( $Pool in $MyPorPC.Members)
-                            {   [array]$FullPoolSet += Invoke-RestMethod2 -uri ( $base + ($Pool.'@odata.id') )
+                            {   [array]$FullPoolSet += Get-RedfishByURL -URL ($Pool.'@odata.id') 
                             }
                         }
                 }

@@ -1,4 +1,4 @@
-# © Copyright 2019 SNIA
+# © Copyright 2022 SNIA
 # PowerShellToolkit Module manifest
 @{
     RootModule = 'SNIASwordfish.psm1'

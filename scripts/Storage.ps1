@@ -1,4 +1,5 @@
-function Get-SwordfishStorage{
+function Get-SwordfishStorage
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Storage Systems from the Swordfish Target.
@@ -58,17 +59,24 @@ function Get-SwordfishStorage{
                     ]
     }
 .LINK
-    http://redfish.dmtf.org/schemas/Swordfish/v1/StorageSystem.v1_2_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding()]
 param(  [string]    $StorageID,
         [switch]    $ReturnCollectionOnly
      )
 process{
-    $ReturnColl = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Storage")
-    $StorageSystems = (($ReturnColl).Links).Members + ($ReturnColl).Members     # Now must find if this contains links or directly goes to members. 
-    foreach($StorageSys in $StorageSystems)
-        {   [array]$StorageSysCol +=  invoke-restmethod2 -uri ( $base + ( $StorageSys.'@odata.id' ) ) 
+    if ( Get-RedfishByURL $(Get-RedfishSystem).Storage )
+            {   $ReturnColl =( Get-RedfishByURL -URL $(Get-RedfishSystem).Storage )   
+            }
+        else 
+        {   if (  Get-RedfishByURL -URL '/redfish/v1/Storage')
+                {   $ReturnColl = ( Get-RedfishByURL -URL '/redfish/v1/Storage' ) 
+                }
+        }
+    # $StorageSystems = $ReturnColl.Members  
+    foreach($MyStor in $ReturnColl.Members )
+        {   [array]$StorageSysCol +=  Get-RedfishByURL -URL $MyStor 
         }
     if ( $ReturnCollectionOnly )
         {   return $ReturnColl
@@ -81,8 +89,10 @@ process{
         }        
 }
 }
+Set-Alias -Value 'Get-SwordfishStorage' -Name 'Get-RedfishStorage'
 
-function Get-SwordfishStorageServices{
+function Get-SwordfishStorageServices
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Storage Systems from the Swordfish Target.
@@ -142,7 +152,7 @@ function Get-SwordfishStorageServices{
                     ]
     }
 .LINK
-    http://redfish.dmtf.org/schemas/Swordfish/v1/StorageSystem.v1_2_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding()]
 param(  [string]    $StorageID,
@@ -152,7 +162,7 @@ process{
     $ReturnColl = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "StorageServices" )
     $StorageSystems = (($ReturnColl).Links).Members + ($ReturnColl).Members
     foreach($StorageSys in $StorageSystems)
-        {   [array]$StorageSysCol += invoke-restmethod2 -uri ( $base + ( $StorageSys.'@odata.id' ) ) 
+        {   [array]$StorageSysCol += Get-RedfishByURL -URL ( $StorageSys.'@odata.id' ) 
         } 
     if ( $ReturnCollectionOnly )
         {   return $ReturnColl

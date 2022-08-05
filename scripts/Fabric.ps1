@@ -24,7 +24,7 @@ function Get-SwordfishFabric{
     Members@odata.count : 1
     Members             : {@{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8}}
 .LINK
-    https://redfish.dmtf.org/schemas/v1/Fabric.v1_2_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='Default')] [string]   $FabricID,
@@ -33,7 +33,7 @@ param(  [Parameter(ParameterSetName='Default')] [string]   $FabricID,
 process{
     $SysColOnly = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "Fabrics" )
     foreach($Sys in ($SysColOnly).Members )
-        {   [array]$SysCol +=  invoke-restmethod2 -uri ( $base + ($Sys.'@odata.id') ) 
+        {   [array]$SysCol +=  Get-RedfishByURL -URL ($Sys.'@odata.id')
         }
     if ( $ReturnCollectionOnly )
         {   return $SysColOnly

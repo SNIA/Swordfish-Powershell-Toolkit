@@ -18,6 +18,7 @@ function Get-SwordfishZone{
     This directive boolean value defaults to false, but will return the collection instead of an array of the 
     actual objects if set to true.
 .EXAMPLE
+    The following is a Generic example. For very specific examples see the Examples folder in this module
     PS:> Get-SwordfishZone
 
     @Redfish.Copyright      : Copyright 2020 HPE and DMTF
@@ -61,35 +62,8 @@ function Get-SwordfishZone{
     /redfish/v1/Fabric/AC-109032/Zones/Borg                  Borg                 Client                        1                       3
     /redfish/v1/Fabric/AC-109032/Zones/DFSR1                 DFSR1                Client                        1                       2
     /redfish/v1/Fabric/AC-109032/Zones/DFSR2                 DFSR2                Client                        1                       2
-.EXAMPLE
-    PS:> Get-SwordfishZone -ZoneId | ConvertTo-Json
-
-    {
-        "@Redfish.Copyright":  "Copyright 2020 HPE and DMTF",
-        "@odata.id":  "/redfish/v1/Fabric/AC-109032/Zones/kirk",
-        "@odata.type":  "#Zones.v1_4_0.Zones",
-        "Name":  "kirk",
-        "Description":  "Initiator EndpointGroup (Zone) for kirk",
-        "GroupType":  "Client",
-        "Endpoints@odata.count":  1,
-        "Connections@odata.count":  2,
-        "Endpoints":  [
-                          {
-                              "@odata.id":  "/redfish/v1/Fabrics/AC-109032/Endpoints/0b2b4bd8361b856bbc00000000000000000000000c"
-                          }
-                      ],
-        "Connections":  [
-                            {
-                                "@odata.id":  "/redfish/v1/Fabrics/AC-109032/Connections/0d2b4bd8361b856bbc000000000000000000000014"
-                            },
-                            {
-                                "@odata.id":  "/redfish/v1/Fabrics/AC-109032/Connections/0d2b4bd8361b856bbc000000000000000000000016"
-                            }
-                        ]
-    }
-
 .LINK
-    http://redfish.dmtf.org/schemas/v1/Zone.v1_0_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='ByFabricID')]          [string]    $FabricID,
@@ -111,19 +85,19 @@ process{
                                 {   return $DefZoneCol
                                 } 
                         }
-        'ByFabricID'    {   $PulledData = Get-SwordfishFabric           -FabricID $FabricID
+        'ByFabricID'    {   $PulledData = Get-SwordfishFabric -FabricID $FabricID
                         }
     }
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = $EPMemberOrCollection = $PulledData.Zones
             foreach ( $EPorEPC in $Memberset )
-                {   $EPColOrEP = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
+                {   $EPColOrEP = Get-RedfishByURL -URL ( $MemberSet.'@odata.id' )
                     if ( $EPColOrEP.Members ) 
                         {   $EPMemberOrCollection = $EPColOrEP.Members    
                         }
                     [Array]$FullZoneCollectionOnly += $EPColOrEP
                     foreach ( $MyEPData in $EPMemberOrCollection )
-                        {   [array]$FullZoneCollection += Invoke-RestMethod2 -uri ( $base + ($MyEPData.'@odata.id') )                          
+                        {   [array]$FullZoneCollection += Get-RedfishByURL -URL ($MyEPData.'@odata.id')                          
                         }
                 }
             if ( $ReturnCollectionOnly )

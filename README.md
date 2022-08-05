@@ -30,6 +30,7 @@ Connect-RedfishTarget -target 192.168.1.100
 
 5. If your storage device requires an Autorization token, you can use the following command to obtain or populate this token. Once this token has been gathered, all further commands will attempt to use the token by default in the rest method header. 
 Get-SwordfishSessionToken -target 192.168.1.100 -protocol https -Username chris -password P@ssw0rd!
+Get-RedfishSessionToken   -target 192.168.1.100 -protocol https -Username chris -password P@ssw0rd!
 ```
 This command will set the various global variables that other commands need to operate
 ```powershell
@@ -68,48 +69,65 @@ An example of this would be the Power or Thermal metrics gathered by the Chassis
 ``` 
 The current list of supported cmdlets are:
 ```powershell
-Connect-RedfishTarget
-Get-RedfishSession
-Get-RedfishSessionToken
-Get-RedfishSessionService
-Get-RedfishStorage
-Get-RedfishSystem
-Get-RedfishSystemComponent
-Get-RedfishChassis
-Get-RedFishChassisPower
-Get-RedFishChassisThermal
-Get-RedfishDrive
-Get-RedfishManager
-Get-RedfishManagerComponent
-  
-Connect-SwordfishTarget
-Get-SwordfishSessionToken
-Get-SwordfishStorage
-Get-SwordfishStorageService
-Get-SwordfishSystem
-Get-SwordfishSystemComponent
-Get-SwordfishChassis
-Get-SwordfishChassisPower
-Get-SwordfishChassisThermal
-Get-SwordfishSessionService
-Get-SwordfishZone
-Get-SwordfishTask
-Get-SwordfishSession
-Get-SwordfishConnection
-Get-SwordfishController
-Get-SwordfishDrive
-Get-SwordfishEndpoint
-Get-SwordfishEthernetInterface
-Get-SwordfishGroup
-Get-SwordfishPool
-Get-SwordfishVolume
-Get-SwordfishSession
-Get-SwordfishManager
-Get-SwordfishManagerComponent
-Get-SwordfishClassOfService
-Get-SwordfishDataStorageLinesOfService
-Get-SwordfishDataStorageLoSCapabilities
-Get-SwordfishIOConnectivityLoSCapabilities
+Connect-RedfishTarget                              
+Get-RedfishByURL                                   
+Get-RedfishChassis                                 
+Get-RedfishChassisPower -MetricName {PowerControl,Voltages,PowerSupplies}                          
+Get-RedfishChassisThermal -MetricName {Temperatures,Fans,Redundancy}                        
+Get-RedfishController                              
+Get-RedfishDrive                                   
+Get-RedfishManager                                 
+Get-RedfishManagerComponent                        
+Get-RedfishSession                                 
+Get-RedfishSessionService                          
+Get-RedfishSessionToken                            
+Get-RedfishStorage                                 
+Get-RedfishSystem                                  
+Get-RedfishSystemComponent -SubComponent {Bios,Boot,EthernetInterfaces,LogServices,Memory,MemoryDomains,NetworkInterfaces,Processors,SecureBoot,Storage,TrustedModules)                        
+Get-RedfishTask                                    
+Get-RedfishTaskService                             
+Get-RedfishVolume                                  
+Clear-RedfishSystemLogEntries                      
+Get-RedfishSystemLogEntries                        
+Set-RedfishManager -CommandShellServiceEnabled =DateTimeLocalOffset -AutoDSTEnabled -DateTime -TimeZoneName -GraphicConsoleServiceEnabled -SerialConsoleServiceEnabled -LocationIndicatorActive -ServiceIndication
+Set-RedfishTaskService -ServiceEnabled -TaskAutoDeleteTimeoutMinutes
+Get-RedfishCertificateService
+Get-RedfishCertificate
+
+Connect-SwordfishTarget                            
+Get-SwordfishByURL                                 
+Get-SwordfishChassis                               
+Get-SwordfishChassisPower -MetricName {PowerControl,Voltages,PowerSupplies}                          
+Get-SwordfishChassisThermal -MetricName {Temperatures,Fans,Redundancy}                         
+Get-SwordfishClassesOfService                      
+Get-SwordfishConnection                            
+Get-SwordfishController                            
+Get-SwordfishDataStorageLinesOfService             
+Get-SwordfishDataStorageLoSCapabilities            
+Get-SwordfishDrive                                 
+Get-SwordfishEndpoint                              
+Get-SwordfishFabric                                
+Get-SwordfishGroup                                 
+Get-SwordfishIOConnectivityLoSCapabilities         
+Get-SwordfishManager                               
+Get-SwordfishManagerComponent                      
+Get-SwordfishODataTypeName                         
+Get-SwordfishPool                                  
+Get-SwordfishSession                               
+Get-SwordfishSessionService                        
+Get-SwordfishSessionToken                          
+Get-SwordfishStorage                               
+Get-SwordfishStorageServices                       
+Get-SwordfishSystem                                
+Get-SwordfishSystemComponent -SubComponent {Bios,Boot,EthernetInterfaces,LogServices,Memory,MemoryDomains,NetworkInterfaces,Processors,SecureBoot,Storage,TrustedModules)                                
+Get-SwordfishTask                                  
+Get-SwordfishTaskService                           
+Get-SwordfishURIFolderByFolder                     
+Get-SwordfishVolume                                
+Get-SwordfishZone                                  
+Get-SwordfishCertificate
+Get-SwordfishCertificateService
+Invoke-RedfishSystemReset                          
 ```
 ### Alternate Swordfish Targets
 

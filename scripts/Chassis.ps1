@@ -15,71 +15,33 @@ function Get-SwordfishChassis
     A Boolean value that defaults to $False, will return a powershell array of the Chassis. To set this value true indicates that
     instead you wish to see the raw Chassis Collection Object and not what the Chassis Collection points to.
 .EXAMPLE
-    PS:> Get-SwordfishChassis
+    The following is a Generic example. For very specific examples see the Examples folder in this module
+    PS:> Get-RedfishChassis
 
-    @Redfish.Copyright : Copyright 2020 HPE and DMTF
-    @odata.id          : /redfish/v1/Chassis/AC-109032
-    @odata.type        : #Chassis.v1_11_0.Chassis
-    Id                 : AC-109032
-    Name               : 2d2b4bd8361b856bbc00000001000041430001a9e8
-    ChassisType        : Shelf
-    Manufacturer       : HPE-Nimble
-    Model              : CS700
-    SKU                : CS700-2G-36T-3200F
-    SerialNumber       : AC-109032
-    PartNumber         : CS700-2G-36T-3200F
-    IndicatorLED       : Lit
-    PowerState         : On
-    EnviornmentalClass : A2
-    Status             : @{State=Enabled; Health=OK}
-    Thermal            : @{@odata.id=/redfish/v1/Chassis/AC-109032/Thermal}
-    Power              : @{@odata.id=/redfish/v1/Chassis/AC-109032/Power}
-    Drives             : @{@odata.id=/redfish/v1/Chassis/AC-109032/Drives}
-    Links              : @{Storage=}
-
-.EXAMPLE
-    PS:> Get-SwordfishChassis -ChassisId Chassis-13
-
-    { This output from this command will appear similar to the above output, but only limit the output to a single chassis instead of a possible collection }
-.EXAMPLE
-    PS:> Get-SwordfishChassis | ConvertTo-Json
-
-    {
-        "@Redfish.Copyright":  "Copyright 2020 HPE and DMTF",
-        "@odata.id":  "/redfish/v1/Chassis/AC-109032",
-        "@odata.type":  "#Chassis.v1_11_0.Chassis",
-        "Id":  "AC-109032",
-        "Name":  "2d2b4bd8361b856bbc00000001000041430001a9e8",
-        "ChassisType":  "Shelf",
-        "Manufacturer":  "HPE-Nimble",
-        "Model":  "CS700",
-        "SKU":  "CS700-2G-36T-3200F",
-        "SerialNumber":  "AC-109032",
-        "PartNumber":  "CS700-2G-36T-3200F",
-        "IndicatorLED":  "Lit",
-        "PowerState":  "On",
-        "EnviornmentalClass":  "A2",
-        "Status":  {
-                       "State":  "Enabled",
-                       "Health":  "OK"
-                   },
-        "Thermal":  {
-                        "@odata.id":  "/redfish/v1/Chassis/AC-109032/Thermal"
-                    },
-        "Power":  {
-                      "@odata.id":  "/redfish/v1/Chassis/AC-109032/Power"
-                  },
-        "Drives":  {
-                       "@odata.id":  "/redfish/v1/Chassis/AC-109032/Drives"
-                   },
-        "Links":  {
-                      "Storage":  {
-                                      "@odata.id":  "/redfish/v1/Storage/AC-109032"
-                                  }
-                  }
-    }
+    @odata.context  : /redfish/v1/$metadata#Chassis.Chassis
+    @odata.etag     : W/"B5DF47B2"
+    @odata.id       : /redfish/v1/Chassis/1/
+    @odata.type     : #Chassis.v1_10_2.Chassis
+    Id              : 1
+    AssetTag        :
+    ChassisType     : RackMount
+    IndicatorLED    : Off
+    Links           : @{ManagedBy=System.Object[]; ComputerSystems=System.Object[]; Drives=System.Object[]}
+    Manufacturer    : Vendor
+    Model           : Server Model 123
+    Name            : Computer System Chassis
+    NetworkAdapters : @{@odata.id=/redfish/v1/Chassis/1/NetworkAdapters/}
+    Oem             : @{Hpe=}
+    PCIeDevices     : @{@odata.id=/redfish/v1/Chassis/1/PCIeDevices/}
+    PCIeSlots       : @{@odata.id=/redfish/v1/Chassis/1/PCIeSlots/}
+    Power           : @{@odata.id=/redfish/v1/Chassis/1/Power/}
+    PowerState      : On
+    SKU             : 867960-B21
+    SerialNumber    : USE726CR3F
+    Status          : @{Health=Warning; State=Enabled}
+    Thermal         : @{@odata.id=/redfish/v1/Chassis/1/Thermal/}
 .LINK
-    https://redfish.dmtf.org/schemas/v1/Chassis.v1_16_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding()]
 param   (   [string]    $ChassisId,
@@ -105,6 +67,7 @@ process{
          }   
     }
 }
+Set-Alias -name 'Get-RedfishChassis' -value 'Get-SwordfishChassis'
 
 function Get-SwordfishChassisThermal
 {
@@ -125,6 +88,7 @@ function Get-SwordfishChassisThermal
 .PARAMETER ReturnCollectionOnly
     If specified (as a swich) the command will return the collection that contains all of the thermal values.
 .EXAMPLE
+    The following is a Generic example. For very specific examples see the Examples folder in this module
     Get-SwordfishChassisThermal
 
     @odata.context : /redfish/v1/$metadata#Thermal.Thermal
@@ -138,6 +102,7 @@ function Get-SwordfishChassisThermal
     Fans           : {@{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/0; MemberId=0; Reading=4740; Name=Fan 1; Status=}, @{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/1; MemberId=1; Reading=4560; Name=Fan 2; Status=},
                     @{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/2; MemberId=2; Reading=4740; Name=Fan 3; Status=}, @{@odata.id=/redfish/v1/Chassis/enclosure_1/Thermal#/Fans/3; MemberId=3; Reading=4740; Name=Fan 4; Status=}}
 .EXAMPLE
+    The following is a Generic example. For very specific examples see the Examples folder in this module
     PS C:\Users\chris\Desktop\Swordfish-Powershell-Toolkit> Get-SwordfishChassisThermal -MetricName Fans
 
     @odata.id : /redfish/v1/Chassis/enclosure_1/Thermal#/Fans/0
@@ -152,6 +117,7 @@ function Get-SwordfishChassisThermal
     Name      : Fan 2
     Status    : @{State=Enabled; Health=OK}
 .EXAMPLE
+    The following is a Generic example. For very specific examples see the Examples folder in this module
     Get-SwordfishChassisThermal -ChassisID enclosure_1 -MetricName Temperatures
 
     @odata.id      : /redfish/v1/Chassis/enclosure_1/Thermal#/Temperatures/0
@@ -172,23 +138,20 @@ function Get-SwordfishChassisThermal
     ReadingCelsius : 27.000000
     Status         : @{State=Enabled; Health=OK}
 .LINK
-    https://redfish.dmtf.org/schemas/v1/Chassis.v1_14_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>  
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='ByChassisID')]             [string]    $ChassisID,
 
         [Parameter(ParameterSetName='ByChassisID')]
         [Parameter(ParameterSetName='Default')]             
-        [Validateset("Temperatures","Fans","Redundancy","All")] [string]    $MetricName="All",
-
-        [Parameter(ParameterSetName='ByChassisID')]        
-        [Parameter(ParameterSetName='Default')]                 [Switch]   $ReturnCollectionOnly
+        [Validateset("Temperatures","Fans","Redundancy","All")] [string]    $MetricName="All"
      ) 
 
 process{
     switch ($PSCmdlet.ParameterSetName )
             {   'Default'       {   foreach ( $ChassID in ( Get-SwordfishChassis ).id )
-                                        {   [array]$DefChassSet += Get-SwordfishChassisThermal -ChassisID $ChassID -MetricName $MetricName -ReturnCollectionOnly:$ReturnCollectionOnly
+                                        {   [array]$DefChassSet += Get-SwordfishChassisThermal -ChassisID $ChassID -MetricName $MetricName
                                         }
                                     return ( $DefChassSet )  
                                 }
@@ -196,188 +159,33 @@ process{
                                 }
             }
     if ( $PSCmdlet.ParameterSetName -ne "Default" )
-        {   $Thermals = invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id') +  "Thermal" )
-            switch ($MetricName)
-                    {   "Temperatures"  {   [array]$ReturnSet=($Thermals).Temperatures
-                                        }
-                        "Fans"          {   [array]$ReturnSet=($Thermals).Fans
-                                        }
-                        "Redundancy"    {   [array]$ReturnSet=($Thermals).Redundancy
-                                        }
-                        "All"           {   [array]$ReturnSet=($Thermals)
-                                        }
-                    } 
-            if ( $ReturnCollectionOnly )
-                {   return $ReturnSet
-                } else 
-                {   return $ReturnSet
-                }
+        {   try     {   if ( (invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id'))).Thermal )
+                            {   $ThermalData = (invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id'))).Thermal  
+                                if ( $ThermalData.'@odata.id' )
+                                    {   $ThermalData = Get-RedfishByURL $ThermalData
+                                    }
+                                switch ($MetricName)
+                                    {   "Temperatures"  {   [array]$ReturnSet=($ThermalData).Temperatures
+                                                        }
+                                        "Fans"          {   [array]$ReturnSet=($ThermalData).Fans
+                                                        }
+                                        "Redundancy"    {   [array]$ReturnSet=($ThermalData).Redundancy
+                                                        }
+                                        "All"           {   [array]$ReturnSet=($ThermalData)
+                                                        }
+                                    } 
+                                return $ReturnSet
+                            }
+                          else 
+                            {   return
+                            }
+                    }
+            catch   { $_
+                    }
         }
 }
 }
-
-function Get-RedfishChassisThermal
-{
-<#
-.SYNOPSIS
-    Retrieve The list of valid Chassis' Thermal sensors from the Redfish Target Chassis(s).
-.DESCRIPTION
-    This command will return all of the Thermal sensors for a specific Chassis ID or all Chassis if unspecified.  
-.PARAMETER ChassisId
-    The Chassis ID name for a specific Chassis is that will be requested. If this is not specified
-    the command will retrieve the sensor data for all of the chassis IDs that exist on the Redfish
-    Target.
-.PARAMETER MetricName
-    The metric name may be defined as Temperatures, Fans, and Redundancy and these values will be 
-    returned, if no metric name is specified, the command will recover the collection which maintains all three.
-    For all intent purposes, if this value is not specified, the returned data will be similar to using 
-    the ReturnCollectionOnly option.
-.PARAMETER ReturnCollectionOnly
-    If specified (as a swich) the command will return the collection that contains all of the thermal values.
-.EXAMPLE
-    Get-RedFishChassisThermal
-
-    @odata.context : /redfish/v1/$metadata#Thermal.Thermal
-    @odata.etag    : W/"85889056"
-    @odata.id      : /redfish/v1/Chassis/1/Thermal
-    @odata.type    : #Thermal.v1_1_0.Thermal
-    Id             : Thermal
-    Fans           : {@{@odata.id=/redfish/v1/Chassis/1/Thermal#Fans/0; MemberId=0; Name=Fan 1; Oem=; Reading=11; ReadingUnits=Percent; Status=},
-                    @{@odata.id=/redfish/v1/Chassis/1/Thermal#Fans/1; MemberId=1; Name=Fan 2; Oem=; Reading=11; ReadingUnits=Percent; Status=},
-                    @{@odata.id=/redfish/v1/Chassis/1/Thermal#Fans/2; MemberId=2; Name=Fan 3; Oem=; Reading=11; ReadingUnits=Percent; Status=},
-                    @{@odata.id=/redfish/v1/Chassis/1/Thermal#Fans/3; MemberId=3; Name=Fan 4; Oem=; Reading=11; ReadingUnits=Percent; Status=}...}
-    Name           : Thermal
-    Temperatures   : {@{@odata.id=/redfish/v1/Chassis/1/Thermal#Temperatures/0; MemberId=0; Name=01-Inlet Ambient; Oem=; PhysicalContext=Intake; ReadingCelsius=23;
-                    SensorNumber=1; Status=; UpperThresholdCritical=42; UpperThresholdFatal=47}, @{@odata.id=/redfish/v1/Chassis/1/Thermal#Temperatures/1; MemberId=1;
-                    Name=02-CPU 1; Oem=; PhysicalContext=CPU; ReadingCelsius=40; SensorNumber=2; Status=; UpperThresholdCritical=70; UpperThresholdFatal=},
-                    @{@odata.id=/redfish/v1/Chassis/1/Thermal#Temperatures/2; MemberId=2; Name=03-CPU 2; Oem=; PhysicalContext=CPU; ReadingCelsius=40; SensorNumber=3; Status=;
-                    UpperThresholdCritical=70; UpperThresholdFatal=}, @{@odata.id=/redfish/v1/Chassis/1/Thermal#Temperatures/3; MemberId=3; Name=04-P1 DIMM 1-6; Oem=;
-                    PhysicalContext=SystemBoard; ReadingCelsius=0; SensorNumber=4; Status=; UpperThresholdCritical=; UpperThresholdFatal=}...}
-.EXAMPLE
-    PS C:\Users\chris\Desktop\Swordfish-Powershell-Toolkit> Get-RedfishChassisThermal -MetricName Fans
-
-    @odata.id    : /redfish/v1/Chassis/1/Thermal#Fans/3
-    MemberId     : 3
-    Name         : Fan 4
-    Oem          : @{Hpe=}
-    Reading      : 11
-    ReadingUnits : Percent
-    Status       : @{Health=OK; State=Enabled}
-
-    @odata.id    : /redfish/v1/Chassis/1/Thermal#Fans/4
-    MemberId     : 4
-    Name         : Fan 5
-    Oem          : @{Hpe=}
-    Reading      : 11
-    ReadingUnits : Percent
-    Status       : @{Health=OK; State=Enabled}
-
-    In this example, the number of returned items was excessive, so only the last two are show. 
-.EXAMPLE
-    PS C:\Users\chris\Desktop\Swordfish-Powershell-Toolkit> Get-RedfishChassisThermal -MetricName Fans
-
-    @odata.id              : /redfish/v1/Chassis/1/Thermal#Temperatures/48
-    MemberId               : 48
-    Name                   : 73-PCI 3 M2
-    Oem                    : @{Hpe=}
-    PhysicalContext        : SystemBoard
-    ReadingCelsius         : 0
-    SensorNumber           : 49
-    Status                 : @{State=Absent}
-    UpperThresholdCritical :
-    UpperThresholdFatal    :
-
-    @odata.id              : /redfish/v1/Chassis/1/Thermal#Temperatures/49
-    MemberId               : 49
-    Name                   : 74-PCI 3 M2 Zn
-    Oem                    : @{Hpe=}
-    PhysicalContext        : SystemBoard
-    ReadingCelsius         : 0
-    SensorNumber           : 50
-    Status                 : @{State=Absent}
-    UpperThresholdCritical :
-    UpperThresholdFatal    :
-
-    In this example, the number of returned items was excessive, so only the last two are show. 
-.EXAMPLE
-    PS C:\Users\chris\Desktop\Swordfish-Powershell-Toolkit> Get-RedfishChassisThermal -MetricName Fans | format-Table MemberId, Name, PhysicalContext, ReadingCelsius, Status
-
-    MemberId Name             PhysicalContext ReadingCelsius Status
-    -------- ----             --------------- -------------- ------
-    0        01-Inlet Ambient Intake                      23 @{Health=OK; State=Enabled}
-    1        02-CPU 1         CPU                         40 @{Health=OK; State=Enabled}
-    2        03-CPU 2         CPU                         40 @{Health=OK; State=Enabled}
-    3        04-P1 DIMM 1-6   SystemBoard                  0 @{State=Absent}
-    5        06-P1 DIMM 7-12  SystemBoard                 31 @{Health=OK; State=Enabled}
-    9        10-P2 DIMM 7-12  SystemBoard                 33 @{Health=OK; State=Enabled}
-    12       13-Exp Bay Drive SystemBoard                 35 @{Health=OK; State=Enabled}
-    13       14-Stor Batt 1   SystemBoard                 24 @{Health=OK; State=Enabled}
-    14       15-Front Ambient Intake                      29 @{Health=OK; State=Enabled}
-    21       22-Chipset       SystemBoard                 44 @{Health=OK; State=Enabled}
-    22       23-BMC           SystemBoard                 73 @{Health=OK; State=Enabled}
-    23       24-BMC Zone      SystemBoard                 43 @{Health=OK; State=Enabled}
-    24       25-HD Controller SystemBoard                 40 @{Health=OK; State=Enabled}
-    25       26-HD Cntlr Zone SystemBoard                 34 @{Health=OK; State=Enabled}
-    26       27-LOM           SystemBoard                 51 @{Health=OK; State=Enabled}    
-    27       28-LOM Card      SystemBoard                  0 @{State=Absent}
-    28       29-I/O Zone      SystemBoard                 34 @{Health=OK; State=Enabled}
-    30       31-PCI 1 Zone    SystemBoard                 34 @{Health=OK; State=Enabled}
-    32       33-PCI 2 Zone    SystemBoard                 33 @{Health=OK; State=Enabled}
-    34       35-PCI 3 Zone    SystemBoard                 33 @{Health=OK; State=Enabled}
-    36       38-Battery Zone  SystemBoard                 36 @{Health=OK; State=Enabled}
-    37       39-P/S 1 Inlet   PowerSupply                 30 @{Health=OK; State=Enabled}
-    38       40-P/S 2 Inlet   PowerSupply                 31 @{Health=OK; State=Enabled}
-    39       41-P/S 1         PowerSupply                 40 @{Health=OK; State=Enabled}
-    40       42-P/S 2         PowerSupply                 40 @{Health=OK; State=Enabled}
-    41       43-E-Fuse        PowerSupply                 28 @{Health=OK; State=Enabled}
-    42       44-P/S 2 Zone    PowerSupply                 36 @{Health=OK; State=Enabled}
-
-    In this example, the number of returned items was still excessive, so the output was trimmed. 
-
-.LINK
-    https://redfish.dmtf.org/schemas/v1/Chassis.v1_14_0.json
-#>  
-[CmdletBinding(DefaultParameterSetName='Default')]
-param(  [Parameter(ParameterSetName='ByChassisID')]             [string]    $ChassisID,
-
-        [Parameter(ParameterSetName='ByChassisID')]
-        [Parameter(ParameterSetName='Default')]             
-        [Validateset("Temperatures","Fans","Redundancy","All")] [string]    $MetricName="All",
-
-        [Parameter(ParameterSetName='ByChassisID')]        
-        [Parameter(ParameterSetName='Default')]                 [Switch]   $ReturnCollectionOnly
-     ) 
-
-process{
-    switch ($PSCmdlet.ParameterSetName )
-            {   'Default'       {   foreach ( $ChassID in ( Get-SwordfishChassis ).id )
-                                        {   [array]$DefChassSet += Get-SwordfishChassisThermal -ChassisID $ChassID -MetricName $MetricName -ReturnCollectionOnly:$ReturnCollectionOnly
-                                        }
-                                    return ( $DefChassSet )  
-                                }
-                'ByChassisID'   {   $PulledData = Get-SwordfishChassis -ChassisID $ChassisID
-                                }
-            }
-    if ( $PSCmdlet.ParameterSetName -ne "Default" )
-        {   $Thermals = invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id') +  "Thermal" )
-            switch ($MetricName)
-                    {   "Temperatures"  {   [array]$ReturnSet=($Thermals).Temperatures
-                                        }
-                        "Fans"          {   [array]$ReturnSet=($Thermals).Fans
-                                        }
-                        "Redundancy"    {   [array]$ReturnSet=($Thermals).Redundancy
-                                        }
-                        "All"           {   [array]$ReturnSet=($Thermals)
-                                        }
-                    } 
-            if ( $ReturnCollectionOnly )
-                {   return $ReturnSet
-                } else 
-                {   return $ReturnSet
-                }
-        }
-}
-}
+Set-Alias -name 'Get-RedfishChassisThermal' -Value 'Get-SwordfishChassisThermal'
 
 function Get-SwordfishChassisPower
 {
@@ -393,6 +201,7 @@ function Get-SwordfishChassisPower
 .PARAMETER MetricName
     The metric name is required, and only PowerControl, Voltages, and PowerSupplies are valid.
 .EXAMPLE
+    The Following output is a Generic Example, for detailed examples see the Example folder in this Module
     Get-SwordfishChassisPower -MetricName Voltages
 
     @odata.id    : /redfish/v1/Chassis/enclosure_1/Power#/Voltages/0
@@ -413,6 +222,7 @@ function Get-SwordfishChassisPower
     Name         : Voltage 5V Rail Loc: left-PSU
     Status       : @{State=Enabled; Health=OK}
 .EXAMPLE
+    The Following output is a Generic Example, for detailed examples see the Example folder in this Module
     Get-SwordfishChassisPower
 
     @odata.context : /redfish/v1/$metadata#Power.Power
@@ -425,47 +235,44 @@ function Get-SwordfishChassisPower
     Voltages       : {@{@odata.id=/redfish/v1/Chassis/enclosure_1/Power#/Voltages/0; MemberId=0; ReadingVolts=10.770000; Name=Capacitor Pack Voltage-Ctlr A; Status=}, @{@odata.id=/redfish/v1/Chassis/enclosure_1/Power#/Voltages/1; MemberId=1; ReadingVolts=2.690000;
                      Name=Capacitor Cell 1 Voltage-Ctlr A; Status=}, @{@odata.id=/redfish/v1/Chassis/enclosure_1/Power#/Voltages/2; MemberId=2; ReadingVolts=2.690000; Name=Capacitor Cell 2 Voltage-Ctlr A; Status=},
                      @{@odata.id=/redfish/v1/Chassis/enclosure_1/Power#/Voltages/3; MemberId=3; ReadingVolts=2.690000; Name=Capacitor Cell 3 Voltage-Ctlr A; Status=}...}
-.EXAMPLE
-    Get-SwordfishChassisPower -ReturnCollectionOnly
-
-    { OUTPUT is exactly the same as the previous example }
 .LINK
-    https://redfish.dmtf.org/schemas/v1/Chassis.v1_14_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
-param(  [Parameter(ParameterSetName='ByChassisID')]                     [string]    $ChassisID,
-
-        [Parameter(ParameterSetName='ByChassisID')]
-        [Parameter(ParameterSetName='Default')]             
-        [Validateset("PowerControl","Voltages","PowerSupplies","All")]  [string]    $MetricName="All",
-
-        [Parameter(ParameterSetName='ByChassisID')]        
-        [Parameter(ParameterSetName='Default')]                         [Switch]    $ReturnCollectionOnly
+param(                                                                  [string]    $ChassisID,
+        [Validateset("PowerControl","Voltages","PowerSupplies","All")]  [string]    $MetricName="All"      
      ) 
-process{
-    switch ($PSCmdlet.ParameterSetName )
-            {   'Default'       {   foreach ( $ChassID in ( Get-SwordfishChassis ).id )
-                                        {   [array]$DefChassSet += Get-SwordfishChassisPower -ChassisID $ChassID -MetricName $MetricName -ReturnCollectionOnly:$ReturnCollectionOnly
-                                        }
-                                    return ( $DefChassSet )  
-                                }
-                'ByChassisID'   {   $PulledData = Get-SwordfishChassis -ChassisID $ChassisID
-                                }
+process
+  { if ( $ChassisID)
+            {   $MyChassis = Get-RedfishChassis -ChassisId $ChassisID
             }
-    if ( $PSCmdlet.ParameterSetName -ne "Default" )
-        {   $Powers = invoke-restmethod2 -uri ($base + ($PulledData.'@odata.id') +  "/Power" )
-            switch ($MetricName)
-                    {   "PowerControl"  {   [array]$ReturnSet=($Powers).PowerControl
-                                        }
-                        "Voltages"      {   [array]$ReturnSet=($Powers).Voltages
-                                        }
-                        "PowerSupplies" {   [array]$ReturnSet=($Powers).PowerSupplies
-                                        }
-                        "All"           {   [array]$ReturnSet=($Powers)
-                                        }
-                    } 
-            if ( $ReturnCollectionOnly )
-                {   return $ReturnSet
-                } else 
-                {   return $ReturnSet
-}}      }       }
+        else 
+            {   $MyChassis = Get-RedfishChassis
+            }
+    if ( $MyChassis.Power )
+            {   ForEach ( $PowerHash in ($MyChassis).Power )
+                    {   try     {   $Powers = Get-RedfishByURL -URL ( $PowerHash.'@odata.id' )   
+                                    if ( $Powers )
+                                        {   switch ($MetricName)
+                                            {   "PowerControl"  {   $ReturnData = ($Powers).PowerControl
+                                                                }
+                                                "Voltages"      {   $ReturnData = ($Powers).Voltages
+                                                                }
+                                                "PowerSupplies" {   $ReturnData = ($Powers).PowerSupplies
+                                                                }
+                                                "All"           {   $ReturnData = $Powers
+                                                                }
+                                            } 
+                                    }
+                                }
+                        catch   {     write-warning 'Call to Power data failed'
+                                }
+                    }   
+                return $ReturnData
+            }
+        else
+            {   write-warning "No Power subsection found"
+            }
+  }
+}
+Set-Alias -Name 'Get-RedfishChassisPower' -Value 'Get-SwordfishChassisPower'

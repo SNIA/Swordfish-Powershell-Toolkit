@@ -1,4 +1,5 @@
-function Get-SwordfishVolume{
+function Get-SwordfishVolume
+{
 <#
 .SYNOPSIS
     Retrieve The list of valid Volumes from the Swordfish Target.
@@ -55,7 +56,7 @@ function Get-SwordfishVolume{
     Members@odata.count : 2
     Members             : {@{@odata.id=/redfish/v1/StorageServices/S1/Volumes/00c0ff50437d0000d9c73e5f01000000}, @{@odata.id=/redfish/v1/StorageServices/S1/Volumes/00c0ff50437d000052ab465f01000000}}
 .LINK
-    https://redfish.dmtf.org/schemas/v1/Volume.v1_5_0.json
+    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(      [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,
@@ -119,4 +120,5 @@ process{
                 {   return $FullVolSet | where-object { $_.id -eq $VolumeID }
                 } else 
                 {   return $FullVolSet
-}}  }       }   }            
+}}  }       }   } 
+Set-Alias -Name 'Get-RedfishVolume' -Value 'Get-SwordfishVolume'           

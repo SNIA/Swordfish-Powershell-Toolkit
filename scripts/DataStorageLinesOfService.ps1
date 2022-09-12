@@ -75,21 +75,21 @@ process{
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   foreach( $Subitem in $PulledData ) 
             {   $MemberSet = $DSLOSMemberOrCollection = $Subitem.DataStorageLinesOfService
-                $DSLOSColOrDSLOSs = Get-RedfishByURL -URL ( $MemberSet.'@odata.id' ) 
+                $DSLOSColOrDSLOSs = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
                 if ( $DSLOSColOrDSLOSs.Members ) 
                     {   $DSLOSMemberOrCollection = $DSLOSColOrDSLOSs.Members    
                     }
                 # [array]$FullDSLOSCollectionOnly += $DSLOSColOrDSLOSs    
                 foreach ( $DSLOSorDSLOSC in $Memberset )
                     {   foreach ( $MyDSLOSData in $DSLOSMemberOrCollection )
-                            {   [array]$FullDSLOSSet += Get-RedfishByURL -URL ($MyDSLOSData.'@odata.id' )
+                            {   [array]$FullDSLOSSet += Invoke-RestMethod2 -uri ( $base + ($MyDSLOSData.'@odata.id') )
                             }
                     }
             }
             foreach ( $Col in ( $FullDSLOSSet | Get-Unique ) )
             {   $odataraw = $Col.'@odata.id'
                 $odataProcessed = $odataRaw.substring( 0, $odataRaw.lastIndexOf( '/' ) )
-                [array]$FullDSLOSCollectionOnly += Get-RedfishByURL -URL $odataProcessed
+                [array]$FullDSLOSCollectionOnly += Invoke-RestMethod2 -uri ( $base + $odataProcessed )
             }
             if ( $ReturnCollectionOnly )
                     {   return $FullDSLOSCollectionOnly

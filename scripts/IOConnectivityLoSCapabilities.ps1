@@ -37,8 +37,10 @@ function Get-SwordfishIOConnectivityLoSCapabilities{
                                @odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/DefaultCOS/IOConnectivityLineOfService/IOCLOS;
                                @odata.type=#IOConnectivityLineOfService.v1_0_2.IOConnectivityLineOfService; Id=IOCLOS;
                                Name=IO Connectivity Line Of Service; AccessProtocols=System.Object[]}}
+
+
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    http://redfish.dmtf.org/schemas/Swordfish/v1/IOConnectivityLineOfService.v1_2_1.json
 #> 
 
 [CmdletBinding(DefaultParameterSetName='Default')]
@@ -66,10 +68,10 @@ process{
         }
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = $ItemMemberOrCollection = $PulledData.IOConnectivityLoSCapabilities
-            [array]$FullItemSet = $ItemColOrItems = Get-RedfishByURL -URL ( $MemberSet.'@odata.id' )
-            $odataraw = $ItemColOrItems.'@odata.id'
+            [array]$FullItemSet = $ItemColOrItems = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
+            $odataraw = $ItemColorItems.'@odata.id'
             $odataProcessed = $odataRaw.substring( 0, $odataRaw.lastIndexOf( '/' ) )
-            [array]$FullDSLOSCCollectionOnly += Get-RedfishByURL -URL ( $odataProcessed )
+            [array]$FullDSLOSCCollectionOnly += Invoke-RestMethod2 -uri ( $base + $odataProcessed )
             if ( $ReturnCollectionOnly )
                 {   return $FullDSLOSCCollectionOnly 
                 } else 

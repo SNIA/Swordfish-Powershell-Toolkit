@@ -16,7 +16,6 @@ function Get-SwordfishClassesOfService
 .PARAMETER ReturnCollectioOnly
     This switch will return the collection instead of an array of the actual objects if set to true.
 .EXAMPLE
-    The following is a Generic example. For very specific examples see the Examples folder in this module
     Get-SwordfishDataStorageLinesOfService
 
     @odata.context            : /redfish/v1/$metadata#ClassOfService.ClassOfService
@@ -79,7 +78,7 @@ function Get-SwordfishClassesOfService
                           @{@odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/RAID6},
                           @{@odata.id=/redfish/v1/StorageServices/S1/ClassesOfService/RAID10}...}
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    http://redfish.dmtf.org/schemas/Swordfish/v1/ClassOfService.v1_2_0.json
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='ByStorageServiceID')]  [string]    $StorageServiceID,
@@ -106,14 +105,14 @@ process{
         }
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = $ClassMemberOrCollection = $PulledData.ClassesOfService
-            $ClassColOrClasses = Get-RedfishByURL -URL ($MemberSet.'@odata.id' ) 
+            $ClassColOrClasses = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
             if ( $ClassColOrClasses.Members ) 
                 {   $ClassMemberOrCollection = $ClassColOrClasses.Members    
                 }
             [array]$FullClassCollectionOnly += $ClassColOrClasses    
             foreach ( $CorCC in $Memberset )
                 {   foreach ( $MyClassData in $ClassMemberOrCollection )
-                        {   [array]$FullClassSet += Get-RedfishByURL -URL ( $MyClassData.'@odata.id' )
+                        {   [array]$FullClassSet += Invoke-RestMethod2 -uri ( $base + ($MyClassData.'@odata.id') )
                         }
                 }
             if ( $ReturnCollectionOnly )

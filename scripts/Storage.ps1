@@ -59,7 +59,7 @@ function Get-SwordfishStorage
                     ]
     }
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    http://redfish.dmtf.org/schemas/Swordfish/v1/StorageSystem.v1_2_0.json
 #>   
 [CmdletBinding()]
 param(  [string]    $StorageID,
@@ -67,16 +67,16 @@ param(  [string]    $StorageID,
      )
 process{
     if ( Get-RedfishByURL $(Get-RedfishSystem).Storage )
-            {   $ReturnColl =( Get-RedfishByURL -URL $(Get-RedfishSystem).Storage )   
+            {   $ReturnColl =( Get-RedfishByURL $(Get-RedfishSystem).Storage )   
             }
         else 
-        {   if (  Get-RedfishByURL -URL '/redfish/v1/Storage')
-                {   $ReturnColl = ( Get-RedfishByURL -URL '/redfish/v1/Storage' ) 
+        {   if (  Get-RedfishByURL '/redfish/v1/Storage')
+                {   $ReturnColl = ( Get-RedfishByURL '/redfish/v1/Storage' ) 
                 }
         }
-    # $StorageSystems = $ReturnColl.Members  
+    $StorageSystems = $ReturnColl.Members  
     foreach($MyStor in $ReturnColl.Members )
-        {   [array]$StorageSysCol +=  Get-RedfishByURL -URL $MyStor 
+        {   [array]$StorageSysCol +=  get-redfishByURL $MyStor 
         }
     if ( $ReturnCollectionOnly )
         {   return $ReturnColl
@@ -152,7 +152,7 @@ function Get-SwordfishStorageServices
                     ]
     }
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    http://redfish.dmtf.org/schemas/Swordfish/v1/StorageSystem.v1_2_0.json
 #>   
 [CmdletBinding()]
 param(  [string]    $StorageID,
@@ -162,7 +162,7 @@ process{
     $ReturnColl = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "StorageServices" )
     $StorageSystems = (($ReturnColl).Links).Members + ($ReturnColl).Members
     foreach($StorageSys in $StorageSystems)
-        {   [array]$StorageSysCol += Get-RedfishByURL -URL ( $StorageSys.'@odata.id' ) 
+        {   [array]$StorageSysCol += invoke-restmethod2 -uri ( $base + ( $StorageSys.'@odata.id' ) ) 
         } 
     if ( $ReturnCollectionOnly )
         {   return $ReturnColl

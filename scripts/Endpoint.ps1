@@ -120,7 +120,7 @@ function Get-SwordfishEndpoint
     Members             : {@{@odata.id=/redfish/v1/Fabrics/AC-109032/Endpoints/active_eth4}, @{@odata.id=/redfish/v1/Fabrics/AC-109032/Endpoints/active_eth1},
                            @{@odata.id=/redfish/v1/Fabrics/AC-109032/Endpoints/active_eth2}, @{@odata.id=/redfish/v1/Fabrics/AC-109032/Endpoints/active_eth3}...}
 .LINK
-https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    https://redfish.dmtf.org/schemas/v1/Endpoint.v1_5_0.json
 #>   
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='ByStorageID')]         [string]    $StorageID,
@@ -169,13 +169,13 @@ process{
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = $EPMemberOrCollection = $PulledData.Endpoints
             foreach ( $EPorEPC in $Memberset )
-                {   $EPColOrEP = Get-RedfishByURL -URL ( $MemberSet.'@odata.id' )
+                {   $EPColOrEP = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
                     if ( $EPColOrEP.Members ) 
                         {   $EPMemberOrCollection = $EPColOrEP.Members    
                         }
                     $FullEPCollectionOnly  += $EPColOrEP
                     foreach ( $MyEPData in $EPMemberOrCollection )
-                        {   $FullEPCollection      += Get-RedfishByURL -URL ($MyEPData.'@odata.id')                          
+                        {   $FullEPCollection      += Invoke-RestMethod2 -uri ( $base + ($MyEPData.'@odata.id') )                          
                         }
                 }
             if ( $ReturnCollectionOnly )

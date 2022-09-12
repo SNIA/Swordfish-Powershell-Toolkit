@@ -364,6 +364,58 @@ function Get-SwordfishByURL
 }
 Set-Alias -Value 'Get-SwordfishByURL' -Name 'Get-RedfishByURL'
      
+function Set-SwordfishByURL
+{
+<#
+.SYNOPSIS
+    Sets a SNIA Swordfish or DMTF Redfish API value using values presented in a body as specified 
+    by a Redfish URL.
+.DESCRIPTION
+    Sets a SNIA Swordfish or DMTF Redfish API value using values presented in a body as specified 
+    by a Redfish URL.
+.PARAMETER URL
+    You can any of the following items, If you pass a string, it must be in the format that
+    starts with the HTTPS://, or if you pass the relative path that starts with /Redfish/v1/. 
+    Alternativly if you pass a Object, it will look for and extract an hash named '@odata.id' and 
+    use the proper relative path from that passed object. This passed object method allows for 
+    more streamlined pipeline objects.
+.EXAMPLE
+    PS:> Get-RedfishByURL -URL 'HTTPS://10.10.2.39/redfish/v1/System/1' -Body '@( Key = Value )'
+#>
+[CmdletBinding()]
+    param(  [Parameter(Mandatory=$True, ValueFromPipeline=$true)]   $URL,
+            [Parameter(Mandatory=$True, ValueFromPipeline=$true)]   $Body                                        
+         )
+    process
+        {   if ( ( $URL.GetType()).name -eq 'String' )
+                {   write-verbose 'The Passed in Variable is a string'
+                    if ( $URL -like 'https://*' )
+                            {   write-verbose 'The sent parameter starts with HTTPS://'
+                                $MyURL = $URL
+                            }
+                    if ( $URL -like '/redfish/v1*' )
+                            {   write-verbose 'The sent parameter starts with /redfish/v1. Adding HTTPS base.'
+                                $MyURL = $Base + $URL
+                            }                        
+                }
+            if ( $URL.'@odata.id' ) 
+                {   write-verbose 'The sent parameter was a hash table that used @odata.id as a key name'
+                    $MyURL = $Base + $URL.'@odata.id'
+                }
+            try     {   $MyData = invoke-restmethod2 -uri ( $MyURL ) -body ( $Body ) -Method 'Put' -erroraction stop
+                         if ( $MyData.exception )
+                                {  return
+                                } 
+                            else 
+                                { return $MyData
+                                }
+                    }
+            catch   {   $_
+                        return
+                    } 
+        }
+}
+Set-Alias -Value 'Set-SwordfishByURL' -Name 'Set-RedfishByURL'
 function FixTheUntrustedLink
 {   if (-not ([System.Management.Automation.PSTypeName]'ServerCertificateValidationCallback').Type)
         {   $certCallback = @"
@@ -466,7 +518,7 @@ function Get-SwordfishURIFolderByFolder
     param ( $Folder
           )
     write-verbose "Invoke-RestMethod from Get-SwordfishURIFolderByFolder function to find folder $Folder"      
-    $GetRootLocation = Get-RedfishByURL -URL '/redfish/v1' 
+    $GetRootLocation = invoke-restmethod2 -uri "$BaseUri" 
     
     if ( ((($GetRootLocation).links).$($Folder)).'@odata.id')
             {   $FolderUri = $Base + ((($GetRootLocation).links).$($Folder)).'@odata.id'

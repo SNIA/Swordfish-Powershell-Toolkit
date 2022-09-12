@@ -23,7 +23,7 @@ function Get-SwordfishSessionToken
     UserName       : chris
     X-Auth-Token   : fa4927c126ea40f5b49b4d8e1c540060  
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    https://redfish.dmtf.org/schemas/v1/Session.v1_3_0.json
 #>
 [CmdletBinding(DefaultParameterSetName='Default')]
 param   (   [Parameter(Mandatory=$true)]    [string] $Username,
@@ -86,12 +86,15 @@ function Get-SwordfishSessionService
     Sessions       : @{@odata.id=/redfish/v1/SessionService/Sessions}
     ServiceEnabled : True
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    https://redfish.dmtf.org/schemas/v1/Session.v1_3_0.json
 #>
 [CmdletBinding()]
-param()
-Process {   return Get-RedfishByURL -URL '/redfish/v1/SesionService' 
-        }
+param(  
+     )
+Process
+    {   [array]$DefSSCol = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "SessionService" ) 
+        return $DefSSCol  
+    }
 }
 Set-Alias -value 'Get-SwordfishSessionService' -name 'Get-RedfishSessionService'
 
@@ -126,7 +129,7 @@ function Get-SwordfishSession
 .NOTES
     By default if the port is not given, it assumes port 5000, and if no hostname is given it assumes localhost.
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    https://redfish.dmtf.org/schemas/v1/Session.v1_3_0.json
 #>
 [CmdletBinding(DefaultParameterSetName='Default')]
 param(  [Parameter(ParameterSetName='Default')]                 [string]    $SessionID,
@@ -141,7 +144,7 @@ Process
                 'Default'               {   # $CollectionSet = invoke-restmethod2 -uri ( Get-SwordfishURIFolderByFolder "Managers" )
                                             $Members = ( Get-SwordfishSession -ReturnCollectionOnly ).Members
                                             foreach ( $SesLink in $Members )
-                                                {   $SES = Get-RedfishByURL -URL ( $SesLink.'@odata.id' ) 
+                                                {   $SES = Invoke-RestMethod2 -uri ( $base + ( $SesLink.'@odata.id' ) )
                                                     [array]$DefSesCol += $SES 
                                                 }
                                             if ( $SessionID )

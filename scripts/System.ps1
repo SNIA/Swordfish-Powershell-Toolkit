@@ -40,17 +40,17 @@ function Get-SwordfishSystem
     Members@odata.count : 1
     Members             : {@{@odata.id=/redfish/v1/ComputerSystem/00C0FF5038E8}}
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
 #>   
 [CmdletBinding()]
 param(  [string]    $SystemID,
         [switch]    $ReturnCollectionOnly
      )
 process{
-    $SystemData = Get-RedfishByURL -URL '/redfish/v1/Systems' 
+    $SystemData = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Systems") 
     $SysCollection=@()
     foreach($Sys in ($SystemData).Members )
-        {   $SysCollection +=  Get-RedfishByURL -URL ($Sys.'@odata.id')  
+        {   $SysCollection +=  invoke-restmethod2 -uri ( $base + ($Sys.'@odata.id') ) 
         }
     if ( $ReturnCollectionOnly )
         {   return $SystemData
@@ -120,7 +120,7 @@ function Get-SwordfishSystemComponent
                         ]
         }
 .LINK
-    https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+        https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
 #>   
 [CmdletBinding()]
     param(  [string]    $SystemID,
@@ -131,12 +131,13 @@ function Get-SwordfishSystemComponent
          )
     process{
         $NoCollectionExists=$False
-        $SystemData = Get-RedfishSystem
+        $SystemData = invoke-restmethod2 -uri (Get-SwordfishURIFolderByFolder "Systems")
         $SysCollection=@()
         $SecondOrderData=@()
         foreach($Sys in ($SystemData).Members )
-            {   $SysCollection += Get-RedfishByURL -URL ( $Sys.'@odata.id')  
+            {   $SysCollection +=  invoke-restmethod2 -uri ( $base + ($Sys.'@odata.id') )  
             }
+
         $FirstOrderData = $SystemData
         if ( $SystemID )
                     {   $FirstOrderData = $SysCollection | where-object { $_.id -eq $SystemId } 
@@ -144,20 +145,23 @@ function Get-SwordfishSystemComponent
                     {   $FirstOrderData = $SysCollection                     
                     }     
         if ( $FirstOrderData )
-                {   $SecondOrderDataCollection = Get-RedfishByURL -URL ($FirstOrderData."$SubComponent").'@odata.id' 
+                {   $SecondOrderDataCollection = invoke-Restmethod2 -uri ( $base + ($FirstOrderData."$SubComponent").'@odata.id' )
                     if ( -not $SecondOrderDataCollection )
-                            {   $SecondOrderDataCollection = $FirstOrderData.($SubComponent)
+                            {   # The data may exist without going to a seperate page
+                                $SecondOrderDataCollection = $FirstOrderData.($SubComponent)
                                 $NoCollectionExists = $True
                             }
                     foreach ( $Mem in $SecondOrderDataCollection.Members )
-                        {   $SecondOrderData += Get-RedfishByURL -URL ( $Mem.'@odata.id' ) 
+                        {   # write-host $Mem
+                            $SecondOrderData += invoke-Restmethod2 -uri ( $base + $Mem.'@odata.id' ) 
                         } 
                 } 
             else
                 {   $SecondOrderDataCollection = ''
                 }
         if ( -not $SecondOrderDataCollection.'Members' )
-            {   write-verbose "No Second Order Data Collection members found."
+            {   # Must be a single object without a collection, return the single object 
+                write-verbose "No Second Order Data Collection members found."
                 $SecondOrderData = $SecondOrderDataCollection
                 $NoCollectionExists = $true
             }
@@ -178,3 +182,54 @@ function Get-SwordfishSystemComponent
 }
 Set-Alias -value 'Get-SwordfishSystemComponent' -Name 'Get-RedfishSystemComponent'
 
+function Get-RedfishSystemBootOptions
+{
+<#
+.SYNOPSIS
+    This command will return a collection of possible Boot options for this system.
+.DESCRIPTION
+    The list of all possible boot sources for this system will be returned as a collection of objects.
+    The list of boot options may be used either for regular boot options or Uefi boot options.
+.PARAMETER ComputerSystemID
+    If the redfish endpoint reflects multiple systems, you can restict the response to a single system by specifying a single system ID
+.LINK
+    https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
+#>   
+[CmdletBinding()]
+    param(  [string]    $SystemID
+         )
+    process{
+        $NoCollectionExists=$False
+        $SysCollection=@()
+        $SecondOrderData=@()
+        foreach($Sys in Get-RedfishSystem )
+            {   $SysCollection +=  Get-RedfishByURL -URL ($Sys.'@odata.id')  
+            }
+        if ( $SystemID )
+                    {   $FirstOrderData = $SysCollection | where-object { $_.id -eq $SystemId } 
+                    } else 
+                    {   $FirstOrderData = $SysCollection                     
+                    }     
+        if ( $FirstOrderData )
+                {   $SecondOrderDataCollection = Get-RedfishByURL -URL ( ( ( ($FirstOrderData).Boot).BootOptions).'@odata.id' )
+                    if ( -not $SecondOrderDataCollection )
+                            {   # The data may exist without going to a seperate page
+                                $SecondOrderDataCollection = $FirstOrderData.($SubComponent)
+                                $NoCollectionExists = $True
+                            }
+                    foreach ( $Mem in $SecondOrderDataCollection.Members )
+                        {   $SecondOrderData += Get-RedfishByUrl -URL ( $Mem.'@odata.id' ) 
+                        } 
+                } 
+            else
+                {   $SecondOrderDataCollection = ''
+                }
+        if ( -not $SecondOrderDataCollection.'Members' )
+            {   # Must be a single object without a collection, return the single object 
+                write-verbose "No Second Order Data Collection members found."
+                $SecondOrderData = $SecondOrderDataCollection
+                $NoCollectionExists = $true
+            }
+        return $SecondOrderData
+    }
+}

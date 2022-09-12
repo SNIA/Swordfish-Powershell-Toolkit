@@ -137,3 +137,107 @@ process
         
  }
 }
+function Set-RedfishSystemBoot
+{
+<#
+.SYNOPSIS
+    This command will return a collection of possible Boot options for this system.
+.DESCRIPTION
+    The list of all possible boot sources for this system will be returned as a collection of objects.
+    The list of boot options may be used either for regular boot options or Uefi boot options.
+.PARAMETER ComputerSystemID
+    If the redfish endpoint reflects multiple systems, you can restict the response to a single system by specifying a single system ID
+.PARAMETER AliasBootOrder
+    Ordered array of boot source aliases representing the persistent boot order associated with this computer system. For the possible 
+    property values see allowable values, the following are the complete list: BiosSetup, Cd, Diags, Floppy, Hdd, None, Pxe, RemoteDrive, 
+    SDCard, UefiBootNext, UefiHttp, UefiShell, UefiTarget, Usb, Utilities.
+.PARAMETER AutomaticRetryAttempts
+    The number of attempts the system will automatically retry booting.
+.PARAMETER AutomaticRetryConfig
+    The configuration of how the system retries booting automatically. For the
+    possible property values only the following are valid; Disables, RetryAlways, RetryAttempts.
+.PARAMETER BootNext
+    The BootOptionReference of the Boot Option to perform a one-time boot
+    from when BootSourceOverrideTarget is UefiBootNext .
+.PARAMETER BootOrder
+    An array of BootOptionReference strings that represent the persistent boot
+    order for with this computer system.
+.PARAMETER BootOrderPropertySelection
+    The name of the boot order property that the system uses for the persistent boot order. For the possible property values only the following 
+    may be valid; AliasBootOrder, BootOrder.
+.PARAMETER BootSourceOverrideEnabled 
+    The state of the boot source override feature. For the possible property values, Only the following are valid options; Continuouis, Disabled, Once
+.PARAMETER BootSourceOverrideMode 
+    The BIOS boot mode to use when the system boots from the BootSourceOverrideTarget boot source. For the possible property values; Legacy, UEFI
+.PARAMETER BootSourceOverrideTarget
+    The current boot source to use at the next boot instead of the normal boot device, if BootSourceOverrideEnabled is true . For the possible 
+    property values see allowable values, the following are the complete list: BiosSetup, Cd, Diags, Floppy, Hdd, None, Pxe, RemoteDrive, 
+    SDCard, UefiBootNext, UefiHttp, UefiShell, UefiTarget, Usb, Utilities.
+.PARAMETER HttpBootUri
+    The URI to boot from when BootSourceOverrideTarget is set to UefiHttp .
+.PARAMETER StopBootOnFault
+    If the boot should stop on a fault. For the possible property values, use; AnyFault or Never.
+.PARAMETER TrustedModuleRequiredToBoot
+    The Trusted Module boot requirement. For the possible property values, use; Disabled or Required
+.PARAMETER UefiTargetBootSourceOverride 
+    The UEFI device path of the device from which to boot when BootSourceOverrideTarget is UefiTarget 
+.LINK
+    https://redfish.dmtf.org/schemas/v1/ComputerSystem.v1_13_0.json
+#>   
+[CmdletBinding()]
+    param(                                                                  [string]    $SystemID,
+            [ValidateSet('BiosSetup', 'Cd', 'Diags', 'Floppy', 'Hdd', 
+            'None', 'Pxe', 'RemoteDrive', 'SDCard', 'UefiBootNext', 
+            'UefiHttp', 'UefiShell', 'UefiTarget', 'Usb', 'Utilities')]     [string]    $AliasBootOrder,
+                                                                            [int]       $AutomaticRetryAttempts,
+            [ValidateSet('Disables', 'RetryAlways', 'RetryAttempts')]       [string]    $AutomaticRetryConfig,
+                                                                            [string]    $BootNext,
+                                                                            [array]     $BootOrder,
+            [ValidateSet('AliasBootOrder','BootOrder')]                     [string]    $BootOrderPropertySelection,
+            [ValidateSet('Continuouse','Disabled','Once')]                  [string]    $BootSourceOverrideEnabled,
+            [ValidateSet('Legacy','UEFI')]                                  [string]    $BootSourceOverrideMode,
+            [ValidateSet('BiosSetup', 'Cd', 'Diags', 'Floppy', 'Hdd', 
+            'None', 'Pxe', 'RemoteDrive', 'SDCard', 'UefiBootNext', 
+            'UefiHttp', 'UefiShell', 'UefiTarget', 'Usb', 'Utilities')]     [string]    $BootSourceOverrideTarget,
+                                                                            [string]    $HttpBootUri,
+            [ValidateSet('AnyFault','Never')]                               [string]    $StopBootOnFault,
+
+            [ValidateSet('Required','Disabled')]                            [string]    $TrustedModuleRequiredToBoot,
+
+                                                                            [string]    $UefiTargetBootSourceOverride 
+         )
+    process{
+        $NoCollectionExists=$False
+        $SysCollection=@()
+        $SecondOrderData=@()
+        $BBody = @()
+        if ( $PSBoundParameters.ContainsKey('AliasBootOrder'))              {    $BBody += @{ AliasBootOrder                = $AliasBootOrder               } }
+        if ( $PSBoundParameters.ContainsKey('AutomaticRetryAttempts'))      {    $BBody += @{ AutomaticRetryAttempts        = $AutomaticRetryAttempts       } }
+        if ( $PSBoundParameters.ContainsKey('AutomaticRetryConfig'))        {    $BBody += @{ AutomaticRetryConfig          = $AutomaticRetryConfig         } }
+        if ( $PSBoundParameters.ContainsKey('BootNext'))                    {    $BBody += @{ BootNext                      = $BootNext                     } }
+        if ( $PSBoundParameters.ContainsKey('BootOrder'))                   {    $BBody += @{ BootOrder                     = $BootOrder                    } }
+        if ( $PSBoundParameters.ContainsKey('BootOrderPropertySelection'))  {    $BBody += @{ BootOrderPropertySelection    = $BootOrderPropertySelection   } }
+        if ( $PSBoundParameters.ContainsKey('BootSourceOverrideEnabled'))   {    $BBody += @{ BootSourceOverrideEnabled     = $BootSourceOverrideEnabled    } }
+        if ( $PSBoundParameters.ContainsKey('BootSourceOverrideMode'))      {    $BBody += @{ BootSourceOverrideMode        = $BootSourceOverrideMode       } }
+        if ( $PSBoundParameters.ContainsKey('BootSourceOverrideTarget'))    {    $BBody += @{ BootSourceOverrideTarget      = $BootSourceOverrideTarget     } }
+        if ( $PSBoundParameters.ContainsKey('HttpBootUri'))                 {    $BBody += @{ HttpBootUri                   = $HttpBootUri                  } }
+        if ( $PSBoundParameters.ContainsKey('StopBootOnFault'))             {    $BBody += @{ StopBootOnFault               = $StopBootOnFault              } }
+        if ( $PSBoundParameters.ContainsKey('TrustedModuleRequiredToBoot')) {    $BBody += @{ TrustedModuleRequiredToBoot   = $TrustedModuleRequiredToBoot  } }
+        if ( $PSBoundParameters.ContainsKey('UefiTargetBootSourceOverride')){    $BBody += @{ $UefiTargetBootSourceOverride = $UefiTargetBootSourceOverride } }        
+        foreach($Sys in Get-RedfishSystem )
+            {   $SysCollection +=  Get-RedfishByURL -URL ($Sys.'@odata.id')  
+            }
+        if ( $SystemID )
+                    {   $FirstOrderData = $SysCollection | where-object { $_.id -eq $SystemId } 
+                    } else 
+                    {   $FirstOrderData = $SysCollection                     
+                    }     
+        if ( $FirstOrderData )
+                {   $Result = Set-RedfishByURL -URL (($FirstOrderData).'@odata.id') -Body $BBody
+                    return $Results
+                } 
+            else
+                {   return
+                }
+    }
+}

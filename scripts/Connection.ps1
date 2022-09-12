@@ -21,6 +21,7 @@ function Get-SwordfishConnection
 .EXAMPLE
     Get-SwordfishConnection
     
+    @Redfish.Copyright               : Copyright 2020 HPE and DMTF
     @odata.id                        : /redfish/v1/Fabrics/AC-109032/Connections/0d2b4bd8361b856bbc000000000000000000000001
     @odata.type                      : #Connections.v1_0_0.Connections
     Name                             : 0d2b4bd8361b856bbc000000000000000000000001
@@ -31,6 +32,7 @@ function Get-SwordfishConnection
     Volumes                          : {@{Volume=/redfish/v1/Storage/AC-109032/StoragePools/Default/Volumes/Crypt-MovsOld; LogicalUnitNumber=0}}
     Id                               : 0d2b4bd8361b856bbc000000000000000000000001
 
+    @Redfish.Copyright               : Copyright 2020 HPE and DMTF
     @odata.id                        : /redfish/v1/Fabrics/AC-109032/Connections/0d2b4bd8361b856bbc000000000000000000000002
     @odata.type                      : #Connections.v1_0_0.Connections
     Name                             : 0d2b4bd8361b856bbc000000000000000000000002
@@ -50,6 +52,7 @@ function Get-SwordfishConnection
     Get-SwordfishConnection -StorageId AC-102345 -ConnectionId Host1Mapping | ConvertTo-Json
 
     {
+        "@Redfish.Copyright":  "Copyright 2020 HPE and DMTF",
         "@odata.id":  "/redfish/v1/Fabrics/AC-109032/Connections/Host1Mapping",
         "@odata.type":  "#Connections.v1_0_0.Connections",
         "Name":  "Host1Mapping",
@@ -71,6 +74,7 @@ function Get-SwordfishConnection
                     ],
         "Id":  "Host1Mapping"
     }
+
 .EXAMPLE
     Get-SwordfishConnection -ReturnCollectionOnly $True
 
@@ -131,13 +135,13 @@ process{
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = $EPMemberOrCollection = $PulledData.Connections
             foreach ( $EPorEPC in $Memberset )
-                {   $EPColOrEP = Get-RedfishByURL -URL ( $MemberSet.'@odata.id' ) 
+                {   $EPColOrEP = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
                     if ( $EPColOrEP.Members ) 
                         {   $EPMemberOrCollection = $EPColOrEP.Members    
                         }
                     $FullConnCollectionOnly  += $EPColOrEP
                     foreach ( $MyEPData in $EPMemberOrCollection )
-                        {   $FullConnCollection += Get-RedfishByURL -URL ($MyEPData.'@odata.id')                           
+                        {   $FullConnCollection      += Invoke-RestMethod2 -uri ( $base + ($MyEPData.'@odata.id') )                          
                         }
                 }
             if ( $ReturnCollectionOnly )
@@ -236,9 +240,9 @@ process{
         }
     if ( $PSCmdlet.ParameterSetName -ne 'Default' )
         {   $MemberSet = $PulledData.StorageGroups
-            [array]$FullSGCollectionOnly = Get-RedfishByURL -URL ( $MemberSet.'@odata.id' ) 
+            [array]$FullSGCollectionOnly = Invoke-RestMethod2 -uri ( $base + ( $MemberSet.'@odata.id' ) )
             foreach ( $MySGdata in $FullSGCollectionOnly.Members )
-                {   [array]$FullSGSet = Get-RedfishByURL -URL ( $MySGData.'@odata.id' ) 
+                {   [array]$FullSGSet = Invoke-RestMethod2 -uri ( $base + ( $MySGData.'@odata.id' ) )
                 }
             if ( $ReturnCollectionOnly )
                 {   return $FullSGCollectionOnly

@@ -173,7 +173,7 @@ function Get-SwordfishDrive
                            @{@odata.id=/redfish/v1/StorageServices/S1/Drives/1.3},
                            @{@odata.id=/redfish/v1/StorageServices/S1/Drives/1.4}...}
 .LINK
-https://www.dmtf.org/sites/default/files/standards/documents/DSP2046_2022.1.pdf
+    https://redfish.dmtf.org/schemas/v1/Drive.v1_11_0.json
     The Drives and Drives Collections will existing in the following Locations    
         /redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}
         /redfish/v1/Storage/{StorageId}/Drives/{DriveId}
@@ -231,10 +231,10 @@ process
         {   if ( ($PulledData.Links).Drives )               # Sometimes the Drives are listed at the root of Chassis or Storage, other times they are listed under Links
                     { $PulledData = $PulledData.Links }
             foreach ( $DriveData in $PulledData.Drives )
-                {   $MyDrive = Get-RedfishByURL -URL ($DriveData.'@odata.id')
+                {   $MyDrive = Invoke-RestMethod2 -uri ( $base + ($DriveData.'@odata.id') )
                     if ( $MyDrive.Members )
                         {   foreach ( $SingleDriveData in $MyDrive.members )
-                                {   $MySingleDrive = Get-RedfishByURL -URL ($SingleDriveData.'@odata.id') 
+                                {   $MySingleDrive = Invoke-RestMethod2 -uri ( $base + ($SingleDriveData.'@odata.id') ) 
                                     $FullDriveCollectionOnly += $MyDrive
                                     $FullDriveSet += $MySingleDrive
                                 }
